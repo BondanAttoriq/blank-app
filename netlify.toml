@@ -1,0 +1,13 @@
+[build]
+  publish = "site"
+
+# Cache aset statis (JS, library three.js, gambar) lebih lama.
+[[headers]]
+  for = "/lib/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
