@@ -21,7 +21,7 @@ export function init() {
   const decOf = v => Math.abs(v) >= 1000 ? 0 : Math.abs(v) >= 100 ? 0 : Math.abs(v) >= 10 ? 1 : Math.abs(v) >= 1 ? 2 : 3;
   const tiles = who => ROWS.map((r, i) => `<div class="bd-tile"><span>${r[1]}</span><b data-k="${who}-${r[0]}">0</b><small>${st.basis === 'ton' ? r[2] : r[3]}</small></div>`).join('')
     + `<div class="bd-tile"><span>Produk e-methanol</span><b data-k="${who}-meoh">0</b><small>${st.basis === 'ton' ? 't/hari (99,76%)' : 't/tahun'}</small></div>`
-    + `<div class="bd-tile"><span>Pendapatan produk</span><b data-k="${who}-rev">0</b><small>${who === 'after' ? 'US$ juta/tahun (Lampiran 15)' : 'tidak ada produk kimia'}</small></div>`;
+    + `<div class="bd-tile"><span>Pendapatan produk</span><b data-k="${who}-rev">0</b><small>${who === 'after' ? 'US$ juta/tahun' : 'tidak ada produk kimia'}</small></div>`;
   el.innerHTML = `<div class="bd-head"><div><h3 class="h-sm" style="margin:0">Sebelum vs sesudah METHALAND</h3><div class="ch-sub">Geser pembatas untuk membandingkan kondisi tanpa dan dengan METHALAND.</div></div>
       <div class="bd-ctrl"><div class="seg" role="radiogroup" aria-label="Kondisi pembanding"><label><input type="radio" name="bdCmp" value="landfill" checked><span>Landfill</span></label><label><input type="radio" name="bdCmp" value="wte"><span>WtE</span></label></div>
       <div class="seg" role="radiogroup" aria-label="Basis perbandingan"><label><input type="radio" name="bdBasis" value="ton" checked><span>Per ton LPP</span></label><label><input type="radio" name="bdBasis" value="year"><span>Per tahun</span></label></div></div></div>
@@ -32,7 +32,7 @@ export function init() {
       <input type="range" class="bd-range" id="bdRange" min="0" max="100" value="50" step="1" aria-label="Geser pembatas sebelum dan sesudah">
     </div>
     <div class="bd-delta" id="bdDelta" aria-live="polite"></div>
-    <p class="note-sm">LCIA Tabel 5 per ton LPP (Cerqueira et al., 2025); nilai negatif = dampak yang dihindari. Basis tahunan = × 33.333 t LPP/tahun (100 t/hari × 8.000 jam). Produk dari Tabel 3, pendapatan dari Lampiran 15.</p>`;
+    <p class="note-sm">LCIA per ton LPP (Cerqueira et al., 2025); nilai negatif = dampak yang dihindari. Basis tahunan = × 33.333 t LPP/tahun (100 t/hari × 8.000 jam).</p>`;
   const stage = $('#bdStage');
   const setPos = v => { st.pos = v; stage.style.setProperty('--pos', v + '%'); };
   $('#bdRange').addEventListener('input', e => setPos(+e.target.value));
@@ -49,7 +49,7 @@ export function init() {
     const g0 = val(st.cmp, 0), g1 = val('meoh', 0), cut = st.cmp === 'landfill' ? P.gwpCut.landfill : P.gwpCut.wte;
     const pct = i => { const b = val(st.cmp, i), a = val('meoh', i); return b === 0 ? null : (a - b) / Math.abs(b) * 100; };
     const dl = [
-      ['GWP turun', `−${fmt(cut, 2)}%`, `vs ${NAMES[st.cmp]} (Tabel 5)`],
+      ['GWP turun', `−${fmt(cut, 2)}%`, `vs ${NAMES[st.cmp]}`],
       [st.basis === 'ton' ? 'GWP dihindari' : 'Emisi GWP dihindari', `${fmt(g0 - g1, st.basis === 'ton' ? 0 : 0)}`, st.basis === 'ton' ? 'kg CO₂-eq per ton LPP' : 't CO₂-eq per tahun'],
       ['Acidification', `${pct(1) > 0 ? '+' : '−'}${fmt(Math.abs(pct(1)), 1)}%`, pct(1) > 0 ? 'lebih tinggi dari pembanding' : 'lebih rendah dari pembanding'],
       ['PM2.5 & toksisitas', 'Negatif', 'jalur metanol menghindari dampak (nilai &lt; 0)'],

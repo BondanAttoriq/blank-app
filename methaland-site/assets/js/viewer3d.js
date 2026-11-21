@@ -6,7 +6,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { $, $$, fmt, esc, emit, getJSON, isMobile, loadRegister, statusBadge, MEDIUM } from './util.js';
+import { $, $$, fmt, esc, emit, getJSON, isMobile, loadRegister, statusBadge, MEDIUM, noRef } from './util.js';
 import { Tour, SCADA_SCREEN } from './tour.js';
 
 const MODEL_SIZE = { plant: 7170928, konteks: 5067932 };
@@ -552,7 +552,7 @@ export async function init() {
     const x = e || d; const dims = e ? [e.length_m && `P ${fmt(e.length_m, 1)} m`, e.width_m && `L ${fmt(e.width_m, 1)} m`, e.height_m && `T ${fmt(e.height_m, 1)} m`, e.diameter_m && `Ø ${fmt(e.diameter_m, 2)} m`].filter(Boolean).join(' · ') : '';
     $('#unitInfo').innerHTML = `<h3 class="ui-h">${esc(x.tag)} · ${esc(x.name)}</h3>${statusBadge(x.status)}
       <dl class="kv"><dt>Tipe</dt><dd>${esc(x.equipment_type)}</dd><dt>Area</dt><dd>${esc(x.area)}</dd><dt>Dimensi</dt><dd>${dims || 'n/a'}</dd>
-      <dt>Basis sizing</dt><dd>${esc(x.sizing_basis || 'n/a')}</dd><dt>Sumber</dt><dd>${esc(x.source || 'n/a')}</dd></dl>
+      <dt>Basis sizing</dt><dd>${esc(noRef(x.sizing_basis) || 'n/a')}</dd><dt>Sumber</dt><dd>${esc(noRef(x.source) || 'n/a')}</dd></dl>
       ${streamRowsFor(tag)}
       <div class="tc-actions"><button class="btn btn-teal sm" data-go-scada><svg><use href="#i-scada"/></svg>Lihat di SCADA</button></div>`;
     $('#unitInfo [data-go-scada]').onclick = () => emit('show-scada', { tag });
@@ -569,7 +569,7 @@ export async function init() {
     const s2 = DATA.streams[sid], f = DATA.flow[sid] || {}; if (!s2) return;
     $('#unitInfo').innerHTML = `<h3 class="ui-h">Aliran ${esc(sid)}</h3><div>${esc(s2.pfd_name)}</div>
       <dl class="kv"><dt>Medium</dt><dd>${esc(s2.medium)}</dd><dt>Dari → ke</dt><dd><button class="tagchip" data-tag="${esc(s2.from_tag)}">${esc(s2.from_tag)}</button> → <button class="tagchip" data-tag="${esc(s2.to_tag)}">${esc(s2.to_tag)}</button></dd>
-      <dt>Laju (neraca)</dt><dd><b>${qTxt(f)}</b> ${f.st && f.st !== 'SIAGA' ? statusBadge(f.st) : ''}</dd><dt>Ukuran pipa</dt><dd>${sizeTxt(f) || 'n/a'}</dd><dt>Basis</dt><dd>${esc(f.b || 'n/a')}</dd></dl>
+      <dt>Laju (neraca)</dt><dd><b>${qTxt(f)}</b> ${f.st && f.st !== 'SIAGA' ? statusBadge(f.st) : ''}</dd><dt>Ukuran pipa</dt><dd>${sizeTxt(f) || 'n/a'}</dd><dt>Basis</dt><dd>${esc(noRef(f.b) || 'n/a')}</dd></dl>
       <div class="tc-actions"><button class="btn btn-teal sm" data-go-scada><svg><use href="#i-scada"/></svg>Lihat di SCADA</button></div>`;
     $('#unitInfo [data-go-scada]').onclick = () => emit('show-scada', { sid });
     $$('#unitInfo .tagchip').forEach(b => b.onclick = () => focusTag(b.dataset.tag));

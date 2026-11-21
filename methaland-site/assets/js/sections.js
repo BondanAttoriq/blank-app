@@ -46,11 +46,11 @@ function neracaSankeys() {
     links: [{ s: 'a', t: 'b', v: 108.03, c: co2 }, { s: 'a', t: 'x1', v: 4.57, c: loss }, { s: 'b', t: 'c', v: 102.63, c: co2 }, { s: 'b', t: 'x2', v: 5.40, c: loss },
       { s: 'c', t: 's', v: 102.63, c: co2 }, { s: 'h', t: 's', v: 14.3, c: h2 }, { s: 's', t: 'm', v: 74.72, c: me }, { s: 's', t: 'w', v: 42.0, c: w }],
     table: { head: ['Aliran', 't/hari'], rows: [['CO₂ ke CCU', '112,60'], ['CO₂ tertangkap (95,94%)', '108,03'], ['CO₂ tidak tertangkap', '4,57'], ['CO₂ dimanfaatkan (95%)', '102,63'], ['CO₂ tidak dimanfaatkan', '5,40'], ['H₂ PEME', '14,30'], ['e-Methanol', '74,72'], ['Air sintesis', '42,00']] },
-    note: 'Total CO₂ residual 9,97 t/hari (Lampiran 9–10: CO₂ ke CCU 112,60–112,72 t/hari). Massa masuk sintesis 116,93 vs keluar 116,72 t/hari.',
+    note: 'Total CO₂ residual 9,97 t/hari (CO₂ ke CCU 112,60–112,72 t/hari). Massa masuk sintesis 116,93 vs keluar 116,72 t/hari.',
   });
   const e1 = '#B88A5E', e2 = '#6BA539', e3 = '#7A5BB0', e4c = '#1F6FB5';
   sankey($('#sankeyE'), {
-    title: 'Sankey energi (Tabel 4)', sub: 'Efisiensi 29,62% (berbasis metanol) → 32,62% (dengan WHR)', unit: 'MW', h: 380, gap: 26,
+    title: 'Sankey energi', sub: 'Efisiensi 29,62% (berbasis metanol) → 32,62% (dengan WHR)', unit: 'MW', h: 380, gap: 26,
     nodes: [{ id: 'l', col: 0, label: 'Energi kimia LPP', c: e1 }, { id: 'g', col: 0, label: 'CH₄ dalam LFG', c: e2 }, { id: 'p', col: 0, label: 'Listrik PEME (MWe)', c: e3 }, { id: 'u', col: 0, label: 'Listrik CCU (MWe)', c: e4c },
       { id: 'sy', col: 1, label: 'Total energi masuk', c: '#127466', vt: '58,11' }, { id: 'm', col: 2, label: 'Energi kimia metanol', c: '#1F9D55' }, { id: 'wh', col: 2, label: 'Listrik bersih WHR (≈)', c: '#E8862A' },
       { id: 'ls', col: 2, label: 'Selisih: kehilangan & panas lain', c: '#C9D4CF' }],
@@ -99,12 +99,12 @@ function e4() {
   $('#e4Energi').innerHTML = `<div class="e4-grid"><div class="card eff-card"><h3 class="h-sm">Efisiensi energi sistem</h3><div class="eff-big">${ring(29.62, 32.62)}<div><b data-count="32.62" data-dec="2" data-suffix="%">32,62%</b><div class="muted">terintegrasi dengan WHR (≈1,75 MWe)</div><div style="margin-top:6px"><b style="font-size:24px;color:var(--teal-500)" data-count="29.62" data-dec="2" data-suffix="%">29,62%</b> <span class="muted">berbasis metanol</span></div></div></div>
     <ul class="ticks"><li>Energi kimia metanol 17,21 MW (LHV 19,9 MJ/kg) dari total masukan 58,11 MW.</li><li>Konsumsi listrik utama sebelum WHR 34,30 MW: ketergantungan pada listrik eksternal rendah karbon.</li><li>Beban pengeringan ≈1,35 MWth dapat dipenuhi sebagian oleh panas reaksi sintesis ≈1,34 MWth.</li></ul></div>
     <div class="card" id="e4Bar"></div></div>`;
-  hbar($('#e4Bar'), { title: 'Komponen masukan & keluaran energi (Tabel 4)', unit: 'MW', labelW: 220,
+  hbar($('#e4Bar'), { title: 'Komponen masukan & keluaran energi', unit: 'MW', labelW: 220,
     rows: [['Listrik PEME', 33.10, C.purple], ['Energi kimia LPP', 18.85, '#B88A5E'], ['Energi kimia metanol (keluaran)', 17.21, '#1F9D55'], ['Energi kimia CH₄ LFG', 4.97, C.lime], ['WHR listrik bersih (keluaran)', 1.75, C.orange], ['Pengeringan LPP (beban termal)', 1.35, '#8A9A94'], ['Panas reaksi sintesis', 1.34, '#8A9A94'], ['Listrik CCU', 1.20, C.blue]],
     vfmt: v => fmt(v, 2) + ' MW', table: { head: ['Komponen', 'MW'], rows: [['Listrik PEME', '33,10'], ['Energi kimia LPP', '18,85'], ['Energi kimia metanol', '17,21'], ['CH₄ LFG', '4,97'], ['WHR', '≈1,75'], ['Pengeringan', '≈1,35'], ['Panas sintesis', '≈1,34'], ['Listrik CCU', '1,20']] } });
   // Eksergi
   const ex = P.exergy;
-  $('#e4Eksergi').innerHTML = `<div class="e4-grid"><div class="card"><span class="lbl-lit">Gambar 6 paper</span><h3 class="h-sm">Distribusi eksergi dan irreversibilitas</h3>
+  $('#e4Eksergi').innerHTML = `<div class="e4-grid"><div class="card"><h3 class="h-sm">Distribusi eksergi dan irreversibilitas</h3>
     <div class="eff-big"><div><div class="muted">Eksergi masuk</div><b>${fmt(ex.input / 1000, 0)} MW</b></div><div><div class="muted">Eksergi produk</div><b style="color:#1F9D55">79,85%</b></div></div>
     <ul class="ticks"><li>Irreversibilitas terbesar pada biogas upgrading (15,89%) dan produksi metanol (2,89%).</li><li>Pembakaran, pemisahan, dan elektrolisis menjadi fokus integrasi panas untuk menekan kehilangan mutu energi.</li></ul></div><div class="card" id="e4Ex"></div></div>`;
   hbar($('#e4Ex'), { title: 'Destruksi/keluaran eksergi per unit (sistem pembanding)', sub: 'Persentase terhadap eksergi masuk 4.830.405 kW', unit: '%', labelW: 210, max: 16,
@@ -117,20 +117,20 @@ function e4() {
     const bars = v.map((x, i) => { const w = Math.abs(x) * sc, y = 4 + i * 16; return `<rect x="${x >= 0 ? mid : mid - w}" y="${y}" width="${Math.max(1.5, w)}" height="12" rx="3" fill="${cols[i]}"/><text x="${x >= 0 ? mid + w + 5 : mid - w - 5}" y="${y + 10}" text-anchor="${x >= 0 ? 'start' : 'end'}" class="ax">${fmt(x, Math.abs(x) >= 100 ? 0 : 3)}</text>`; }).join('');
     return `<div class="lcia-row"><div class="ln">${cat}<small>${unit} per ton LPP</small></div><svg viewBox="0 0 ${W} 54" role="img" aria-label="${esc(cat)}: ${v.map((x, i) => names[i] + ' ' + fmt(x, 3)).join(', ')}"><line x1="${mid}" x2="${mid}" y1="0" y2="54" stroke="#9FB5AC"/>${bars}</svg></div>`;
   }).join('');
-  $('#e4Ling').innerHTML = `<div class="card"><div class="ch-head"><div><h3 class="h-sm" style="margin:0">LCIA pembanding Landfill, WtE, dan produksi metanol (Tabel 5)</h3><div class="ch-sub">Sumber LCA: Cerqueira et al. (2025). Nilai negatif = manfaat/penghindaran dampak. Skala tiap baris berbeda (satuan berbeda).</div></div><button class="btn-mini" data-tbl aria-expanded="false">Lihat data</button></div>
+  $('#e4Ling').innerHTML = `<div class="card"><div class="ch-head"><div><h3 class="h-sm" style="margin:0">LCIA pembanding Landfill, WtE, dan produksi metanol</h3><div class="ch-sub">Sumber LCA: Cerqueira et al. (2025). Nilai negatif = manfaat/penghindaran dampak. Skala tiap baris berbeda (satuan berbeda).</div></div><button class="btn-mini" data-tbl aria-expanded="false">Lihat data</button></div>
     <div class="ch-legend">${names.map((n, i) => `<span class="lg"><svg width="16" height="12"><rect width="16" height="12" rx="3" fill="${cols[i]}"/></svg>${n}</span>`).join('')}</div>${rows}
     <div class="ch-table" hidden>${tableHTML({ head: ['Kategori', 'Satuan', 'Landfill', 'WtE', 'Metanol'], rows: P.lcia.map(r => [r[0], r[1], fmt(r[2], 3), fmt(r[3], 3), fmt(r[4], 3)]) })}</div>
     <p class="ch-note">Penurunan GWP jalur metanol: 80,95% terhadap landfill dan 62,57% terhadap WtE.</p></div>`;
   const lb = $('#e4Ling [data-tbl]'), lt = $('#e4Ling .ch-table'); lb.onclick = () => { lt.hidden = !lt.hidden; lb.setAttribute('aria-expanded', !lt.hidden); lb.textContent = lt.hidden ? 'Lihat data' : 'Sembunyikan data'; };
   // Ekonomi
   const I = P.ind, tile = (l, v, s) => `<div class="kt"><div class="kl">${l}</div><div class="kv2">${v}</div><div class="kd flat">${s}</div></div>`;
-  $('#e4Eko').innerHTML = `<div class="tiles">${tile('CAPEX', '<small>US$</small><span data-count="13" data-dec="2">13,00</span><small> juta</small>', 'Lampiran 12')}${tile('OPEX', '<small>US$</small><span data-count="13.99" data-dec="2">13,99</span><small> juta/th</small>', 'Lampiran 13')}${tile('NPV 10%', '<small>US$</small><span data-count="21.47" data-dec="2">21,47</span><small> juta</small>', 'umur 20 tahun')}${tile('IRR', '<span data-count="28.5" data-dec="1" data-suffix="%">28,5%</span>', 'di atas diskonto 10%')}${tile('PI', '<span data-count="2.65" data-dec="2">2,65</span>', 'Tabel 6')}${tile('PBP', '<span data-count="3.71" data-dec="2">3,71</span><small> th</small>', 'discounted 4,7 tahun')}</div>
+  $('#e4Eko').innerHTML = `<div class="tiles">${tile('CAPEX', '<small>US$</small><span data-count="13" data-dec="2">13,00</span><small> juta</small>', 'investasi awal')}${tile('OPEX', '<small>US$</small><span data-count="13.99" data-dec="2">13,99</span><small> juta/th</small>', 'biaya operasi tahunan')}${tile('NPV 10%', '<small>US$</small><span data-count="21.47" data-dec="2">21,47</span><small> juta</small>', 'umur 20 tahun')}${tile('IRR', '<span data-count="28.5" data-dec="1" data-suffix="%">28,5%</span>', 'di atas diskonto 10%')}${tile('PI', '<span data-count="2.65" data-dec="2">2,65</span>', 'profitability index')}${tile('PBP', '<span data-count="3.71" data-dec="2">3,71</span><small> th</small>', 'discounted 4,7 tahun')}</div>
     <div class="e4-grid"><div class="card" id="e4Capex"></div><div class="card" id="e4Opex"></div></div>
-    <div class="card" style="margin-top:18px"><h3 class="h-sm">Perbandingan dengan literatur (Lampiran 18)</h3><div class="ch-table">${tableHTML({ head: ['Studi', 'Umpan', 'Teknologi', 'Kapasitas umpan', 'Biaya MeOH (US$/ton)', 'PBP'], rows: P.lit })}</div>
+    <div class="card" style="margin-top:18px"><h3 class="h-sm">Perbandingan dengan literatur</h3><div class="ch-table">${tableHTML({ head: ['Studi', 'Umpan', 'Teknologi', 'Kapasitas umpan', 'Biaya MeOH (US$/ton)', 'PBP'], rows: P.lit })}</div>
     <p class="ch-note">Biaya operasi kotor US$562/ton; biaya metanol ≈US$624/ton. Revenue 19,59 · EBITDA 5,60 · FCF 4,37 (US$ juta/tahun).</p></div>`;
-  donut($('#e4Capex'), { title: 'Rincian CAPEX (Lampiran 12)', sub: 'US$ juta, total 13,00', items: P.capex.map((r, i) => [r[0], r[1], SEQ[i]]), center: ['13,00', 'US$ juta'],
+  donut($('#e4Capex'), { title: 'Rincian CAPEX', sub: 'US$ juta, total 13,00', items: P.capex.map((r, i) => [r[0], r[1], SEQ[i]]), center: ['13,00', 'US$ juta'],
     table: { head: ['Komponen', 'US$ juta'], rows: [...P.capex.map(r => [r[0], fmt(r[1], 2)]), ['Total', '13,00']] } });
-  hbar($('#e4Opex'), { title: 'Rincian OPEX tahunan (Lampiran 13)', sub: 'US$ juta/tahun, total 13,99', unit: 'US$ juta/tahun', labelW: 250,
+  hbar($('#e4Opex'), { title: 'Rincian OPEX tahunan', sub: 'US$ juta/tahun, total 13,99', unit: 'US$ juta/tahun', labelW: 250,
     rows: P.opex.map(r => [r[0], r[1], r[1] > 1 ? C.orange : C.teal]), vfmt: v => fmt(v, 2), table: { head: ['Komponen', 'US$ juta/tahun'], rows: [...P.opex.map(r => [r[0], fmt(r[1], 2)]), ['Total', '13,99']] } });
 }
 
@@ -226,7 +226,7 @@ async function downloads() {
     + card('i-link', '#0C8EA6', 'PFD berwarna', 'JPG 1920 × 1080 px', d + 'PFD_eMethanol_Berwarna_FullHD.jpg');
   const data = await getJSON('assets/data/data.json');
   const items = data.tour.stops.map((s, i) => [`assets/img/render/${String(i + 1).padStart(2, '0')}_${s.id}.jpg`, `assets/img/thumb/${String(i + 1).padStart(2, '0')}_${s.id}.jpg`, `${i + 1}. ${s.title}`])
-    .concat([['assets/img/gambar4_aksonometri.jpg', 'assets/img/gambar4_aksonometri.jpg', 'Gambar 4: Ilustrasi aksonometri sistem'], ['assets/img/pfd.jpg', 'assets/img/pfd.jpg', 'PFD berwarna METHALAND'], ['assets/img/poster.jpg', 'assets/img/poster.jpg', 'Poster LKTIN Eco-Generation 2026']]);
+    .concat([['assets/img/gambar4_aksonometri.jpg', 'assets/img/gambar4_aksonometri.jpg', 'Ilustrasi aksonometri sistem'], ['assets/img/pfd.jpg', 'assets/img/pfd.jpg', 'PFD berwarna METHALAND'], ['assets/img/poster.jpg', 'assets/img/poster.jpg', 'Poster LKTIN Eco-Generation 2026']]);
   $('#gallery').innerHTML = items.map((it, i) => `<button data-i="${i}" aria-label="Buka ${esc(it[2])}"><img src="${it[1]}" alt="${esc(it[2])}" loading="lazy" width="400" height="225"><span>${esc(it[2])}</span></button>`).join('');
   const lb = $('#lightbox'), img = lb.querySelector('img'), cap = lb.querySelector('figcaption'); let cur = 0, last = null;
   const open = i => { cur = (i + items.length) % items.length; img.src = items[cur][0]; img.alt = items[cur][2]; cap.textContent = items[cur][2]; lb.hidden = false; lb.querySelector('.lb-x').focus(); };

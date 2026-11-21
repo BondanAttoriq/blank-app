@@ -96,7 +96,7 @@ function render(s) {
     ['NPV (10%)', `<small>US$</small>${fmt(m.npv, 2)}<small> juta</small>`, delta(m.npv, b.npv, 2, true), est, m.npv < 0],
     ['IRR', m.irr < 0 ? `&lt;0<small>%</small>` : `${fmt(m.irr, 1)}<small>%</small>`, delta(m.irr, b.irr, 1, true, ' poin'), est],
     ['Simple PBP', `${tH(m.pbp)}<small> tahun</small>`, delta(m.pbp, b.pbp, 2, false), est],
-    ['PI', `2,65`, `<div class="kd flat">${m.base || (s.meoh === 750 && s.el === 40) ? 'Tabel 6' : 'nilai basis (tidak dihitung ulang)'}</div>`, (s.meoh !== 750 || s.el !== 40) ? '<span class="badge base">basis</span>' : ''],
+    ['PI', `2,65`, `<div class="kd flat">${m.base || (s.meoh === 750 && s.el === 40) ? 'nilai basis' : 'nilai basis (tidak dihitung ulang)'}</div>`, (s.meoh !== 750 || s.el !== 40) ? '<span class="badge base">basis</span>' : ''],
     ['Harga impas metanol', typeof m.beM === 'string' ? `<small>US$</small>${m.beM}` : `<small>≈US$</small>${fmt(m.beM, 0)}<small>/ton</small>`, delta(m.beM, b.beM, 0, false, ' US$/t'), '<span class="badge base" title="NPV = 0 pada tarif listrik saat ini">NPV = 0</span>'],
     ['Tarif listrik impas', typeof m.beE === 'string' ? `<small>US$</small>${m.beE}` : `<small>≈US$</small>${fmt(m.beE, 1)}<small>/MWh</small>`, delta(m.beE, b.beE, 1, true, ' US$/MWh'), '<span class="badge base" title="NPV = 0 pada harga metanol saat ini">NPV = 0</span>'],
     ['Intensitas emisi operasional', `${fmt(m.inten, 3)}<small> kg CO₂-eq/kg</small>`, delta(m.inten, b.inten, 3, false), s.peme && s.ef > 0 ? '<span class="badge est">estimasi</span>' : ''],
@@ -108,7 +108,7 @@ function render(s) {
   const cs = cashSeries(m.npv - P.ind.npv), changed = Math.abs(m.npv - P.ind.npv) > 1e-6;
   const yrs = [...Array(21).keys()];
   cartesian($('#chCash'), {
-    title: 'Arus kas bebas 20 tahun', w: 900, h: 320, sub: changed ? 'Skenario: seri Lampiran 16 + k × utilisasi (ΔNPV terkalibrasi)' : 'Basis: Lampiran 16 (tahun 6–20 FCF 4,43)', unit: 'US$ juta',
+    title: 'Arus kas bebas 20 tahun', w: 900, h: 320, sub: changed ? 'Skenario: seri basis + k × utilisasi (ΔNPV terkalibrasi)' : 'Basis: tahun 6–20 FCF 4,43', unit: 'US$ juta',
     x: { type: 'cat', cats: yrs.map(String), label: 'Tahun' }, y: { label: 'US$ juta', fmt: v => fmt(v, 0) },
     bars: [{ name: 'FCF tahunan', color: v => v < 0 ? C.red : C.teal, values: cs.fcf }],
     lines: [...(changed ? [{ name: 'Kumulatif basis', color: C.gray, dash: true, marker: 'none', points: cs.bcum.map((v, i) => [i, v]) }] : []),
@@ -122,7 +122,7 @@ function render(s) {
   const pm = P.sensMeoh.map(r => [(r[0] - 750) / 750 * 100, r[1]]), pe = P.sensElec.map(r => [(r[0] - 40) / 40 * 100, r[1]]);
   const xm = (s.meoh - 750) / 750 * 100, xe = (s.el - 40) / 40 * 100;
   cartesian($('#chSens'), {
-    title: 'Sensitivitas NPV (Lampiran 19)', sub: 'Titik menyala = posisi skenario saat ini pada masing-masing tabel', unit: 'US$ juta',
+    title: 'Sensitivitas NPV', sub: 'Titik menyala = posisi skenario saat ini pada masing-masing tabel', unit: 'US$ juta',
     x: { type: 'num', min: -20, max: 50, ticks: [-20, -10, 0, 10, 20, 30, 40, 50], fmt: v => (v > 0 ? '+' : '') + fmt(v, 0) + '%', label: 'Perubahan parameter terhadap basis (%)' },
     y: { label: 'NPV (US$ juta)', fmt: v => fmt(v, 0) },
     lines: [{ name: 'Harga metanol', color: C.teal, marker: 'circle', points: pm, label: 'Harga metanol', labelAt: 5, labelDx: -6, labelDy: -10, labelAnchor: 'end' },
@@ -137,17 +137,17 @@ function render(s) {
   cartesian($('#chEf'), {
     title: 'Intensitas emisi operasional vs faktor emisi listrik', sub: `Intensitas ≈ 0,134 + ${fmt(m.spec, 2)} × EF (kg CO₂-eq/kg metanol)`, unit: 'kg CO₂-eq/kg',
     x: { type: 'num', min: 0, max: 0.8, ticks: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8], fmt: v => fmt(v, 1), label: 'EF listrik (kg CO₂-eq/kWh)' }, y: { min: 0, max: 10, label: 'kg CO₂-eq/kg metanol', fmt: v => fmt(v, 0) },
-    lines: [{ name: 'Subbab 3.6 (11,02 kWh/kg)', color: C.orange, marker: 'circle', dp: 3, points: P.ef.map(r => [r[0], r[1]]), label: '3.6', labelDx: 8, labelDy: -2 },
-      { name: 'Lampiran 10 (10,95 kWh/kg)', color: C.purple, marker: 'triangle', dash: true, dp: 3, points: P.ef.map(r => [r[0], r[2]]), label: 'L10', labelDx: 8, labelDy: 14 }],
+    lines: [{ name: 'Basis 11,02 kWh/kg', color: C.orange, marker: 'circle', dp: 3, points: P.ef.map(r => [r[0], r[1]]), label: '11,02', labelDx: 8, labelDy: -2 },
+      { name: 'Basis 10,95 kWh/kg', color: C.purple, marker: 'triangle', dash: true, dp: 3, points: P.ef.map(r => [r[0], r[2]]), label: '10,95', labelDx: 8, labelDy: 14 }],
     marks: [{ x: s.ef, y: m.inten, color: C.red, shape: 'diamond', label: `EF ${fmt(s.ef, 2)} → ${fmt(m.inten, 3)}`, dx: s.ef > 0.5 ? -12 : 12, anchor: s.ef > 0.5 ? 'end' : 'start', dy: -14, tip: `Skenario: ${fmt(m.inten, 3)} kg CO₂-eq/kg` }],
-    legend: [{ name: 'Subbab 3.6 (11,02 kWh/kg)', color: C.orange, marker: 'circle' }, { name: 'Lampiran 10 (10,95 kWh/kg, pembanding)', color: C.purple, marker: 'triangle', dash: true }, { name: 'Skenario saat ini', color: C.red, marker: 'diamond' }],
-    table: { head: ['EF (kg CO₂-eq/kWh)', 'Subbab 3.6', 'Lampiran 10'], rows: P.ef.map(r => [fmt(r[0], 2), fmt(r[1], 3), fmt(r[2], 3)]) },
-    note: 'Lampiran 10 (basis 10,95 kWh/kg) ditampilkan sebagai pembanding; selisih kedua basis kecil dibanding pengaruh EF.',
+    legend: [{ name: 'Basis 11,02 kWh/kg', color: C.orange, marker: 'circle' }, { name: 'Basis 10,95 kWh/kg (pembanding)', color: C.purple, marker: 'triangle', dash: true }, { name: 'Skenario saat ini', color: C.red, marker: 'diamond' }],
+    table: { head: ['EF (kg CO₂-eq/kWh)', 'Basis 11,02 kWh/kg', 'Basis 10,95 kWh/kg'], rows: P.ef.map(r => [fmt(r[0], 2), fmt(r[1], 3), fmt(r[2], 3)]) },
+    note: 'Basis 10,95 kWh/kg ditampilkan sebagai pembanding; selisih kedua basis kecil dibanding pengaruh EF.',
   });
   // pendapatan vs OPEX
   const revM = P.base.meohYear * s.meoh / 1e6, opEl = 12.49 * s.el / 40;
   cartesian($('#chRevOp'), {
-    title: 'Rincian pendapatan vs OPEX tahunan', sub: 'Tampilan rincian (tahun operasi penuh); KPI tetap dari Lampiran 19', unit: 'US$ juta/tahun',
+    title: 'Rincian pendapatan vs OPEX tahunan', sub: 'Tampilan rincian (tahun operasi penuh); KPI tetap dari analisis sensitivitas', unit: 'US$ juta/tahun',
     x: { type: 'cat', cats: ['Pendapatan', 'OPEX'] }, y: { min: 0, max: 30, label: 'US$ juta/tahun', fmt: v => fmt(v, 0) },
     bars: [{ name: 'Metanol (24.880 t × harga)', color: C.teal, stack: 'a', values: [revM, null] }, { name: 'Jasa pengolahan', color: C.lime, stack: 'a', values: [0.50, null] },
       { name: 'Surplus O₂', color: C.blue, stack: 'a', values: [0.433, null] }, { name: 'Listrik', color: C.orange, stack: 'a', values: [null, opEl] }, { name: 'OPEX lain', color: C.purple, stack: 'a', values: [null, 1.50] }],
@@ -157,7 +157,7 @@ function render(s) {
   });
   // GWP
   cartesian($('#chGwp'), {
-    title: 'GWP per ton LPP: 3 jalur (Tabel 5)', sub: 'LCA Cerqueira et al. (2025)', unit: 'kg CO₂-eq/ton LPP',
+    title: 'GWP per ton LPP: 3 jalur', sub: 'LCA Cerqueira et al. (2025)', unit: 'kg CO₂-eq/ton LPP',
     x: { type: 'cat', cats: ['Landfill', 'WtE', 'Metanol'] }, y: { min: 0, max: 800, label: 'kg CO₂-eq/ton LPP', fmt: v => fmt(v, 0) },
     bars: [{ name: 'GWP', color: (v, i) => [C.blue, C.teal, C.lime][i], values: [672, 342, 128] }],
     texts: [{ x: 0, y: 672, dy: -8, t: '672' }, { x: 1, y: 342, dy: -8, t: '342' }, { x: 2, y: 128, dy: -8, t: '128 (−80,95% vs landfill; −62,57% vs WtE)', cls: 'strong' }],
@@ -166,7 +166,7 @@ function render(s) {
   });
   // PEME −5%
   const pc = P.peme5, usd = s.tar === 0.04 ? pc.usd04 : pc.usd05;
-  $('#dPemeCard').innerHTML = `<div class="ch-head"><div><h4>Skenario PEME −5% (Lampiran 20)</h4><div class="ch-sub">Penghematan listrik PEME pada produksi tetap 74,72 t/hari</div></div>${s.peme ? '<span class="badge st-C">aktif</span>' : '<span class="badge base">nonaktif</span>'}</div>
+  $('#dPemeCard').innerHTML = `<div class="ch-head"><div><h4>Skenario PEME −5%</h4><div class="ch-sub">Penghematan listrik PEME pada produksi tetap 74,72 t/hari</div></div>${s.peme ? '<span class="badge st-C">aktif</span>' : '<span class="badge base">nonaktif</span>'}</div>
     <div class="pc-bars ${s.peme ? '' : 'pc-off'}" role="img" aria-label="Daya PEME basis 33,10 MW, skenario 31,445 MW">
       <div class="pc-bar"><b>33,10</b><i style="height:100%;background:#8A9A94"></i><span>Basis (MW)</span></div>
       <span class="pc-delta">−1,655 MW</span>

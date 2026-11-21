@@ -45,7 +45,7 @@ const SAY = {
     'Sterile area R 60 m; jarak ke TK-401 168 m dan ke PEME 113 m; windsock di 4 titik.',
     'Titik kumpul berada di parkir barat daya; akses pemadam tersedia dari dua sisi tiap blok.'],
   tutup: ['LPP + LFG menghasilkan e-methanol 74,72 t/hari; CO₂ pembakaran dimanfaatkan ulang dan O₂ PEME menutup siklus OEC.',
-    'LCA pembanding (Tabel 5): GWP turun 80,95% terhadap landfill dan 62,57% terhadap WtE.',
+    'LCA pembanding: GWP turun 80,95% terhadap landfill dan 62,57% terhadap WtE.',
     'Tahap lanjut: optimasi ML, studi relief/flare, serta data angin dan geoteknik lokal.'],
 };
 const AREA = { tpst: 'Konteks TPST', lokasi: 'Tapak & zona penyangga', lpp: 'Area 100 · LPP', pra: 'Area 100 · LPP', lfg_header: 'Area 200 · LFG',
