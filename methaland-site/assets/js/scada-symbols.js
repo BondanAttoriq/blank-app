@@ -30,14 +30,27 @@ export function symbol(t, w, h, c) {
     case 'hx': { const r = Math.min(w, h) / 2; return `<circle r="${r}" fill="${f}" ${ST}/><path d="M${-r * .8},${r * .2}l${r * .35},${-r * .55}l${r * .35},${r * .7}l${r * .35},${-r * .7}l${r * .35},${r * .7}l${r * .2},${-r * .3}" ${LN}/>`; }
     case 'vessel': return `<rect x="${x0}" y="${y0}" width="${w}" height="${h}" rx="${w / 2}" fill="${f}" ${ST}/><rect x="${x0 + 1}" y="${y0 + h * .17}" width="${w - 2}" height="${h * .12}" fill="url(#mesh)" stroke="#0B1F1A" stroke-width=".8"/><rect x="${-x0}" y="${-4}" width="5" height="10" fill="#0B1F1A"/>`;
     case 'adsorber': return `<rect x="${x0}" y="${y0}" width="${w}" height="${h}" rx="3" fill="${f}" ${ST}/><path d="M${x0},${y0 + 8}H${-x0}M${x0},${-y0 - 8}H${-x0}M${x0},${y0 + 8}L${-x0},${-y0 - 8}M${-x0},${y0 + 8}L${x0},${-y0 - 8}" stroke="#0B1F1A" stroke-width="1.1"/>`;
-    case 'compressor': { const r = h * .45; return `<path d="M${-r},0a${r},${r} 0 1 0 ${r},${-r}H${w / 2}V${-r + h * .36}H${r * .6}" fill="${f}" ${ST}/><circle r="${r * .45}" ${LN}/>`; }
+    case 'compressor': {   // kompresor/blower sentrifugal: volute bulat utuh + saluran keluar tangensial di kanan atas (seperti PFD)
+      const r = Math.min(h / 2, w * 0.4), cx = x0 + r, oh = r * 0.78;
+      return `<rect x="${cx}" y="${-r}" width="${w / 2 - cx}" height="${oh}" rx="1.5" fill="${fv}" ${ST}/>`
+        + `<circle cx="${cx}" cy="0" r="${r}" fill="${f}" ${ST}/>`
+        + `<path d="M${cx},${-r + 1}H${cx + r * 0.55}" stroke="${AREA_COL[c][2]}" stroke-width="1.6"/>`
+        + `<circle cx="${cx}" cy="0" r="${r * 0.42}" fill="${AREA_COL[c][0]}" fill-opacity=".35" stroke="#0B1F1A" stroke-width="1.6"/>`
+        + `<circle cx="${cx}" cy="0" r="${r * 0.12}" fill="#0B1F1A"/>`;
+    }
     case 'electrolyzer': { let c = ''; const n = 12, cw = (w - 40) / n; for (let i = 0; i < n; i++) c += `<rect x="${x0 + 20 + i * cw + cw * .2}" y="${y0 + h * .32}" width="${cw * .6}" height="${h * .56}" rx="3" fill="url(#gv-${t === 'electrolyzer' ? 'purple' : c})" stroke="#2A2340" stroke-width=".8"/>`;
       return `<rect x="${x0}" y="${y0}" width="${w}" height="${h}" rx="4" fill="${fv}" ${ST}/>${c}`; }
     case 'mixer': return `<rect x="${x0}" y="${y0}" width="${w}" height="${h}" rx="2" fill="${f}" ${ST}/><path d="M${x0},${-y0}L${-x0},${y0}" stroke="#0B1F1A" stroke-width="1.1"/><path d="M${x0 + 6},${-6}l6,-6l6,6l6,-6" ${LN}/>`;
     case 'reactor': return `<rect x="${x0}" y="${y0}" width="${w}" height="${h}" rx="${w / 2}" fill="${f}" ${ST}/>${[0.12, 0.52].map(k => `<rect x="${x0 + 3}" y="${y0 + h * k}" width="${w - 6}" height="${h * .36}" fill="none" stroke="#0B1F1A" stroke-width="1"/><path d="M${x0 + 3},${y0 + h * k}L${-x0 - 3},${y0 + h * (k + .36)}M${-x0 - 3},${y0 + h * k}L${x0 + 3},${y0 + h * (k + .36)}" stroke="#0B1F1A" stroke-width="1"/>`).join('')}`;
     case 'column': { let tr = ''; for (let i = 1; i < 16; i++) tr += `<path d="M${x0 + 8},${y0 + i * h / 16}h${w - 16}" stroke="#0B1F1A" stroke-width=".9" stroke-dasharray="4 3"/>`; return `<rect x="${x0}" y="${y0}" width="${w}" height="${h}" rx="${w / 2}" fill="${f}" ${ST}/>${tr}`; }
     case 'hdrum': return `<rect x="${x0}" y="${y0}" width="${w}" height="${h}" rx="${h / 2}" fill="${fv}" ${ST}/><path d="M${x0 + h * .5},${y0}v${h}M${-x0 - h * .5},${y0}v${h}" stroke="#0B1F1A" stroke-width=".8"/>`;
-    case 'pump': { const r = Math.min(w, h) / 2; return `<circle r="${r}" fill="${f}" ${ST}/><path d="M${r * .35},${-r * .45}a${r * .55},${r * .55} 0 1 0 0,${r * .9}" ${LN}/><path d="M${-r},${r}h${2 * r}" stroke="#0B1F1A" stroke-width="2"/>`; }
+    case 'pump': {         // pompa sentrifugal: badan bulat utuh, nozzle keluar tangensial di kanan atas, huruf C, dudukan
+      const r = Math.min(w, h) / 2 - 1, oh = r * 0.62;
+      return `<polygon points="${-r * 0.75},${r * 0.55} ${r * 0.75},${r * 0.55} ${r * 1.05},${r + 5} ${-r * 1.05},${r + 5}" fill="${AREA_COL[c][0]}" stroke="${AREA_COL[c][2]}" stroke-width="1.2"/>`
+        + `<rect x="0" y="${-r}" width="${r + 5}" height="${oh}" rx="1.5" fill="${fv}" ${ST}/>`
+        + `<circle r="${r}" fill="${f}" ${ST}/>`
+        + `<path d="M${r * 0.38},${-r * 0.42}A${r * 0.55},${r * 0.55} 0 1 0 ${r * 0.38},${r * 0.42}" fill="none" stroke="#0B1F1A" stroke-width="1.9" stroke-linecap="round"/>`;
+    }
     case 'tank': return `<path d="M${x0},${y0 + h * .28}L0,${y0}L${-x0},${y0 + h * .28}V${-y0}H${x0}Z" fill="${f}" ${ST}/><path d="M${x0},${y0 + h * .28}H${-x0}" stroke="#0B1F1A" stroke-width="1"/>`;
     case 'turbine': return `<polygon points="${x0},${y0 + h * .3} ${-x0},${y0} ${-x0},${-y0} ${x0},${-y0 - h * .3}" fill="${f}" ${ST}/>`;
     case 'generator': { const r = Math.min(w, h) / 2; return `<circle r="${r}" fill="${f}" ${ST}/><text y="6" text-anchor="middle" font-size="17" font-weight="800" fill="#0B1F1A" style="font-family:Poppins,sans-serif">G</text>`; }

@@ -146,12 +146,15 @@ export async function init() {
     const P = paneTransforms(sc); let g = `<defs>${defs()}${meshPattern}${P.map((p, i) => `<clipPath id="clip${i}"><rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}"/></clipPath>`).join('')}</defs>`;
     g += `<g class="hmi">`;
     P.forEach((p, pi) => {
+      const inP = (x, y, m) => x >= p.x - m && x <= p.x + p.w + m && y >= p.y - m && y <= p.y + p.h + m;   // hanya isi milik pane ini (tanpa salinan tersembunyi)
+      const paneStreams = sc.streams.filter(sid => STREAMS[sid].s.some(seg => seg.some(q => inP(q[0], q[1], 0))));
+      const paneUnits = sc.units.filter(t => inP(UNITS[t].x, UNITS[t].y, -2));
       const k = 1 / Math.sqrt(p.s), fs = 12 * k;
       g += `<g transform="translate(${p.dx} ${p.dy}) scale(${p.s}) translate(${-p.x} ${-p.y})"><g clip-path="url(#clip${pi})">`;
       if (P.length > 1 || sc.table) g += `<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}" fill="none" stroke="#1E4136" stroke-width="${1.5 * k}" rx="${8 * k}"/>`;
       for (const b of L.boxes) g += `<rect class="boxd" x="${b.r[0]}" y="${b.r[1]}" width="${b.r[2]}" height="${b.r[3]}" stroke-width="${1.2 * k}"/><text class="boxl" x="${b.lp[0]}" y="${b.lp[1]}" font-size="${fs * .95}">${esc(b.l)}</text>`;
       // aliran
-      for (const sid of sc.streams) {
+      for (const sid of paneStreams) {
         const st = STREAMS[sid], col = colOf(sid), dashed = /^EL-|^H-03$/.test(sid);
         for (const seg of st.s) {
           const pts = seg.map(q => q.join(',')).join(' ');
@@ -167,7 +170,7 @@ export async function init() {
         if (sc.table && st.d && D[sid] !== null) g += `<g transform="translate(${st.d[0] + 15 * k} ${st.d[1] - 13 * k}) scale(${k})"><text class="vtag" data-v="${sid}" font-size="10.5">${fmtAuto(D[sid])}</text></g>`;
       }
       // unit
-      for (const tag of sc.units) {
+      for (const tag of paneUnits) {
         const u = UNITS[tag]; const e = REG.EQ[tag];
         if (u.t === 'label') { g += `<text x="${u.x}" y="${u.y}" text-anchor="middle" font-size="${fs}" font-style="italic" fill="#9DC3B4">${esc(u.n)}</text>`; continue; }
         if (u.t === 'term') { g += `<g class="term" transform="translate(${u.x} ${u.y})">${symbol('term', u.w, u.h, u.c)}<text y="${4 * Math.min(1.25, 1 / k * .75)}" text-anchor="middle" font-size="${Math.min(13, fs * 1.05)}" font-weight="700">${esc(u.n)}</text></g>`; continue; }
