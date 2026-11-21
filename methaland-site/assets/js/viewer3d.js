@@ -38,9 +38,12 @@ export async function init() {
 
   // ------------------------------------------------ renderer & scene
   // Performa: tanpa logarithmic depth (early-z tetap aktif), near/far kamera dinamis; MSAA hanya bila DPR rendah.
-  const DPR_MAX = Math.min(devicePixelRatio || 1, mobile ? 1.5 : 1.75), DPR_MIN = mobile ? 0.6 : 0.75;
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: !mobile && (devicePixelRatio || 1) < 1.5, powerPreference: 'high-performance', stencil: false });
-  const Q = { mode: 'auto', dpr: DPR_MAX, fps: 0, calls: 0 };
+  // Tingkat kualitas: 0–2 hanya beda resolusi (tanpa kompilasi ulang shader); 3–4 material sederhana, tanpa bayangan, 30 fps ambient.
+  const DPR_HI = Math.min(devicePixelRatio || 1, mobile ? 1.25 : 1.5);
+  const TIERS = [{ dpr: DPR_HI }, { dpr: Math.min(1, DPR_HI) }, { dpr: 0.85 }, { dpr: 0.75, lite: true, cap: 30 }, { dpr: 0.6, lite: true, cap: 30 }];
+  const START_TIER = (devicePixelRatio || 1) <= 1 ? 0 : 1;
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: !mobile && (devicePixelRatio || 1) < 1.2, powerPreference: 'high-performance', stencil: false });
+  const Q = { mode: 'auto', tier: START_TIER, dpr: TIERS[START_TIER].dpr, fps: 0, calls: 0, lite: false };
   renderer.setPixelRatio(Q.dpr);
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFShadowMap; renderer.shadowMap.autoUpdate = false;   // scene statis: shadow map dirender ulang hanya saat lapisan berubah
@@ -53,6 +56,7 @@ export async function init() {
     const i = Math.floor(x), j = Math.floor(y), fx = x - i, fy = y - j, u = fx * fx * (3 - 2 * fx), v = fy * fy * (3 - 2 * fy);
     return h(i, j) * (1 - u) * (1 - v) + h(i + 1, j) * u * (1 - v) + h(i, j + 1) * (1 - u) * v + h(i + 1, j + 1) * u * v;
   }
+  let skyData = null;
   function makeSky(W, H) {     // langit HDR prosedural (equirect half-float): gradien, matahari, awan kumulus tipis
     const d = new Float32Array(W * H * 4); const sd = SUN_DIR;
     for (let j = 0; j < H; j++) {
@@ -71,15 +75,31 @@ export async function init() {
         const k = (j * W + i) * 4, E = 1.25; d[k] = (r + sun) * E; d[k + 1] = (g + sun * 0.95) * E; d[k + 2] = (b + sun * 0.85) * E; d[k + 3] = 1;
       }
     }
+    skyData = { d, W, H };
     const h16 = new Uint16Array(d.length); for (let k = 0; k < d.length; k++) h16[k] = THREE.DataUtils.toHalfFloat(Math.min(d[k], 60000));
     const tex = new THREE.DataTexture(h16, W, H, THREE.RGBAFormat, THREE.HalfFloatType); tex.mapping = THREE.EquirectangularReflectionMapping;
     tex.magFilter = THREE.LinearFilter; tex.minFilter = THREE.LinearFilter; tex.generateMipmaps = false; tex.needsUpdate = true; return tex;
   }
-  const SKY = makeSky(mobile ? 512 : 1024, mobile ? 256 : 512); scene.background = SKY; scene.environment = pm.fromEquirectangular(SKY).texture;
+  const SKY = makeSky(mobile ? 512 : 1024, mobile ? 256 : 512); scene.background = SKY; const envTex = pm.fromEquirectangular(SKY).texture;
+  // Performa: IBL (PMREM) hanya untuk material logam; material lain memakai light probe spherical harmonics dari langit yang sama.
+  function skyProbe() {
+    const { d, W: SW, H: SH } = skyData, sh = new THREE.SphericalHarmonics3(), col = new THREE.Vector3(), dir = new THREE.Vector3(); let wSum = 0;
+    const b = []; for (let i = 0; i < 9; i++) b.push(0);
+    for (let j = 0; j < SH; j += 2) { const th = ((j + 0.5) / SH - 0.5) * Math.PI, cy = Math.cos(th), sy = Math.sin(th);
+      for (let i = 0; i < SW; i += 2) { const ph = ((i + 0.5) / SW - 0.5) * 2 * Math.PI; dir.set(cy * Math.cos(ph), sy, cy * Math.sin(ph));
+        const k = (j * SW + i) * 4, w = cy; col.set(Math.min(d[k], 3), Math.min(d[k + 1], 3), Math.min(d[k + 2], 3));   // matahari dibatasi (sudah ada DirectionalLight)
+        THREE.SphericalHarmonics3.getBasisAt(dir, b); for (let c = 0; c < 9; c++) sh.coefficients[c].addScaledVector(col, b[c] * w); wSum += w; } }
+    const norm = 4 * Math.PI / wSum; for (const c of sh.coefficients) c.multiplyScalar(norm);
+    const probe = new THREE.LightProbe(sh, 1.2); return probe;
+  }
+  scene.add(skyProbe());
+  // kompilasi shader di depan (paralel bila didukung) agar tidak tersendat saat render pertama
+  const precompile = async (obj, target) => { try { if (renderer.extensions.has('KHR_parallel_shader_compile')) await renderer.compileAsync(obj, camera, target); else renderer.compile(obj, camera, target); } catch (e) { /* lanjut */ } };
+  const isMetal = m => (m.metalness ?? 0) >= 0.45;
   renderer.toneMappingExposure = 0.78;
   const camera = new THREE.PerspectiveCamera(48, 1, 0.5, 6000);
   const controls = new OrbitControls(camera, canvas); controls.enableDamping = true; controls.maxPolarAngle = Math.PI * 0.495; controls.autoRotateSpeed = 0.7;
-  scene.add(new THREE.HemisphereLight(0xeaf2ff, 0x8a8068, 0.35));
+  scene.add(new THREE.HemisphereLight(0xeaf2ff, 0x8a8068, 0.22));
   const sun = new THREE.DirectionalLight(0xfff1dc, 2.6); sun.position.set(90 - 250, 260, -20 + 260); sun.target.position.set(90, 0, -20);
   sun.castShadow = true; const sm = mobile ? 1024 : 2048; sun.shadow.mapSize.set(sm, sm);
   Object.assign(sun.shadow.camera, { left: -230, right: 230, top: 230, bottom: -230, near: 10, far: 900 }); sun.shadow.bias = -0.0004;
@@ -174,11 +194,23 @@ export async function init() {
   const plantBatches = batch(plant, plantKey);
   const STAT0 = { batchMs: Math.round(performance.now() - t0b), batches: plantBatches.length };
   let ctxLoading = null;
+  // Lambert untuk konteks TPST (permukaan tanah/timbunan menutupi sebagian besar layar): pencahayaan jauh lebih murah dari PBR
+  const lambertCache = new Map();
+  function lambertOf(m) {
+    if (!m.isMeshStandardMaterial || (m.name || '').startsWith('nyala')) return m;
+    if (!lambertCache.has(m.uuid)) {
+      const l = new THREE.MeshLambertMaterial({ name: m.name, color: m.color, map: m.map, emissive: m.emissive, emissiveMap: m.emissiveMap, emissiveIntensity: m.emissiveIntensity,
+        transparent: m.transparent, opacity: m.opacity, alphaTest: m.alphaTest, side: m.side, depthWrite: m.depthWrite, vertexColors: m.vertexColors });
+      lambertCache.set(m.uuid, l);
+    }
+    return lambertCache.get(m.uuid);
+  }
+  function toLambert(root) { root.traverse(o => { if (o.isMesh) o.material = Array.isArray(o.material) ? o.material.map(lambertOf) : lambertOf(o.material); }); }
   function ensureCtx() {
     if (ctx) return Promise.resolve(ctx);
     if (!ctxLoading) {
       if (!need.includes('konteks')) { need.push('konteks'); loadEl.classList.contains('done') || upd(); }
-      ctxLoading = loadGLB('konteks').then(c => { ctx = c; ctx.traverse(o => { if (o.isMesh) o.receiveShadow = true; }); fixMaterials(ctx); batch(ctx, () => 'c'); scene.add(ctx); ctx.visible = T.ctx; shadowDirty(); navGlb.hidden = true; labelKey = ''; tour.render(STOPS[tour.cur], tour.cur); req(); return ctx; });
+      ctxLoading = loadGLB('konteks').then(async c => { ctx = c; ctx.traverse(o => { if (o.isMesh) o.receiveShadow = true; }); fixMaterials(ctx); toLambert(ctx); batch(ctx, () => 'c'); ctx.visible = false; scene.add(ctx); await precompile(ctx, scene); scene.remove(ctx); scene.add(ctx); ctx.visible = T.ctx; shadowDirty(); navGlb.hidden = true; labelKey = ''; tour.render(STOPS[tour.cur], tour.cur); req(); return ctx; });
     }
     return ctxLoading;
   }
@@ -200,6 +232,7 @@ export async function init() {
         if (n.startsWith('nyala')) { m.toneMapped = false; FLAMES.push(m); }
         if (n.startsWith('lampu')) m.emissiveIntensity = 0.6;
         if (m.map) m.map.anisotropy = 4;
+        if (m.isMeshStandardMaterial && isMetal(m)) { m.envMap = envTex; m.needsUpdate = true; }
       }
     });
   }
@@ -263,7 +296,7 @@ export async function init() {
   function drawChips() {
     const box = $('#v3dAreas');
     box.innerHTML = AREAS.map(([k, t]) => `<button class="achip${k === 'ALL' ? ' all' : ''}${(k === 'ALL' ? allAreas : !allAreas && ACT.has(k)) ? ' on' : ''}" data-a="${k}" aria-pressed="${k === 'ALL' ? allAreas : !allAreas && ACT.has(k)}">${t}</button>`).join('');
-    box.querySelectorAll('.achip').forEach(b => b.onclick = () => selectArea(b.dataset.a));
+    box.querySelectorAll('.achip').forEach(b => b.onclick = () => selectArea(b.dataset.a)); uiRects = null;
   }
   function applyArea() { for (const o of arrowObjs) o.visible = T.flow && flowActive(o.userData.stream_id) && SID_VIS.get(o.userData.stream_id) !== false; drawChips(); req(); }
   function selectArea(a) {
@@ -353,10 +386,10 @@ export async function init() {
     g.setAttribute('alpha', new THREE.BufferAttribute(new Float32Array(n), 1)); g.setAttribute('color', new THREE.BufferAttribute(new Float32Array(n * 3), 3));
     const p = new THREE.Points(g, pointsMat(additive)); p.frustumCulled = false; p.renderOrder = 3; scene.add(p); return { p, g, n, parts: [] };
   }
-  const EMIT = { uap: { n: 36, life: 9, up: 2.2, wind: 1.4, s0: 5, s1: 22, a: 0.5, col: [0.96, 0.97, 0.98], add: false },
-    asap: { n: 26, life: 8, up: 2.6, wind: 1.6, s0: 1.4, s1: 9, a: 0.28, col: [0.78, 0.78, 0.80], add: false },
+  const EMIT = { uap: { n: 22, life: 9, up: 2.2, wind: 1.4, s0: 5, s1: 22, a: 0.5, col: [0.96, 0.97, 0.98], add: false },
+    asap: { n: 16, life: 8, up: 2.6, wind: 1.6, s0: 1.4, s1: 9, a: 0.28, col: [0.78, 0.78, 0.80], add: false },
     asap_tipis: { n: 14, life: 6, up: 2.0, wind: 1.6, s0: 0.8, s1: 5, a: 0.14, col: [0.85, 0.86, 0.88], add: false },
-    flare: { n: 40, life: 1.1, up: 6.0, wind: 2.0, s0: 3.6, s1: 1.0, a: 0.9, col: [1.0, 0.55, 0.15], add: true },
+    flare: { n: 28, life: 1.1, up: 6.0, wind: 2.0, s0: 3.6, s1: 1.0, a: 0.9, col: [1.0, 0.55, 0.15], add: true },
     pilot: { n: 10, life: 0.6, up: 2.0, wind: 0.6, s0: 0.9, s1: 0.2, a: 0.9, col: [0.45, 0.65, 1.0], add: true },
     flare_kecil: { n: 10, life: 0.8, up: 2.4, wind: 0.8, s0: 1.3, s1: 0.3, a: 0.85, col: [1.0, 0.6, 0.2], add: true } };
   function buildAtmo() {
@@ -401,12 +434,12 @@ export async function init() {
     else { oy = 30; }
     camera.setViewOffset(W, H, ox, oy, W, H); camera.updateProjectionMatrix();
     for (const s of SYS) s.p.material.uniforms.scale.value = H / 2 * Q.dpr;
-    labelKey = ''; req();
+    labelKey = ''; uiRects = null; req();
   }
   { const ro = new ResizeObserver(layout); ro.observe(stage); ro.observe(canvas); }
 
   // ------------------------------------------------ label HTML dengan leader, tanpa saling tumpang (greedy)
-  const labBox = $('#v3dLabels'), svgL = $('#v3dLeaders'); const pool = []; const labSize = new Map(); let labelKey = '';
+  const labBox = $('#v3dLabels'), svgL = $('#v3dLeaders'); const pool = []; const labSize = new Map(); let uiRects = null; let labelKey = '';
   function labelSet() {
     const s = STOPS[tour.cur]; const want = new Set(focusTags.length ? focusTags : (s.tags || [])); const out = [];
     for (const [t, p, k] of DATA.labels) {
@@ -417,13 +450,16 @@ export async function init() {
     return out;
   }
   function drawLabels() {
-    const L = T.label ? labelSet() : []; const used = []; let svgs = '';
-    const sr = stage.getBoundingClientRect();
-    for (const sel of ['#v3dTools', '#v3dPanel', '#v3dAreas', '#v3dScale', '#v3dPanelToggle']) {
-      const el = $(sel); if (!el || el.offsetParent === null) continue; if (sel === '#v3dPanel' && !panelOpen && innerWidth >= 768) continue;
-      for (const r of sel === '#v3dAreas' ? [...el.children].map(c => c.getBoundingClientRect()) : [el.getBoundingClientRect()])
-        if (r.width) used.push([r.left - sr.left, r.top - sr.top, r.right - sr.left, r.bottom - sr.top]);
+    const L = T.label ? labelSet() : []; let svgs = '';
+    if (!uiRects) {   // area UI dihitung ulang hanya saat tata letak berubah (bukan tiap frame: hindari forced layout)
+      uiRects = []; const sr = stage.getBoundingClientRect();
+      for (const sel of ['#v3dTools', '#v3dPanel', '#v3dAreas', '#v3dScale', '#v3dPanelToggle']) {
+        const el = $(sel); if (!el || el.offsetParent === null) continue; if (sel === '#v3dPanel' && !panelOpen && innerWidth >= 768) continue;
+        for (const r of sel === '#v3dAreas' ? [...el.children].map(c => c.getBoundingClientRect()) : [el.getBoundingClientRect()])
+          if (r.width) uiRects.push([r.left - sr.left, r.top - sr.top, r.right - sr.left, r.bottom - sr.top]);
+      }
     }
+    const used = uiRects.slice();
     const v = new THREE.Vector3(); let n = 0;
     const items = L.map(l => { v.copy(b2t(l.p)).project(camera); return { ...l, x: (v.x + 1) / 2 * W, y: (1 - v.y) / 2 * H, z: v.z }; })
       .filter(l => l.z < 1 && l.x > -50 && l.x < W + 50 && l.y > -50 && l.y < H + 50).sort((a, b) => a.z - b.z);
@@ -439,7 +475,7 @@ export async function init() {
         const c = d + (a > 0 ? 40 : 0); if (!best || c < best.c) best = { b, c };
       }
       if (!best) { el.style.display = 'none'; continue; }
-      used.push(best.b); el.style.left = best.b[0] + 'px'; el.style.top = best.b[1] + 'px';
+      used.push(best.b); el.style.transform = `translate3d(${best.b[0].toFixed(1)}px,${best.b[1].toFixed(1)}px,0)`;
       const lx = Math.min(Math.max(l.x, best.b[0]), best.b[2]), ly = Math.min(Math.max(l.y, best.b[1]), best.b[3]);
       const col = l.k === 'util' ? '#c87828' : l.k === 'ctx' ? '#22282e' : l.hl ? '#1F7A4D' : '#3c4046';
       svgs += `<line x1="${l.x}" y1="${l.y}" x2="${lx}" y2="${ly}" stroke="${col}" stroke-width="1.6"/><circle cx="${l.x}" cy="${l.y}" r="3" fill="${col}" stroke="#fff" stroke-width="1"/>`;
@@ -449,7 +485,7 @@ export async function init() {
   }
 
   // ------------------------------------------------ scale bar & arah utara
-  const _n0 = new THREE.Vector3(), _n1 = new THREE.Vector3(); let sKey = '';
+  const _n0 = new THREE.Vector3(), _n1 = new THREE.Vector3(); let sKey = '', lastAng = 999; const sbarEl = $('#sbar'), slabEl = $('#slab'), narrowEl = $('#narrow');
   function updScale() {
     const d = camera.position.distanceTo(controls.target);
     const mpp = 2 * d * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) / H;
@@ -458,13 +494,13 @@ export async function init() {
     const px = nice / mpp, seg = (nice / p10) % 2 === 0 || nice / p10 === 10 ? 4 : 5; const key = `${nice}|${Math.round(px)}`;
     if (key !== sKey) {
       sKey = key; const w = px / seg;
-      $('#sbar').innerHTML = Array.from({ length: seg }, (_, i) => `<i style="width:${w}px;background:${i % 2 ? '#fff' : '#1d2228'}"></i>`).join('');
+      sbarEl.innerHTML = Array.from({ length: seg }, (_, i) => `<i style="width:${w}px;background:${i % 2 ? '#fff' : '#1d2228'}"></i>`).join('');
       const unit = nice >= 1000 ? 'km' : 'm', dv = nice >= 1000 ? 1000 : 1; const f = v => (v / dv).toLocaleString('id-ID', { maximumFractionDigits: 2 });
-      $('#slab').style.width = px + 'px'; $('#slab').innerHTML = `<span>0</span><span>${f(nice / 2)}</span><span>${f(nice)} ${unit}</span>`;
+      slabEl.style.width = px + 'px'; slabEl.innerHTML = `<span>0</span><span>${f(nice / 2)}</span><span>${f(nice)} ${unit}</span>`;
     }
     _n0.copy(controls.target).project(camera); _n1.copy(controls.target).add(new THREE.Vector3(0, 0, -Math.max(10, d * 0.1))).project(camera);
     const ang = Math.atan2(-(_n1.y - _n0.y) * H, (_n1.x - _n0.x) * W) * 180 / Math.PI + 90;
-    $('#narrow').setAttribute('transform', `rotate(${ang.toFixed(1)})`);
+    if (Math.abs(ang - lastAng) > 0.2) { lastAng = ang; narrowEl.setAttribute('transform', `rotate(${ang.toFixed(1)})`); }
     scene.fog.near = 1900 + Math.max(0, camera.position.y - 500); scene.fog.far = scene.fog.near + 4300;
   }
 
@@ -499,7 +535,7 @@ export async function init() {
   $$('#v3dPanel [role=tab]').forEach(b => b.onclick = () => showTab(b.dataset.tab));
   function setPanel(open) {
     panelOpen = open; $('#v3dPanel').classList.toggle('closed', !open); stage.classList.toggle('pclosed', !open);
-    $('#v3dPanelToggle').setAttribute('aria-expanded', open); setTimeout(layout, 360);
+    $('#v3dPanelToggle').setAttribute('aria-expanded', open); uiRects = null; setTimeout(layout, 360);
   }
   $('#v3dPanelToggle').onclick = () => setPanel(!panelOpen);
   if (!panelOpen) setPanel(false);
@@ -650,21 +686,32 @@ export async function init() {
     const s2 = DATA.streams[sid], f = DATA.flow[sid] || {}; if (!s2) return '';
     return `<b>Aliran ${esc(sid)}</b> · ${esc(s2.pfd_name)}<br><span class="mut">${esc(s2.medium)}: ${esc(s2.from_tag)} → ${esc(s2.to_tag)}</span><div class="q">${qTxt(f)}</div>${sizeTxt(f) ? `<div class="dn">${sizeTxt(f)}</div>` : ''}`;
   }
+  let hovTimer = 0, hovEv = null;
   canvas.addEventListener('pointermove', e => {
-    const now = performance.now(); if (now - hovT < 70 || e.pointerType === 'touch') return; hovT = now;
-    if (e.buttons || flying || dragging) { tip.style.display = 'none'; return; }
+    if (e.pointerType === 'touch') return;
+    if (e.buttons || flying || dragging) { tip.style.display = 'none'; clearTimeout(hovTimer); return; }
+    hovEv = e; clearTimeout(hovTimer); hovTimer = setTimeout(() => hover(hovEv), 90);   // raycast hanya saat kursor berhenti sejenak
+  });
+  function hover(e) {
+    if (flying || dragging) return;
     const { sid, tag, r } = pick(e);
     canvas.style.cursor = tag ? 'pointer' : sid ? 'help' : '';
     if (!sid) { tip.style.display = 'none'; return; }
     tip.innerHTML = flowHTML(sid); tip.style.display = 'block';
     const x = e.clientX - r.left, y = e.clientY - r.top;
     tip.style.left = Math.min(W - tip.offsetWidth - 8, x + 14) + 'px'; tip.style.top = Math.max(8, y - tip.offsetHeight - 10) + 'px';
-  });
-  canvas.addEventListener('pointerleave', () => tip.style.display = 'none');
+  }
+  canvas.addEventListener('pointerleave', () => { clearTimeout(hovTimer); tip.style.display = 'none'; });
   controls.addEventListener('start', () => { if (flying) flying = null; });
   controls.addEventListener('change', () => req());
 
   // ------------------------------------------------ loop render: on-demand, 30 fps saat hanya animasi ambient, resolusi adaptif
+  const _lastM = new Float32Array(16); let lastWH = 0;
+  function camChanged() {   // tanpa alokasi string tiap frame
+    const e = camera.matrixWorld.elements, wh = W * 10000 + H; let ch = wh !== lastWH; lastWH = wh;
+    for (let i = 0; i < 16; i++) if (Math.abs(e[i] - _lastM[i]) > 1e-3) { ch = true; _lastM[i] = e[i]; }
+    return ch;
+  }
   const STATS = { ...STAT0 }; let raf = 0, dirty = true, lastCam = '', lastT = 0, elapsed = 0, dragging = false;
   controls.addEventListener('start', () => { dragging = true; }); controls.addEventListener('end', () => { dragging = false; });
   function req() { dirty = true; if (!raf) raf = requestAnimationFrame(frame); }
@@ -676,22 +723,30 @@ export async function init() {
     if (Math.abs(near - camera.near) / camera.near > 0.15 || Math.abs(far - camera.far) / camera.far > 0.15) { camera.near = near; camera.far = far; camera.updateProjectionMatrix(); }
     scene.fog.far = Math.min(scene.fog.far, camera.far * 0.97); scene.fog.near = Math.min(scene.fog.near, scene.fog.far * 0.55);
   }
-  // resolusi adaptif: turunkan pixel ratio bila frame lebih lambat dari target, naikkan perlahan bila longgar
-  let win = [], cool = 0;
+  // kualitas adaptif: turun satu tingkat bila 2 jendela berturut-turut lebih lambat dari target, naik bila 4 jendela longgar
+  let win = [], slow = 0, fast = 0, cool = 0;
   function adapt(interval, target) {
-    if (Q.mode !== 'auto') return; win.push(interval); if (win.length < 40) return;
-    const avg = win.reduce((a, b) => a + b, 0) / win.length; win = []; Q.fps = Math.round(1000 / avg); if (cool > 0) { cool--; return; }
-    let next = Q.dpr;
-    if (avg > target * 1.35 && Q.dpr > DPR_MIN) next = Math.max(DPR_MIN, Q.dpr - 0.25);
-    else if (avg < target * 1.08 && Q.dpr < DPR_MAX) next = Math.min(DPR_MAX, Q.dpr + 0.125);
-    if (next !== Q.dpr) { Q.dpr = next; renderer.setPixelRatio(next); layout(); cool = 2; updQualityUI(); }
+    win.push(interval); if (win.length < 30) return;
+    const avg = win.reduce((a, b) => a + b, 0) / win.length; win = []; Q.fps = Math.round(1000 / avg);
+    if (Q.mode !== 'auto') return; if (cool > 0) { cool--; return; }
+    if (avg > target * 1.3) { slow++; fast = 0; } else if (avg < target * 1.06) { fast++; slow = 0; } else { slow = fast = 0; }
+    if (slow >= 2 && Q.tier < TIERS.length - 1) { applyTier(Q.tier + 1); slow = 0; cool = 2; }
+    else if (fast >= 4 && Q.tier > 0) { applyTier(Q.tier - 1); fast = 0; cool = 3; }
+  }
+  function applyLite(on) {
+    if (Q.lite === on) return; Q.lite = on;
+    for (const b of plantBatches) { if (ghostMats.has(b)) continue; if (on) { b.userData.std ||= b.material; b.material = lambertOf(b.userData.std); } else if (b.userData.std) b.material = b.userData.std; }
+    const wantShadow = !on; if (sun.castShadow !== wantShadow) { sun.castShadow = wantShadow; shadowDirty(); }
+  }
+  function applyTier(i) {
+    const t = TIERS[i]; Q.tier = i; Q.dpr = t.dpr; renderer.setPixelRatio(t.dpr); applyLite(!!t.lite); layout(); updQualityUI(); req();
   }
   function frame(now) {
     raf = 0; if (!visibleAny || document.hidden) { lastT = 0; return; }
     const moved = controls.update();
     const interacting = !!flying || moved || dragging || T.rotate;
     const ambient = (T.flow && FL.length) || (T.atmo && SYS.length) || hlList.length || (tour.playing && !free);
-    const target = interacting ? 1000 / 60 : 1000 / 30;
+    const target = interacting || !TIERS[Q.tier].cap ? 1000 / 60 : 1000 / 30;
     if (lastT && !dirty && !interacting && now - lastT < target - 2) { raf = requestAnimationFrame(frame); return; }
     const interval = lastT ? now - lastT : target; const dt = Math.min(interval / 1000, 0.1); lastT = now; elapsed += dt; const t = elapsed;
     if (flying) {
@@ -703,8 +758,7 @@ export async function init() {
     const pulse = 0.06 + 0.06 * (0.5 + 0.5 * Math.sin(t * 3.2)); for (const m of hlList) m.emissiveIntensity = pulse;
     const t0 = performance.now(); updFlow(t); updAtmo(dt, t); updScale(); updClip(); const t1 = performance.now();
     renderer.render(scene, camera); const t2 = performance.now();
-    const ck = camera.matrixWorld.elements.map(v => v.toFixed(2)).join() + W + 'x' + H + T.label + tour.cur + free;
-    if (ck !== lastCam || !labelKey) { lastCam = ck; labelKey = 'ok'; drawLabels(); }
+    if (camChanged() || !labelKey) { labelKey = 'ok'; drawLabels(); }
     STATS.js = +(t1 - t0).toFixed(2); STATS.gl = +(t2 - t1).toFixed(2); STATS.calls = renderer.info.render.calls; STATS.tris = renderer.info.render.triangles; STATS.dpr = Q.dpr; STATS.fps = Q.fps;
     if (interval < 250) adapt(interval, target);
     if (interacting || ambient || dirty) { dirty = false; raf = requestAnimationFrame(frame); } else lastT = 0;
@@ -713,14 +767,12 @@ export async function init() {
   const QL = { auto: 'Otomatis', high: 'Tinggi', low: 'Ringan' };
   function updQualityUI() {
     const b = $('#v3dTools [data-act="quality"]'); if (b) { b.querySelector('span').textContent = QL[Q.mode]; b.title = `Kualitas grafis: ${QL[Q.mode]} (resolusi ${fmt(Q.dpr, 2)}×)`; b.setAttribute('aria-label', b.title); }
-    const h = $('#v3dQ'); if (h) h.textContent = `Kualitas ${QL[Q.mode]} · resolusi ${fmt(Q.dpr, 2)}× · ±${Q.fps || '·'} fps · ${STATS.calls || '·'} draw call`;
+    const h = $('#v3dQ'); if (h) h.textContent = `Kualitas ${QL[Q.mode]} · tingkat ${Q.tier + 1}/${TIERS.length} · resolusi ${fmt(Q.dpr, 2)}× · ±${Q.fps || '·'} fps · ${STATS.calls || '·'} draw call`;
   }
   function setQuality(mode) {
-    Q.mode = mode; win = []; cool = 1;
-    Q.dpr = mode === 'low' ? DPR_MIN + (mobile ? 0.15 : 0.25) : DPR_MAX; renderer.setPixelRatio(Q.dpr);
-    const wantShadow = mode !== 'low'; if (sun.castShadow !== wantShadow) { sun.castShadow = wantShadow; shadowDirty(); }
+    Q.mode = mode; win = []; slow = fast = 0; cool = 1;
+    applyTier(mode === 'high' ? 0 : mode === 'low' ? 3 : START_TIER);
     try { localStorage.setItem('methaland-q', mode); } catch (e) { /* abaikan */ }
-    layout(); updQualityUI(); req();
   }
   { let saved = null; try { saved = localStorage.getItem('methaland-q'); } catch (e) { /* abaikan */ } if (saved && QL[saved] && saved !== 'auto') setQuality(saved); }
   setInterval(() => { if (!help.hidden) updQualityUI(); }, 1000);
@@ -730,7 +782,9 @@ export async function init() {
   if (T.ctx) ensureCtx().catch(e => console.error(e));
   loadEl.classList.add('done'); setTimeout(() => { if (!ctxLoading) navGlb.hidden = true; }, 600);
   if (ctxLoading) ctxLoading.then(() => navGlb.hidden = true);
-  tour.go(0, true); updQualityUI(); req();
+  tour.go(0, true); updQualityUI();
+  await precompile(scene);
+  req();
 
   const api = {
     go: (i, instant) => { setFree(false, false); tour.go(i, !!instant); },
@@ -739,7 +793,8 @@ export async function init() {
     setFree: on => setFree(on),
     focusTag, focusStream,
     hasTag: t => tagNodes.has(t), stats: STATS, setQuality,
-    debug: () => ({ cam: camera.position.toArray().map(v => +v.toFixed(1)), tgt: controls.target.toArray().map(v => +v.toFixed(1)), flying: !!flying, near: camera.near, far: camera.far }),
+    bench: (n = 8) => { const gl = renderer.getContext(), px = new Uint8Array(4); const t = []; for (let i = 0; i < n; i++) { const t0 = performance.now(); renderer.render(scene, camera); gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px); t.push(performance.now() - t0); } t.sort((a, b) => a - b); return { med: +t[n >> 1].toFixed(1), calls: renderer.info.render.calls, tris: renderer.info.render.triangles, dpr: renderer.getPixelRatio(), W: renderer.domElement.width, H: renderer.domElement.height, fl: FL.reduce((a, s) => a + s.k, 0) }; },
+    debug: () => ({ tier: Q.tier, cam: camera.position.toArray().map(v => +v.toFixed(1)), tgt: controls.target.toArray().map(v => +v.toFixed(1)), flying: !!flying, near: camera.near, far: camera.far }),
   };
   return api;
 }

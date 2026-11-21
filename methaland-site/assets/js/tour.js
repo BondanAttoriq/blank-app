@@ -75,12 +75,12 @@ export class Tour {
     this.playing = on; this.hold = 0;
     $('#tPlay').innerHTML = `<svg><use href="#i-${on ? 'pause' : 'play'}"/></svg><span>${on ? 'Jeda' : 'Putar tur'}</span>`;
     $('#tPlay').setAttribute('aria-label', on ? 'Jeda tur' : 'Putar tur otomatis');
-    if (!on) $('#tBar').style.width = '0';
+    if (!on) $('#tBar').style.transform = 'scaleX(0)';
   }
   tick(dt) {    // dipanggil viewer saat kamera tidak sedang terbang
     if (!this.playing) return;
     this.hold += dt; const d = this.stops[this.cur].dur;
-    $('#tBar').style.width = Math.min(100, this.hold / d * 100) + '%';
+    $('#tBar').style.transform = `scaleX(${Math.min(1, this.hold / d).toFixed(4)})`;
     if (this.hold >= d) this.go(this.cur + 1);
   }
   render(s, i) {

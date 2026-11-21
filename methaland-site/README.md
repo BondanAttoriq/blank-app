@@ -58,7 +58,9 @@ methaland-site/
 - Geometri statis digabung per material saat runtime (±1.120 → ±200 draw call). Mesh asli disimpan di layer tersembunyi untuk klik, hover, dan sorotan.
 - Tanpa logarithmic depth buffer (near/far dinamis), bayangan PCF 2048 statis, partikel aliran low-poly.
 - Render 30 fps saat hanya animasi ambient, penuh saat interaksi; berhenti saat bagian 3D tidak terlihat.
-- Resolusi adaptif + tombol ⚙ Kualitas (Otomatis / Tinggi / Ringan tanpa bayangan); pilihan tersimpan di browser.
+- IBL (PMREM) hanya untuk material logam; material lain memakai light probe spherical harmonics dari langit yang sama. Konteks TPST memakai material Lambert.
+- Kualitas adaptif 5 tingkat (resolusi 1,5× sampai 0,6×; dua tingkat terbawah memakai material sederhana tanpa bayangan) + tombol ⚙ Kualitas (Otomatis / Tinggi / Ringan); pilihan tersimpan di browser.
+- Shader dikompilasi di depan; label 3D tidak memicu forced layout; raycast hover hanya saat kursor berhenti.
 
 ## Model perhitungan dashboard
 - NPV, IRR, PBP: interpolasi linear piecewise Lampiran 19; dua parameter berubah: superposisi Δ terhadap basis (badge "estimasi kombinasi"). Basis: NPV US$21,47 juta, IRR 28,5%, PBP 3,71 tahun.
