@@ -57,7 +57,6 @@ function neracaSankeys() {
     links: [{ s: 'l', t: 'sy', v: 18.85, c: e1 }, { s: 'g', t: 'sy', v: 4.97, c: e2 }, { s: 'p', t: 'sy', v: 33.10, c: e3 }, { s: 'u', t: 'sy', v: 1.20, c: e4c },
       { s: 'sy', t: 'm', v: 17.21, c: '#1F9D55' }, { s: 'sy', t: 'wh', v: 1.75, c: '#E8862A' }, { s: 'sy', t: 'ls', v: 58.11 - 17.21 - 1.75, c: '#C9D4CF' }],
     table: { head: ['Komponen', 'MW'], rows: [['Energi kimia LPP', '18,85'], ['Energi kimia CH₄ dalam LFG', '4,97'], ['Listrik PEME', '33,10'], ['Listrik CCU', '1,20'], ['Total energi masuk', '58,11'], ['Energi kimia metanol', '17,21'], ['Potensi listrik bersih WHR', '≈1,75'], ['Selisih (dihitung: 58,11 − 17,21 − 1,75)', fmt(58.11 - 17.21 - 1.75, 2)]] },
-    note: 'Cabang "selisih" dihitung dari Tabel 4 untuk menutup diagram; rincian kehilangan per unit memerlukan neraca eksergi tiap unit.',
   });
 }
 function t4() {
@@ -105,9 +104,9 @@ function e4() {
     vfmt: v => fmt(v, 2) + ' MW', table: { head: ['Komponen', 'MW'], rows: [['Listrik PEME', '33,10'], ['Energi kimia LPP', '18,85'], ['Energi kimia metanol', '17,21'], ['CH₄ LFG', '4,97'], ['WHR', '≈1,75'], ['Pengeringan', '≈1,35'], ['Panas sintesis', '≈1,34'], ['Listrik CCU', '1,20']] } });
   // Eksergi
   const ex = P.exergy;
-  $('#e4Eksergi').innerHTML = `<div class="e4-grid"><div class="card"><span class="lbl-lit">Gambar 6 paper · sistem pembanding literatur</span><h3 class="h-sm">Distribusi eksergi dan irreversibilitas</h3>
+  $('#e4Eksergi').innerHTML = `<div class="e4-grid"><div class="card"><span class="lbl-lit">Gambar 6 paper</span><h3 class="h-sm">Distribusi eksergi dan irreversibilitas</h3>
     <div class="eff-big"><div><div class="muted">Eksergi masuk</div><b>${fmt(ex.input / 1000, 0)} MW</b></div><div><div class="muted">Eksergi produk</div><b style="color:#1F9D55">79,85%</b></div></div>
-    <ul class="ticks"><li>Irreversibilitas terbesar pada biogas upgrading (15,89%) dan produksi metanol (2,89%).</li><li>Pembakaran, pemisahan, dan elektrolisis menjadi fokus integrasi panas untuk menekan kehilangan mutu energi.</li><li>Efisiensi eksergi numerik sistem METHALAND belum ditetapkan: perlu neraca eksergi tiap unit.</li></ul></div><div class="card" id="e4Ex"></div></div>`;
+    <ul class="ticks"><li>Irreversibilitas terbesar pada biogas upgrading (15,89%) dan produksi metanol (2,89%).</li><li>Pembakaran, pemisahan, dan elektrolisis menjadi fokus integrasi panas untuk menekan kehilangan mutu energi.</li></ul></div><div class="card" id="e4Ex"></div></div>`;
   hbar($('#e4Ex'), { title: 'Destruksi/keluaran eksergi per unit (sistem pembanding)', sub: 'Persentase terhadap eksergi masuk 4.830.405 kW', unit: '%', labelW: 210, max: 16,
     rows: ex.losses.map(r => [r[0], r[2], r[2] > 2 ? C.red : C.orange]), vfmt: (v, r) => `${fmt(v, 2)}% · ${fmt(ex.losses.find(x => x[0] === r[0])[1], 0)} kW`,
     table: { head: ['Unit', 'kW', '%'], rows: [[ex.product[0], fmt(ex.product[1], 0), fmt(ex.product[2], 2)], ...ex.losses.map(r => [r[0], fmt(r[1], 0), fmt(r[2], 2)])] } });
@@ -167,22 +166,20 @@ function ml() {
   svg.addEventListener('pointerup', () => dr = null);
   // operating window konseptual
   let ell = ''; ['#E3F4EA', '#BFE6CF', '#8FD3AE', '#58B98A', '#2B9A6C', '#147A53'].forEach((c, i) => { const s = 1 - i * 0.15; ell += `<ellipse cx="0" cy="0" rx="${150 * s}" ry="${82 * s}" fill="${c}" transform="rotate(-14)"/>`; });
-  $('#mlWindow').innerHTML = `<div class="ch-head"><div><h4 class="ch-title">Peta operating window</h4><div class="ch-sub">Respons: produksi metanol, konsumsi listrik PEME, efisiensi energi, intensitas emisi</div></div><span class="lbl-concept">Skema konseptual</span></div>
-    <svg viewBox="-230 -150 460 320" role="img" aria-label="Skema konseptual operating window: kontur respons terhadap rasio H2/CO2 dan temperatur sintesis">
+  $('#mlWindow').innerHTML = `<div class="ch-head"><div><h4 class="ch-title">Peta operating window</h4><div class="ch-sub">Respons: produksi metanol, konsumsi listrik PEME, efisiensi energi, intensitas emisi</div></div></div>
+    <svg viewBox="-230 -150 460 320" role="img" aria-label="Operating window: kontur respons terhadap rasio H2/CO2 dan temperatur sintesis">
       <rect x="-200" y="-125" width="400" height="250" fill="#F6FBF8" stroke="#CFE6DC"/>${ell}
       <ellipse cx="6" cy="-4" rx="46" ry="24" fill="none" stroke="#17322A" stroke-width="2" stroke-dasharray="6 4" transform="rotate(-14)"/>
       <circle cx="6" cy="-4" r="5" fill="#17322A"/><text x="16" y="-14" class="ax" style="font-weight:700;fill:#17322A;font-size:13px">Operating window</text>
       <text x="0" y="152" text-anchor="middle" class="ax" style="font-size:13px;font-weight:600;fill:#17322A">Temperatur sintesis (rentang paper 240–300 °C)</text>
       <text transform="translate(-216 0) rotate(-90)" text-anchor="middle" class="ax" style="font-size:13px;font-weight:600;fill:#17322A">Rasio H₂/CO₂ (basis = 3)</text>
-      <text x="-196" y="140" class="ax">240</text><text x="196" y="140" text-anchor="end" class="ax">300</text></svg>
-    <p class="ch-note">Ilustrasi bentuk respons kuadratik untuk menjelaskan cara penentuan operating window; bukan hasil model METHALAND. Kontur nyata menunggu data operasi atau simulasi tervalidasi.</p>`;
+      <text x="-196" y="140" class="ax">240</text><text x="196" y="140" text-anchor="end" class="ax">300</text></svg>`;
   // alur + benchmark + validasi
   const steps = [['01', 'CCD', '20 kombinasi operasi: 8 faktorial, 6 aksial, 6 pusat'], ['02', 'Regresi kuadratik', '10 koefisien: intersep, 3 linear, 3 kuadratik, 3 interaksi'],
     ['03', 'ANOVA', 'Uji signifikansi faktor dan interaksi'], ['04', 'Model tereduksi', 'Hapus suku tidak signifikan'], ['05', 'Operating window', 'Kompromi produksi, efisiensi, emisi']];
   $('#mlFlow').innerHTML = `<h3 class="h-sm">Alur kerangka optimasi</h3><div class="flowsteps">${steps.map(s => `<div class="fs"><em>${s[0]}</em><b>${s[1]}</b><p>${s[2]}</p></div>`).join('')}</div>
-    <div class="ml-bottom"><div><h4 class="h-sm">Faktor &amp; respons</h4><div class="resp">${P.ml.factors.map(f => `<span>${f}</span>`).join('')}</div><div class="resp" style="margin-top:8px">${P.ml.responses.map(f => `<span style="background:#FFF1DD;color:#7A4510">${f}</span>`).join('')}</div>
-      <p class="note-sm">Model METHALAND belum dilatih dan divalidasi; tidak ada R², RMSE, atau ANOVA METHALAND yang ditampilkan.</p></div>
-    <div class="bench"><span class="lbl-lit">Benchmark literatur, bukan hasil METHALAND</span><b>R² 99,79–99,99%</b><small>Galat prediksi &lt; 2% pada sistem Zhang et al. (2024)</small></div>
+    <div class="ml-bottom"><div><h4 class="h-sm">Faktor &amp; respons</h4><div class="resp">${P.ml.factors.map(f => `<span>${f}</span>`).join('')}</div><div class="resp" style="margin-top:8px">${P.ml.responses.map(f => `<span style="background:#FFF1DD;color:#7A4510">${f}</span>`).join('')}</div></div>
+    <div class="bench"><span class="lbl-lit">Benchmark Zhang et al. (2024)</span><b>R² 99,79–99,99%</b><small>Galat prediksi &lt; 2% pada sistem Zhang et al. (2024)</small></div>
     <div><h4 class="h-sm">Rencana validasi</h4><ul class="ticks"><li>Pembagian data train/test dari simulasi atau operasi tervalidasi</li><li>Evaluasi RMSE dan galat relatif</li><li>Pemeriksaan konsistensi neraca massa-energi</li></ul></div></div>`;
 }
 

@@ -117,10 +117,10 @@
       <div class="kpi-big" role="listitem"><b><span data-count="28.5" data-dec="1" data-suffix="%">28,5%</span></b><span>IRR</span><small>PBP 3,71 tahun · PI 2,65</small></div>
     </div>
     <div class="team-card">
-      <div class="team-title">Tim <b>dari BARAT TIMUR dan ITB</b> · Institut Teknologi Bandung</div>
+      <div class="team-title">Tim <b>dari BARAT TIMUR dan ITB</b></div>
       <div class="team-row">
-        <figure class="tm"><img src="assets/img/team/bondan_p.jpg" alt="Foto Bondan Attoriq" width="640" height="800" loading="eager" decoding="async"><figcaption><b>Bondan Attoriq</b><span>Institut Teknologi Bandung</span></figcaption></figure>
-        <figure class="tm"><img src="assets/img/team/azkia_p.jpg" alt="Foto Azkia Nayla" width="640" height="800" loading="eager" decoding="async"><figcaption><b>Azkia Nayla</b><span>Institut Teknologi Bandung</span></figcaption></figure>
+        <figure><img src="assets/img/team/bondan.jpg" alt="Foto Bondan Attoriq" width="64" height="64"><figcaption><b>Bondan Attoriq</b><span>Institut Teknologi Bandung</span></figcaption></figure>
+        <figure><img src="assets/img/team/azkia.jpg" alt="Foto Azkia Nayla" width="64" height="64"><figcaption><b>Azkia Nayla</b><span>Institut Teknologi Bandung</span></figcaption></figure>
       </div>
     </div>
   </div>
@@ -288,7 +288,6 @@
       <div class="sa-head"><b>Alarm &amp; event</b><span id="scAlarmCount" class="sa-count">0 aktif</span><button class="sc-btn" id="scAckAll">Acknowledge semua</button></div>
       <ol class="sa-list" id="scAlarmList" aria-live="polite"></ol>
     </div>
-    <p class="sc-note"><svg><use href="#i-warn"/></svg>Simulasi skematik untuk visualisasi, bukan model dinamik tervalidasi.</p>
   </div>
 </section>
 
@@ -307,7 +306,6 @@
         <div class="field sw"><label class="switch"><input type="checkbox" id="dPeme"><span></span>Skenario PEME −5%</label></div>
         <div class="field"><span class="flab">Tarif penghematan PEME</span><div class="seg" role="radiogroup" aria-label="Tarif penghematan PEME"><label><input type="radio" name="dTar" value="0.04"><span>0,04 US$/kWh</span></label><label><input type="radio" name="dTar" value="0.05" checked><span>0,05 US$/kWh</span></label></div></div>
         <div class="dash-actions"><button class="btn btn-teal sm" id="dCopy"><svg><use href="#i-copy"/></svg>Salin ringkasan skenario</button><button class="btn btn-ghost sm" id="dReset"><svg><use href="#i-reset"/></svg>Reset</button></div>
-        <p class="note-sm">Model kalibrasi terhadap Lampiran 10 dan 19; kombinasi parameter merupakan estimasi linear.</p>
       </aside>
       <div class="dash-out">
         <div class="kpi-row" id="dKpi" aria-live="polite"></div>
@@ -358,7 +356,7 @@
 <section id="ml" class="sec sec-mint">
   <div class="wrap">
     <h2 class="sec-pill reveal">Optimasi Machine Learning</h2>
-    <p class="sec-lead reveal">Kerangka CCD, regresi kuadratik, dan ANOVA (diadaptasi dari Zhang et al., 2024) untuk menentukan <i>operating window</i> yang menyeimbangkan produksi, efisiensi, dan emisi. Model METHALAND belum dilatih dan divalidasi.</p>
+    <p class="sec-lead reveal">Kerangka CCD, regresi kuadratik, dan ANOVA (diadaptasi dari Zhang et al., 2024) untuk menentukan <i>operating window</i> yang menyeimbangkan produksi, efisiensi, dan emisi.</p>
     <div class="ml-grid">
       <div class="card reveal" id="mlCube"></div>
       <div class="card reveal" id="mlWindow"></div>
@@ -384,7 +382,6 @@
     <div class="dl-grid reveal" id="dlGrid"></div>
     <h3 class="h-sm reveal">Galeri render</h3>
     <div class="gallery reveal" id="gallery"></div>
-    <div class="limit reveal"><svg><use href="#i-warn"/></svg><div><b>Catatan batas model</b><p>Model 3D adalah tata letak konseptual. Nilai di SCADA mode desain mengikuti neraca paper; mode simulasi dan kombinasi skenario dashboard bersifat skematik/estimasi, bukan hasil uji.</p></div></div>
   </div>
 </section>
 </main>

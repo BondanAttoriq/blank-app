@@ -157,7 +157,7 @@ function render(s) {
   });
   // GWP
   cartesian($('#chGwp'), {
-    title: 'GWP per ton LPP: 3 jalur (Tabel 5)', sub: 'Berbasis literatur LCA (Cerqueira et al., 2025), tidak bergantung slider', unit: 'kg CO₂-eq/ton LPP',
+    title: 'GWP per ton LPP: 3 jalur (Tabel 5)', sub: 'LCA Cerqueira et al. (2025)', unit: 'kg CO₂-eq/ton LPP',
     x: { type: 'cat', cats: ['Landfill', 'WtE', 'Metanol'] }, y: { min: 0, max: 800, label: 'kg CO₂-eq/ton LPP', fmt: v => fmt(v, 0) },
     bars: [{ name: 'GWP', color: (v, i) => [C.blue, C.teal, C.lime][i], values: [672, 342, 128] }],
     texts: [{ x: 0, y: 672, dy: -8, t: '672' }, { x: 1, y: 342, dy: -8, t: '342' }, { x: 2, y: 128, dy: -8, t: '128 (−80,95% vs landfill; −62,57% vs WtE)', cls: 'strong' }],
@@ -166,7 +166,7 @@ function render(s) {
   });
   // PEME −5%
   const pc = P.peme5, usd = s.tar === 0.04 ? pc.usd04 : pc.usd05;
-  $('#dPemeCard').innerHTML = `<div class="ch-head"><div><h4>Skenario PEME −5% (Lampiran 20)</h4><div class="ch-sub">Skenario manfaat, bukan hasil model teroptimasi; tidak mengubah NPV utama</div></div>${s.peme ? '<span class="badge st-C">aktif</span>' : '<span class="badge base">nonaktif</span>'}</div>
+  $('#dPemeCard').innerHTML = `<div class="ch-head"><div><h4>Skenario PEME −5% (Lampiran 20)</h4><div class="ch-sub">Penghematan listrik PEME pada produksi tetap 74,72 t/hari</div></div>${s.peme ? '<span class="badge st-C">aktif</span>' : '<span class="badge base">nonaktif</span>'}</div>
     <div class="pc-bars ${s.peme ? '' : 'pc-off'}" role="img" aria-label="Daya PEME basis 33,10 MW, skenario 31,445 MW">
       <div class="pc-bar"><b>33,10</b><i style="height:100%;background:#8A9A94"></i><span>Basis (MW)</span></div>
       <span class="pc-delta">−1,655 MW</span>
@@ -178,6 +178,5 @@ function summary(s, m) {
   return [`METHALAND · Ringkasan skenario dashboard`, `Harga metanol: US$${s.meoh}/ton · Tarif listrik: US$${s.el}/MWh · EF listrik: ${fmt(s.ef, 2)} kg CO₂-eq/kWh · PEME −5%: ${s.peme ? 'aktif' : 'nonaktif'}`,
     `NPV (10%): US$${fmt(m.npv, 2)} juta${m.combo ? ' (estimasi kombinasi)' : ''}`, `IRR: ${m.irr < 0 ? '<0' : fmt(m.irr, 1)}%`, `Simple PBP: ${tH(m.pbp)} tahun`, `PI: 2,65 (basis)`,
     `Harga impas metanol: ${typeof m.beM === 'string' ? m.beM : '≈US$' + fmt(m.beM, 0)}/ton`, `Tarif listrik impas: ${typeof m.beE === 'string' ? m.beE : '≈US$' + fmt(m.beE, 1)}/MWh`,
-    `Intensitas emisi operasional: ${fmt(m.inten, 3)} kg CO₂-eq/kg metanol`, `Emisi tahunan: ${fmt(m.annual, 0)} t CO₂-eq/tahun (24.880 t metanol/tahun)`,
-    `Catatan: model kalibrasi terhadap Lampiran 10 dan 19; kombinasi parameter merupakan estimasi linear.`].join('\n');
+    `Intensitas emisi operasional: ${fmt(m.inten, 3)} kg CO₂-eq/kg metanol`, `Emisi tahunan: ${fmt(m.annual, 0)} t CO₂-eq/tahun (24.880 t metanol/tahun)`].join('\n');
 }

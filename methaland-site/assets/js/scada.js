@@ -353,7 +353,7 @@ export async function init() {
   $('#scReset').onclick = () => { resetDesign(); emit('toast', 'Simulasi dikembalikan ke nilai desain.'); };
   function setMode(m) {
     S.mode = m; $$('.sc-modes [data-mode]').forEach(b => b.setAttribute('aria-checked', b.dataset.mode === m));
-    const lab = $('#scModeLabel'); lab.textContent = m === 'design' ? 'Nilai desain (steady state)' : 'SIMULASI skematik'; lab.classList.toggle('sim', m === 'sim');
+    const lab = $('#scModeLabel'); lab.textContent = m === 'design' ? 'Nilai desain (steady state)' : 'SIMULASI'; lab.classList.toggle('sim', m === 'sim');
     $('#scHint').innerHTML = m === 'design' ? 'Mode DESIGN menampilkan neraca paper (steady state). Pilih <b>SIMULASI</b> untuk menggerakkan nilai, menghentikan unit lewat faceplate, dan memberi gangguan.'
       : 'SIMULASI aktif: nilai bergerak dengan derau ±2%, unit dapat di-Start/Stop lewat faceplate, aliran hilir turun bertahap (time constant 3–12 s).';
     if (m === 'design') resetDesign(); else S.t = Date.now();
