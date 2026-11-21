@@ -1,0 +1,25 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{margin:0}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"../methaland-site/lib/three/build/three.module.js","three/addons/":"../methaland-site/lib/three/examples/jsm/"}}</script></head><body>
+<script type="module">
+// Render peta dasar ortografis tampak atas dari model METHALAND sendiri (plant + konteks), utara di atas.
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+const X0 = -300, X1 = 1650, Y0 = -850, Y1 = 1200, PX = 1.25;          // meter (x timur, y utara), m/px
+const W = Math.round((X1 - X0) / PX), H = Math.round((Y1 - Y0) / PX);
+const r = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true }); r.setPixelRatio(1); r.setSize(W, H); document.body.appendChild(r.domElement);
+r.toneMapping = THREE.ACESFilmicToneMapping; r.toneMappingExposure = 1.0; r.outputColorSpace = THREE.SRGBColorSpace; r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFShadowMap;
+const s = new THREE.Scene(); s.background = new THREE.Color(0xdfe8e2);
+s.add(new THREE.HemisphereLight(0xffffff, 0x8a8a7a, 1.1));
+const sun = new THREE.DirectionalLight(0xfff4e6, 2.2); sun.position.set(500 - 500, 700, 200 + 400); sun.target.position.set(500, 0, 200); sun.castShadow = true; sun.shadow.mapSize.set(4096, 4096);
+Object.assign(sun.shadow.camera, { left: -1500, right: 1500, top: 1500, bottom: -1500, near: 10, far: 3000 }); sun.shadow.bias = -0.0005; s.add(sun, sun.target);
+const cx = (X0 + X1) / 2, cy = (Y0 + Y1) / 2;
+const cam = new THREE.OrthographicCamera(-(X1 - X0) / 2, (X1 - X0) / 2, (Y1 - Y0) / 2, -(Y1 - Y0) / 2, 1, 3000);
+cam.position.set(cx, 1500, -cy); cam.up.set(0, 0, -1); cam.lookAt(cx, 0, -cy);
+const L = new GLTFLoader(); L.setMeshoptDecoder(MeshoptDecoder);
+const load = n => new Promise((res, rej) => L.load(`../methaland-site/assets/models/${n}.glb`, g => res(g.scene), undefined, rej));
+const [p, k] = await Promise.all([load('plant'), load('konteks')]);
+for (const g of [p, k]) g.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; for (const m of [].concat(o.material)) if ((m.name || '').startsWith('grating')) { m.alphaTest = 0.5; m.transparent = false; } } });
+s.add(p, k); r.render(s, cam);
+window.MAP = { W, H, X0, X1, Y0, Y1, url: r.domElement.toDataURL('image/jpeg', 0.86) };
+</script></body></html>

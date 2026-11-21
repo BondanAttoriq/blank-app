@@ -21,7 +21,7 @@ function sankey(el, spec) {
   spec.links.forEach((l, i) => {
     const a = N[l.s], b = N[l.t], w = Math.max(1.5, l.v * k), y0 = a.y + a.oi + w / 2, y1 = b.y + b.ii + w / 2; a.oi += w; b.ii += w;
     const x0 = a.x + nw, x1 = b.x, mx = (x0 + x1) / 2;
-    g += `<path class="flowp" data-i="${i}" d="M${x0},${y0}C${mx},${y0} ${mx},${y1} ${x1},${y1}" stroke="${l.c}" stroke-width="${w}" fill="none" stroke-opacity=".55"/>`;
+    g += `<path class="flowp" data-i="${i}" data-col="${a.col}" d="M${x0},${y0}C${mx},${y0} ${mx},${y1} ${x1},${y1}" stroke="${l.c}" stroke-width="${w}" fill="none" stroke-opacity=".55"/>`;
     hits.push(`<b>${esc(a.label)} → ${esc(b.label)}</b><br>${fmt(l.v, 2)} ${spec.unit}`);
   });
   for (const n of Object.values(N)) {
@@ -63,7 +63,8 @@ function neracaSankeys() {
 function t4() {
   const it = [['H₂ dari PEME', '14,3', 't/hari', 'stoikiometrik 14,0; utilisasi 98%'], ['O₂ dari PEME', '114,37', 't/hari', '101,03 ke OEC · surplus 13,33'], ['Air elektrolisis', '128,6', 't/hari', 'umpan PEME'],
     ['Air sintesis', '42,0', 't/hari', 'peluang daur ulang ke PEME'], ['Konsumsi spesifik PEME', '55,2', 'kWh/kg H₂', '33,10 MWe'], ['Abu', '15,27', 't/hari', 'residu furnace OEC']];
-  $('#t4').innerHTML = it.map(([l, v, u, s]) => `<div class="kt"><div class="kl">${l}</div><div class="kv2">${v}<small> ${u}</small></div><div class="kd flat">${s}</div></div>`).join('');
+  const cnt = v => { const d = (v.split(',')[1] || '').length; return `<span data-count="${v.replace(/\./g, '').replace(',', '.')}" data-dec="${d}">${v}</span>`; };
+  $('#t4').innerHTML = it.map(([l, v, u, s]) => `<div class="kt"><div class="kl">${l}</div><div class="kv2">${cnt(v)}<small> ${u}</small></div><div class="kd flat">${s}</div></div>`).join('');
 }
 
 // ================================================================ tabel aliran
@@ -93,10 +94,10 @@ function streamTable(reg) {
 function e4() {
   $$('.e4-tabs [data-e4]').forEach(b => b.onclick = () => { $$('.e4-tabs [data-e4]').forEach(x => x.setAttribute('aria-selected', x === b)); $$('.e4-pane').forEach(p => p.hidden = p.dataset.e4p !== b.dataset.e4); });
   // Energi
-  const ring = (p1, p2) => { const r = 54, c = 2 * Math.PI * r; return `<svg class="eff-ring" viewBox="0 0 130 130" aria-hidden="true"><circle cx="65" cy="65" r="${r}" stroke="#DFF1E6" stroke-width="14" fill="none"/>
-    <circle cx="65" cy="65" r="${r}" stroke="#E8862A" stroke-width="14" fill="none" stroke-dasharray="${c * p2 / 100} ${c}" transform="rotate(-90 65 65)" stroke-linecap="round"/>
-    <circle cx="65" cy="65" r="${r}" stroke="#129B8A" stroke-width="14" fill="none" stroke-dasharray="${c * p1 / 100} ${c}" transform="rotate(-90 65 65)" stroke-linecap="round"/></svg>`; };
-  $('#e4Energi').innerHTML = `<div class="e4-grid"><div class="card eff-card"><h3 class="h-sm">Efisiensi energi sistem</h3><div class="eff-big">${ring(29.62, 32.62)}<div><b>32,62%</b><div class="muted">terintegrasi dengan WHR (≈1,75 MWe)</div><div style="margin-top:6px"><b style="font-size:24px;color:var(--teal-500)">29,62%</b> <span class="muted">berbasis metanol</span></div></div></div>
+  const ring = (p1, p2) => { const r = 54, c = 2 * Math.PI * r; return `<svg class="eff-ring" viewBox="0 0 130 130" aria-hidden="true" data-ring><circle cx="65" cy="65" r="${r}" stroke="#DFF1E6" stroke-width="14" fill="none"/>
+    <circle data-arc cx="65" cy="65" r="${r}" stroke="#E8862A" stroke-width="14" fill="none" stroke-dasharray="${c * p2 / 100} ${c}" transform="rotate(-90 65 65)" stroke-linecap="round"/>
+    <circle data-arc cx="65" cy="65" r="${r}" stroke="#129B8A" stroke-width="14" fill="none" stroke-dasharray="${c * p1 / 100} ${c}" transform="rotate(-90 65 65)" stroke-linecap="round"/></svg>`; };
+  $('#e4Energi').innerHTML = `<div class="e4-grid"><div class="card eff-card"><h3 class="h-sm">Efisiensi energi sistem</h3><div class="eff-big">${ring(29.62, 32.62)}<div><b data-count="32.62" data-dec="2" data-suffix="%">32,62%</b><div class="muted">terintegrasi dengan WHR (≈1,75 MWe)</div><div style="margin-top:6px"><b style="font-size:24px;color:var(--teal-500)" data-count="29.62" data-dec="2" data-suffix="%">29,62%</b> <span class="muted">berbasis metanol</span></div></div></div>
     <ul class="ticks"><li>Energi kimia metanol 17,21 MW (LHV 19,9 MJ/kg) dari total masukan 58,11 MW.</li><li>Konsumsi listrik utama sebelum WHR 34,30 MW: ketergantungan pada listrik eksternal rendah karbon.</li><li>Beban pengeringan ≈1,35 MWth dapat dipenuhi sebagian oleh panas reaksi sintesis ≈1,34 MWth.</li></ul></div>
     <div class="card" id="e4Bar"></div></div>`;
   hbar($('#e4Bar'), { title: 'Komponen masukan & keluaran energi (Tabel 4)', unit: 'MW', labelW: 220,
@@ -124,7 +125,7 @@ function e4() {
   const lb = $('#e4Ling [data-tbl]'), lt = $('#e4Ling .ch-table'); lb.onclick = () => { lt.hidden = !lt.hidden; lb.setAttribute('aria-expanded', !lt.hidden); lb.textContent = lt.hidden ? 'Lihat data' : 'Sembunyikan data'; };
   // Ekonomi
   const I = P.ind, tile = (l, v, s) => `<div class="kt"><div class="kl">${l}</div><div class="kv2">${v}</div><div class="kd flat">${s}</div></div>`;
-  $('#e4Eko').innerHTML = `<div class="tiles">${tile('CAPEX', '<small>US$</small>13,00<small> juta</small>', 'Lampiran 12')}${tile('OPEX', '<small>US$</small>13,99<small> juta/th</small>', 'Lampiran 13')}${tile('NPV 10%', '<small>US$</small>21,47<small> juta</small>', 'umur 20 tahun')}${tile('IRR', '28,5%', 'di atas diskonto 10%')}${tile('PI', '2,65', 'Tabel 6')}${tile('PBP', '3,71<small> th</small>', 'discounted 4,7 tahun')}</div>
+  $('#e4Eko').innerHTML = `<div class="tiles">${tile('CAPEX', '<small>US$</small><span data-count="13" data-dec="2">13,00</span><small> juta</small>', 'Lampiran 12')}${tile('OPEX', '<small>US$</small><span data-count="13.99" data-dec="2">13,99</span><small> juta/th</small>', 'Lampiran 13')}${tile('NPV 10%', '<small>US$</small><span data-count="21.47" data-dec="2">21,47</span><small> juta</small>', 'umur 20 tahun')}${tile('IRR', '<span data-count="28.5" data-dec="1" data-suffix="%">28,5%</span>', 'di atas diskonto 10%')}${tile('PI', '<span data-count="2.65" data-dec="2">2,65</span>', 'Tabel 6')}${tile('PBP', '<span data-count="3.71" data-dec="2">3,71</span><small> th</small>', 'discounted 4,7 tahun')}</div>
     <div class="e4-grid"><div class="card" id="e4Capex"></div><div class="card" id="e4Opex"></div></div>
     <div class="card" style="margin-top:18px"><h3 class="h-sm">Perbandingan dengan literatur (Lampiran 18)</h3><div class="ch-table">${tableHTML({ head: ['Studi', 'Umpan', 'Teknologi', 'Kapasitas umpan', 'Biaya MeOH (US$/ton)', 'PBP'], rows: P.lit })}</div>
     <p class="ch-note">Biaya operasi kotor US$562/ton; biaya metanol ≈US$624/ton. Revenue 19,59 · EBITDA 5,60 · FCF 4,37 (US$ juta/tahun).</p></div>`;

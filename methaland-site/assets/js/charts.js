@@ -91,8 +91,8 @@ export function cartesian(el, spec) {
       const ya = sy(base + v), yb = sy(base); const top = Math.min(ya, yb), hh = Math.max(1, Math.abs(yb - ya) - (b.stack ? 2 : 0));
       const r = Math.min(4, hh / 2, bw / 2);
       const col = typeof b.color === 'function' ? b.color(v, i) : b.color;
-      g += v >= 0 ? `<path d="M${cx - bw / 2},${top + hh} V${top + r} q0,-${r} ${r},-${r} H${cx + bw / 2 - r} q${r},0 ${r},${r} V${top + hh} Z" fill="${col}"/>`
-        : `<path d="M${cx - bw / 2},${top} V${top + hh - r} q0,${r} ${r},${r} H${cx + bw / 2 - r} q${r},0 ${r},-${r} V${top} Z" fill="${col}"/>`;
+      g += v >= 0 ? `<path class="bar" d="M${cx - bw / 2},${top + hh} V${top + r} q0,-${r} ${r},-${r} H${cx + bw / 2 - r} q${r},0 ${r},${r} V${top + hh} Z" fill="${col}"/>`
+        : `<path class="bar neg" d="M${cx - bw / 2},${top} V${top + hh - r} q0,${r} ${r},${r} H${cx + bw / 2 - r} q${r},0 ${r},-${r} V${top} Z" fill="${col}"/>`;
       hits.push({ x: cx - bw / 2 - 2, y: top - 2, w: bw + 4, h: hh + 4, html: `<b>${esc(cats ? cats[i] : xf(spec.x.vals[i]))}</b><br>${b.name}: <b>${yf.full ? yf.full(v) : fmt(v, 2)}</b>${spec.unit ? ' ' + spec.unit : ''}` });
     });
   });
@@ -100,7 +100,7 @@ export function cartesian(el, spec) {
   (spec.vlines || []).forEach(v => { g += `<line x1="${sx(v.x)}" x2="${sx(v.x)}" y1="${m.t}" y2="${m.t + ih}" stroke="${v.color || C.muted}" stroke-dasharray="4 4"/>${v.label ? `<text x="${sx(v.x) + 5}" y="${m.t + 12}" class="ax">${v.label}</text>` : ''}`; });
   (spec.lines || []).forEach(l => {
     const px = p => cats ? sx(p[0]) : sx(p[0]);
-    g += `<polyline fill="none" stroke="${l.color}" stroke-width="2.2" stroke-linejoin="round" ${l.dash ? 'stroke-dasharray="6 4"' : ''} points="${l.points.map(p => `${px(p)},${sy(p[1])}`).join(' ')}"/>`;
+    g += `<polyline fill="none" stroke="${l.color}" stroke-width="2.2" stroke-linejoin="round" ${l.dash ? 'stroke-dasharray="6 4"' : 'class="ln" pathLength="1"'} points="${l.points.map(p => `${px(p)},${sy(p[1])}`).join(' ')}"/>`;
     if (l.marker !== 'none') l.points.forEach(p => { g += marker(l.marker || 'circle', px(p), sy(p[1]), 4.2, l.color); hits.push({ x: px(p) - 9, y: sy(p[1]) - 9, w: 18, h: 18, html: `<b>${l.name}</b><br>${X.label ? X.label.split(' (')[0] + ': ' : ''}${cats ? esc(cats[p[0]]) : xf(p[0])}<br>Nilai: <b>${fmt(p[1], l.dp ?? 2)}</b>${spec.unit ? ' ' + spec.unit : ''}` }); });
     if (l.label) { const p = l.points[l.labelAt ?? l.points.length - 1]; g += `<text x="${px(p) + (l.labelDx ?? 8)}" y="${sy(p[1]) + (l.labelDy ?? -8)}" class="dl" text-anchor="${l.labelAnchor || 'start'}">${l.label}</text>`; }
   });
@@ -130,7 +130,7 @@ export function hbar(el, spec) {
   rows.forEach((r, i) => {
     const y = 10 + i * rh, w = Math.max(2, r[1] / max * iw), col = r[2] || spec.color || C.teal;
     g += `<text x="${lw - 10}" y="${y + rh / 2 + 4}" text-anchor="end" class="ax">${esc(r[0])}</text>
-      <rect x="${lw}" y="${y + 5}" width="${w}" height="${rh - 12}" rx="4" fill="${col}"/>
+      <rect class="barh" x="${lw}" y="${y + 5}" width="${w}" height="${rh - 12}" rx="4" fill="${col}"/>
       <text x="${lw + w + 6}" y="${y + rh / 2 + 4}" class="dl">${spec.vfmt ? spec.vfmt(r[1], r) : fmt(r[1], 2)}</text>`;
     hits.push({ x: lw, y: y + 2, w: iw + 80, h: rh - 4, html: `<b>${esc(r[0])}</b><br>${spec.vfmt ? spec.vfmt(r[1], r) : fmt(r[1], 2)} ${spec.unit || ''}` });
   });

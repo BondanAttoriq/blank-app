@@ -54,10 +54,11 @@ export function ensureSCADA() {
 nearViewport($('#plant3d'), ensure3D, '700px');
 $('#v3dLoadBtn').onclick = () => ensure3D();
 nearViewport($('#scada'), ensureSCADA, '500px');
+nearViewport($('#peta'), () => import('./peta.js').then(m => m.init()).catch(e => { console.error(e); $('#peta').innerHTML = '<p class="muted">Peta gagal dimuat.</p>'; }), '600px');
 
 // modul ringan langsung
-Promise.all([import('./dashboard.js').then(m => m.init()), import('./sections.js').then(m => m.init())])
-  .then(() => { plSet(100, 'Siap'); })
+Promise.all([import('./dashboard.js').then(m => m.init()), import('./sections.js').then(m => m.init()), import('./banding.js').then(m => m.init())])
+  .then(() => { plSet(100, 'Siap'); return import('./anim.js').then(a => { a.watch(); window.__watch = a.watch; }); })
   .catch(e => { console.error(e); plSet(100, 'Sebagian modul gagal dimuat'); })
   .finally(() => setTimeout(() => pl.classList.add('done'), 250));
 setTimeout(() => pl.classList.add('done'), 2500);   // jangan pernah menahan halaman

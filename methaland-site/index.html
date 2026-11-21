@@ -111,10 +111,10 @@
       </div>
     </div>
     <div class="hero-kpis" role="list">
-      <div class="kpi-big" role="listitem"><b>74,72</b><span>t e-methanol/hari</span><small>kemurnian 99,76% massa</small></div>
-      <div class="kpi-big" role="listitem"><b>102,63</b><span>t CO₂/hari dimanfaatkan</span><small>dari 108,03 t/hari tertangkap</small></div>
-      <div class="kpi-big" role="listitem"><b><em>US$</em>21,47<em> juta</em></b><span>NPV (diskonto 10%)</span><small>umur proyek 20 tahun</small></div>
-      <div class="kpi-big" role="listitem"><b>28,5%</b><span>IRR</span><small>PBP 3,71 tahun · PI 2,65</small></div>
+      <div class="kpi-big" role="listitem"><b><span data-count="74.72" data-dec="2">74,72</span></b><span>t e-methanol/hari</span><small>kemurnian 99,76% massa</small></div>
+      <div class="kpi-big" role="listitem"><b><span data-count="102.63" data-dec="2">102,63</span></b><span>t CO₂/hari dimanfaatkan</span><small>dari 108,03 t/hari tertangkap</small></div>
+      <div class="kpi-big" role="listitem"><b><em>US$</em><span data-count="21.47" data-dec="2">21,47</span><em> juta</em></b><span>NPV (diskonto 10%)</span><small>umur proyek 20 tahun</small></div>
+      <div class="kpi-big" role="listitem"><b><span data-count="28.5" data-dec="1" data-suffix="%">28,5%</span></b><span>IRR</span><small>PBP 3,71 tahun · PI 2,65</small></div>
     </div>
     <div class="team-card">
       <div class="team-title">Tim <b>dari BARAT TIMUR dan ITB</b> · Institut Teknologi Bandung</div>
@@ -135,16 +135,16 @@
       <article class="card frame reveal">
         <div class="card-h"><span class="ico-c" style="--c:#0C5A72"><svg><use href="#i-pin"/></svg></span><h3>Tekanan Pengelolaan Bantargebang</h3></div>
         <div class="stat-l"><b>7.000–7.400</b><span>ton/hari sampah masuk</span><small>Resmianty et al. (2022)</small></div>
-        <div class="stat-l"><b>293.317,5</b><span>ton/bulan</span><small>Proyeksi Desember 2026</small></div>
-        <div class="stat-l"><b>72,56%</b><span>kapasitas terpakai</span><small>Kuartal II 2026, DLH DKI Jakarta (2026)</small></div>
+        <div class="stat-l"><b data-count="293317.5" data-dec="1">293.317,5</b><span>ton/bulan</span><small>Proyeksi Desember 2026</small></div>
+        <div class="stat-l"><b data-count="72.56" data-dec="2" data-suffix="%">72,56%</b><span>kapasitas terpakai</span><small>Kuartal II 2026, DLH DKI Jakarta (2026)</small></div>
         <p class="note-warn"><svg><use href="#i-warn"/></svg>Zona penimbunan makin terbebani dan membutuhkan strategi valorisasi limbah.</p>
       </article>
       <article class="card frame reveal">
         <div class="card-h"><span class="ico-c" style="--c:#127466"><svg><use href="#i-flask"/></svg></span><h3>Peluang Transisi e-Metanol</h3></div>
         <div class="opp-row">
-          <div class="opp"><svg><use href="#i-ship"/></svg><b>≈1,3</b><span>juta ton</span><small>impor 2025</small></div>
-          <div class="opp"><svg><use href="#i-fuel"/></svg><b>≈2,3</b><span>juta ton/tahun</span><small>kebutuhan B50</small></div>
-          <div class="opp"><svg><use href="#i-factory"/></svg><b>≈0,3</b><span>juta ton/tahun</span><small>produksi domestik</small></div>
+          <div class="opp"><svg><use href="#i-ship"/></svg><b data-count="1.3" data-dec="1" data-prefix="≈">≈1,3</b><span>juta ton</span><small>impor 2025</small></div>
+          <div class="opp"><svg><use href="#i-fuel"/></svg><b data-count="2.3" data-dec="1" data-prefix="≈">≈2,3</b><span>juta ton/tahun</span><small>kebutuhan B50</small></div>
+          <div class="opp"><svg><use href="#i-factory"/></svg><b data-count="0.3" data-dec="1" data-prefix="≈">≈0,3</b><span>juta ton/tahun</span><small>produksi domestik</small></div>
         </div>
         <p class="muted">Kesenjangan pasokan memperkuat posisi produksi e-methanol domestik.</p>
       </article>
@@ -169,6 +169,7 @@
         <li><button data-stop="11"><span>06</span>e-Methanol</button></li>
       </ol>
     </div>
+    <div class="card peta reveal" id="peta" aria-label="Peta lokasi interaktif"><p class="muted">Memuat peta lokasi…</p></div>
   </div>
 </section>
 
@@ -371,6 +372,7 @@
   <div class="wrap">
     <h2 class="sec-pill reveal">Ekonomi Sirkular METHALAND</h2>
     <p class="sec-lead reveal">Enam tahap yang menutup siklus karbon, oksigen, panas, dan air di TPST Bantargebang. Arahkan kursor atau ketuk tahap untuk penjelasan.</p>
+    <div class="card banding reveal" id="banding"></div>
     <div class="circ reveal" id="circ"></div>
   </div>
 </section>

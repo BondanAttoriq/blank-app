@@ -48,6 +48,11 @@ methaland-site/
 - **SCADA**: koordinat pada grid PFD berwarna 1920 × 1080 di `assets/data/scada-layout.json` (dibuat `tools/scada_layout.py`). Tiap layar = satu atau lebih *pane* dari grid itu yang dipetakan ke kanvas 1920 × 1080; unit/aliran per layar dipilih otomatis dari pane. Topologi dan nilai dari `stream_register`, `neraca_aliran`, `ukuran_pipa`.
 - **Render**: diambil dari Kartu Tur METHALAND (render Blender per perhentian).
 
+## Fitur tambahan
+- **Peta lokasi interaktif** (bagian Latar, `peta.js`): peta dasar = render ortografis tampak atas dari model 3D sendiri (`assets/img/peta_tpst.jpg`, 1,25 m/px; dibuat ulang dengan `tools/render_map.html`). Lapisan zona timbunan, fasilitas TPST, plot METHALAND, jarak aman (`checks` di data.json), header LFG (rute `LFG-H`), dan Sungai Ciketing; zoom, geser, klik penanda untuk detail.
+- **Sebelum vs sesudah** (bagian Sirkular, `banding.js`): penggeser Landfill/WtE vs METHALAND berbasis LCIA Tabel 5, per ton LPP atau per tahun (× 33.333 t LPP/tahun), plus produk dan pendapatan.
+- **Animasi masuk** (`anim.js`): angka naik saat terlihat, Sankey mengalir, batang tumbuh, garis tergambar, cincin efisiensi; otomatis nonaktif bila `prefers-reduced-motion`.
+
 ## Performa 3D
 - Model diunduh sebagai `plant.glb.gz` / `konteks.glb.gz` (GLB yang sama, dikompres gzip: 12,2 → 6,5 MB) lalu dibuka dengan `DecompressionStream`; otomatis kembali ke `.glb` bila tidak tersedia.
 - Geometri statis digabung per material saat runtime (±1.120 → ±200 draw call). Mesh asli disimpan di layer tersembunyi untuk klik, hover, dan sorotan.
