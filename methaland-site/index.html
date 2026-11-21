@@ -6,6 +6,11 @@
 <title>METHALAND Digital Twin · e-Methanol TPST Bantargebang</title>
 <meta name="description" content="METHALAND Digital Twin: model 3D, SCADA/HMI, dan Engineering Dashboard produksi e-methanol berbasis LPP dan landfill gas terintegrasi PEM Electrolyzer, CCU, dan WHR di TPST Bantargebang. LKTIN Eco-Generation 2026.">
 <meta name="theme-color" content="#0E3B2E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="METHALAND Digital Twin · e-Methanol TPST Bantargebang">
+<meta property="og:description" content="Tur 3D, SCADA/HMI, dan Engineering Dashboard produksi e-methanol dari LPP dan landfill gas: 74,72 t/hari, NPV US$21,47 juta, IRR 28,5%. LKTIN Eco-Generation 2026.">
+<meta property="og:image" content="assets/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230E3B2E'/%3E%3Cpath d='M14 46V18l18 16 18-16v28' fill='none' stroke='%238CC63F' stroke-width='7' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -112,10 +117,10 @@
       <div class="kpi-big" role="listitem"><b>28,5%</b><span>IRR</span><small>PBP 3,71 tahun · PI 2,65</small></div>
     </div>
     <div class="team-card">
-      <div class="team-title">Tim <b>dari BARAT TIMUR dan ITB</b></div>
+      <div class="team-title">Tim <b>dari BARAT TIMUR dan ITB</b> · Institut Teknologi Bandung</div>
       <div class="team-row">
-        <figure><img src="assets/img/team/bondan.jpg" alt="Foto Bondan Attoriq" width="64" height="64"><figcaption><b>Bondan Attoriq</b><span>Institut Teknologi Bandung</span></figcaption></figure>
-        <figure><img src="assets/img/team/azkia.jpg" alt="Foto Azkia Nayla" width="64" height="64"><figcaption><b>Azkia Nayla</b><span>Institut Teknologi Bandung</span></figcaption></figure>
+        <figure class="tm"><img src="assets/img/team/bondan_p.jpg" alt="Foto Bondan Attoriq" width="640" height="800" loading="eager" decoding="async"><figcaption><b>Bondan Attoriq</b><span>Institut Teknologi Bandung</span></figcaption></figure>
+        <figure class="tm"><img src="assets/img/team/azkia_p.jpg" alt="Foto Azkia Nayla" width="640" height="800" loading="eager" decoding="async"><figcaption><b>Azkia Nayla</b><span>Institut Teknologi Bandung</span></figcaption></figure>
       </div>
     </div>
   </div>
@@ -195,6 +200,7 @@
         <button class="tb" data-act="present" aria-pressed="false" aria-label="Mode presentasi (P)" title="Mode presentasi (P)"><svg><use href="#i-present"/></svg><span>Presentasi</span></button>
         <button class="tb" data-act="full" aria-label="Layar penuh" title="Layar penuh"><svg><use href="#i-full"/></svg><span>Penuh</span></button>
         <button class="tb" data-act="shot" aria-label="Tangkapan layar PNG" title="Tangkapan layar (PNG)"><svg><use href="#i-camera"/></svg><span>PNG</span></button>
+        <button class="tb" data-act="quality" aria-label="Kualitas grafis: Otomatis" title="Kualitas grafis"><svg><use href="#i-gear"/></svg><span>Otomatis</span></button>
         <button class="tb" data-act="help" aria-label="Daftar pintasan keyboard" title="Pintasan keyboard" aria-expanded="false" aria-controls="v3dHelp"><svg><use href="#i-help"/></svg><span>?</span></button>
       </div>
       <button class="v3d-panel-toggle" id="v3dPanelToggle" aria-label="Lipat atau buka panel info" aria-expanded="true" aria-controls="v3dPanel"><svg><use href="#i-panel"/></svg></button>
@@ -218,6 +224,7 @@
         <b>Pintasan keyboard</b>
         <dl><dt>Spasi</dt><dd>Putar / jeda tur</dd><dt>← / →</dt><dd>Perhentian sebelum / berikut</dd><dt>B</dt><dd>Mode bebas</dd><dt>P</dt><dd>Mode presentasi</dd><dt>L</dt><dd>Label</dd><dt>F</dt><dd>Aliran massa &amp; energi</dd><dt>Esc</dt><dd>Keluar presentasi</dd></dl>
         <p class="muted">Seret: putar · Klik kanan + seret: geser · Gulir / cubit: zoom. Pintasan aktif saat area 3D terlihat.</p>
+        <p class="muted" id="v3dQ" aria-live="polite"></p><p class="muted">Tombol ⚙ mengganti kualitas: Otomatis (resolusi menyesuaikan fps), Tinggi, Ringan (tanpa bayangan).</p>
       </div>
       <div class="v3d-tip" id="v3dTip" role="tooltip"></div>
       <div class="v3d-load" id="v3dLoad">

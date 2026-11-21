@@ -19,6 +19,9 @@ def up(prefix):
 shutil.copy(up('data_2.json'), os.path.join(A, 'data', 'data.json'))
 shutil.copy(up('plant.glb'), os.path.join(A, 'models', 'plant.glb'))
 shutil.copy(up('konteks.glb'), os.path.join(A, 'models', 'konteks.glb'))
+import gzip
+for n in ('plant', 'konteks'):   # salinan gzip dari GLB yang sama (Netlify tidak mengompres model/gltf-binary)
+    with open(os.path.join(A, 'models', n + '.glb'), 'rb') as fi, gzip.GzipFile(os.path.join(A, 'models', n + '.glb.gz'), 'wb', 9, mtime=0) as fo: fo.write(fi.read())
 
 def num(v):
     if v is None or v == '': return None
@@ -66,8 +69,7 @@ for i, sid in enumerate(ids):
 poster = Image.open(up('6fbbaeef-image.png')).convert('RGB')
 shutil.copy(up('6fbbaeef-image.png'), os.path.join(A, 'downloads', 'POSTER_LKTIN_ECOGENERATION.png'))
 p2 = poster.copy(); p2.thumbnail((1100, 1600)); p2.save(os.path.join(A, 'img', 'poster.jpg'), quality=80, optimize=True, progressive=True)
-for name, box in (('azkia', (2165, 3812, 2301, 3948)), ('bondan', (2350, 3812, 2486, 3948))):
-    poster.crop(box).resize((192, 192), Image.LANCZOS).save(os.path.join(A, 'img', 'team', name + '.jpg'), quality=86)
+# Foto tim (img/team/*_p.jpg) memakai foto studio terpisah dari tim, bukan crop poster.
 shutil.copy(up('9001331a-image.jpg'), os.path.join(A, 'img', 'pfd.jpg'))
 shutil.copy(up('9001331a-image.jpg'), os.path.join(A, 'downloads', 'PFD_eMethanol_Berwarna_FullHD.jpg'))
 for src, dst in (('p-016.png', 'gambar4_aksonometri.jpg'), ('p-019.png', 'gambar7_sirkular.jpg'), ('p-000.png', 'gambar1_kerangka.jpg')):

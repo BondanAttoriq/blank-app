@@ -48,6 +48,13 @@ methaland-site/
 - **SCADA**: koordinat pada grid PFD berwarna 1920 × 1080 di `assets/data/scada-layout.json` (dibuat `tools/scada_layout.py`). Tiap layar = satu atau lebih *pane* dari grid itu yang dipetakan ke kanvas 1920 × 1080; unit/aliran per layar dipilih otomatis dari pane. Topologi dan nilai dari `stream_register`, `neraca_aliran`, `ukuran_pipa`.
 - **Render**: diambil dari Kartu Tur METHALAND (render Blender per perhentian).
 
+## Performa 3D
+- Model diunduh sebagai `plant.glb.gz` / `konteks.glb.gz` (GLB yang sama, dikompres gzip: 12,2 → 6,5 MB) lalu dibuka dengan `DecompressionStream`; otomatis kembali ke `.glb` bila tidak tersedia.
+- Geometri statis digabung per material saat runtime (±1.120 → ±200 draw call). Mesh asli disimpan di layer tersembunyi untuk klik, hover, dan sorotan.
+- Tanpa logarithmic depth buffer (near/far dinamis), bayangan PCF 2048 statis, partikel aliran low-poly.
+- Render 30 fps saat hanya animasi ambient, penuh saat interaksi; berhenti saat bagian 3D tidak terlihat.
+- Resolusi adaptif + tombol ⚙ Kualitas (Otomatis / Tinggi / Ringan tanpa bayangan); pilihan tersimpan di browser.
+
 ## Model perhitungan dashboard
 - NPV, IRR, PBP: interpolasi linear piecewise Lampiran 19; dua parameter berubah: superposisi Δ terhadap basis (badge "estimasi kombinasi"). Basis: NPV US$21,47 juta, IRR 28,5%, PBP 3,71 tahun.
 - Harga impas: interpolasi balik (basis ≈ US$616/ton dan ≈ US$54,4/MWh).

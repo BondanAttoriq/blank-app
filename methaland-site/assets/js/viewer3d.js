@@ -5,10 +5,13 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { $, $$, fmt, esc, emit, getJSON, isMobile, loadRegister, statusBadge, MEDIUM } from './util.js';
 import { Tour, SCADA_SCREEN } from './tour.js';
 
 const MODEL_SIZE = { plant: 7170928, konteks: 5067932 };
+const MODEL_SIZE_GZ = { plant: 3441297, konteks: 3070758 };     // GLB yang sama, dikompres gzip (Netlify tidak mengompres model/gltf-binary)
+const CAN_GUNZIP = typeof DecompressionStream !== 'undefined';
 const b2t = p => new THREE.Vector3(p[0], p[2], -p[1]);          // model (x timur, y utara, z atas) → three (x, y atas, −z utara)
 const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 const UTIL_NAMES = /^(hidran|windsock)/; const UTIL_MED = new Set(['Air pendingin', 'Refrigeran', 'Air pemadam', 'Udara instrumen', 'Nitrogen', 'Relief', 'Udara bau']);
@@ -24,17 +27,23 @@ export async function init() {
   const loadEl = $('#v3dLoad'), navGlb = $('#navGlb');
   const prog = { plant: 0, konteks: 0 }; let need = mobile ? ['plant'] : ['plant', 'konteks'];
   function upd() {
-    const tot = need.reduce((s, k) => s + MODEL_SIZE[k], 0), got = need.reduce((s, k) => s + prog[k] * MODEL_SIZE[k], 0); const v = Math.round(got / tot * 100);
-    $('#v3dBar').style.width = v + '%'; $('#v3dPct').textContent = `Mengunduh model 3D: ${v}%`;
-    navGlb.hidden = false; navGlb.style.setProperty('--p', v + '%'); navGlb.querySelector('span').textContent = `3D ${v}%`;
+    const SZ = CAN_GUNZIP ? MODEL_SIZE_GZ : MODEL_SIZE;
+    const tot = need.reduce((s, k) => s + SZ[k], 0), got = need.reduce((s, k) => s + prog[k] * SZ[k], 0); const v = Math.round(got / tot * 100);
+    const mb = (tot / 1048576).toFixed(1).replace('.', ',');
+    $('#v3dBar').style.width = v + '%'; $('#v3dPct').textContent = `Mengunduh model 3D (${mb} MB): ${v}%`;
+    const ctxOnly = need.length === 2 && prog.plant >= 1;
+    navGlb.hidden = false; navGlb.style.setProperty('--p', v + '%'); navGlb.querySelector('span').textContent = ctxOnly ? `Konteks TPST ${Math.round(prog.konteks * 100)}%` : `3D ${v}%`;
   }
   $('#v3dLoadBtn').hidden = true; upd();
 
   // ------------------------------------------------ renderer & scene
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: !mobile, logarithmicDepthBuffer: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, mobile ? 1.5 : 1.75));
+  // Performa: tanpa logarithmic depth (early-z tetap aktif), near/far kamera dinamis; MSAA hanya bila DPR rendah.
+  const DPR_MAX = Math.min(devicePixelRatio || 1, mobile ? 1.5 : 1.75), DPR_MIN = mobile ? 0.6 : 0.75;
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: !mobile && (devicePixelRatio || 1) < 1.5, powerPreference: 'high-performance', stencil: false });
+  const Q = { mode: 'auto', dpr: DPR_MAX, fps: 0, calls: 0 };
+  renderer.setPixelRatio(Q.dpr);
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.shadowMap.autoUpdate = false;   // scene statis: shadow map dirender ulang hanya saat lapisan berubah
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFShadowMap; renderer.shadowMap.autoUpdate = false;   // scene statis: shadow map dirender ulang hanya saat lapisan berubah
   const shadowDirty = () => { renderer.shadowMap.needsUpdate = true; };
   const scene = new THREE.Scene(); scene.fog = new THREE.Fog(0xc4d3e0, 1900, 6200);
   const pm = new THREE.PMREMGenerator(renderer);
@@ -68,24 +77,34 @@ export async function init() {
   }
   const SKY = makeSky(mobile ? 512 : 1024, mobile ? 256 : 512); scene.background = SKY; scene.environment = pm.fromEquirectangular(SKY).texture;
   renderer.toneMappingExposure = 0.78;
-  const camera = new THREE.PerspectiveCamera(48, 1, 0.5, 12000);
+  const camera = new THREE.PerspectiveCamera(48, 1, 0.5, 6000);
   const controls = new OrbitControls(camera, canvas); controls.enableDamping = true; controls.maxPolarAngle = Math.PI * 0.495; controls.autoRotateSpeed = 0.7;
   scene.add(new THREE.HemisphereLight(0xeaf2ff, 0x8a8068, 0.35));
   const sun = new THREE.DirectionalLight(0xfff1dc, 2.6); sun.position.set(90 - 250, 260, -20 + 260); sun.target.position.set(90, 0, -20);
-  sun.castShadow = true; const sm = mobile ? 2048 : 4096; sun.shadow.mapSize.set(sm, sm);
+  sun.castShadow = true; const sm = mobile ? 1024 : 2048; sun.shadow.mapSize.set(sm, sm);
   Object.assign(sun.shadow.camera, { left: -230, right: 230, top: 230, bottom: -230, near: 10, far: 900 }); sun.shadow.bias = -0.0004;
   scene.add(sun, sun.target);
 
   // ------------------------------------------------ data & model
   const loader = new GLTFLoader(); loader.setMeshoptDecoder(MeshoptDecoder);
-  async function readAll(url, key) {
+  async function readAll(url, key, size) {
     const r = await fetch(url); if (!r.ok) throw new Error(url + ' ' + r.status);
-    const total = +r.headers.get('content-length') || MODEL_SIZE[key]; const rd = r.body.getReader(); const parts = []; let got = 0;
+    const total = +r.headers.get('content-length') || size; const rd = r.body.getReader(); const parts = []; let got = 0;
     for (;;) { const { done, value } = await rd.read(); if (done) break; parts.push(value); got += value.length; prog[key] = Math.min(0.97, got / total); upd(); }
     return await new Blob(parts).arrayBuffer();
   }
+  async function gunzip(buf) { return await new Response(new Blob([buf]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer(); }
   async function loadGLB(name) {
-    const buf = await readAll(`assets/models/${name}.glb`, name); prog[name] = 1; upd();
+    let buf = null;
+    if (CAN_GUNZIP) {
+      try {
+        const raw = await readAll(`assets/models/${name}.glb.gz`, name, MODEL_SIZE_GZ[name]); const b = new Uint8Array(raw, 0, 4);
+        buf = b[0] === 0x1f && b[1] === 0x8b ? await gunzip(raw) : raw;     // server bisa saja sudah membuka gzip (Content-Encoding)
+        if (new TextDecoder().decode(new Uint8Array(buf, 0, 4)) !== 'glTF') buf = null;
+      } catch (e) { buf = null; }
+    }
+    if (!buf) buf = await readAll(`assets/models/${name}.glb`, name, MODEL_SIZE[name]);
+    prog[name] = 1; upd();
     return new Promise((res, rej) => loader.parse(buf, '', g => res(g.scene), rej));
   }
   let DATA, STOPS, plant, ctx = null, REG;
@@ -101,12 +120,65 @@ export async function init() {
     if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; pickables.push(o); }
     if (o.userData && o.userData.tag && !o.isMesh) tagNodes.set(o.userData.tag, o);
   });
+
+  // ------------------------------------------------ batching: gabung geometri statis per material (±1.120 → ±200 draw call)
+  // Mesh asli tetap ada di layer 1 (tidak dirender) untuk klik, hover, sorotan, dan visibilitas; GLB tidak diubah.
+  const BATCH_ATTR = ['position', 'normal', 'uv'];
+  function toFloatGeo(g, mat) {
+    const n = g.attributes.position.count, out = new THREE.BufferGeometry();
+    for (const name of BATCH_ATTR) {
+      const src = g.attributes[name], size = name === 'uv' ? 2 : 3, arr = new Float32Array(n * size);
+      if (src) for (let i = 0; i < n; i++) { arr[i * size] = src.getX(i); arr[i * size + 1] = src.getY(i); if (size === 3) arr[i * size + 2] = src.getZ(i); }
+      out.setAttribute(name, new THREE.BufferAttribute(arr, size));
+    }
+    if (!g.attributes.normal) { out.applyMatrix4(mat); out.computeVertexNormals(); }
+    else out.applyMatrix4(mat);
+    if (g.index) out.setIndex(Array.from(g.index.array)); else out.setIndex([...Array(n).keys()]);
+    return out;
+  }
+  function batch(root, keyOf) {
+    root.updateMatrixWorld(true); const inv = new THREE.Matrix4().copy(root.matrixWorld).invert();
+    const groups = new Map();
+    root.traverse(o => {
+      if (!o.isMesh || o.isInstancedMesh || o.isSkinnedMesh || Array.isArray(o.material)) return;
+      const k = keyOf(o); if (k === null) return;
+      const key = o.material.uuid + '|' + k + '|' + (o.castShadow ? 1 : 0) + (o.receiveShadow ? 1 : 0);
+      if (!groups.has(key)) groups.set(key, { k, list: [] }); groups.get(key).list.push(o);
+    });
+    const holder = new THREE.Group(); holder.name = 'batch'; const made = [];
+    for (const { k, list } of groups.values()) {
+      if (list.length < 2) continue;
+      const m4 = new THREE.Matrix4();
+      const geo = mergeGeometries(list.map(o => toFloatGeo(o.geometry, m4.multiplyMatrices(inv, o.matrixWorld))), false);
+      if (!geo) continue;
+      geo.computeBoundingSphere();
+      const mesh = new THREE.Mesh(geo, list[0].material); mesh.castShadow = list[0].castShadow; mesh.receiveShadow = list[0].receiveShadow;
+      mesh.userData.bkey = k; mesh.matrixAutoUpdate = false; holder.add(mesh); made.push(mesh);
+      for (const o of list) o.layers.set(1);
+    }
+    root.add(holder); return made;
+  }
+  // kunci visibilitas = gabungan bendera leluhur (setara setVis viewer lama)
+  function plantKey(o) {
+    let needU = 0, needP = 0, uMed = 0, strip = 0;
+    if (o.userData?.stream_id && !o.name.endsWith('_penyangga') && !o.name.includes('arah_aliran')) strip = 1;
+    for (let n = o; n && n !== plant; n = n.parent) {
+      const ud = n.userData || {};
+      if (ud.arah) return null;                                   // panah aliran: visibilitas per stream, tidak digabung
+      if (ud.area === 'UTIL' || UTIL_NAMES.test(n.name)) needU = 1;
+      if (ud.stream_id) { needP = 1; if (UTIL_MED.has(ud.medium)) uMed = 1; }
+    }
+    return `u${needU}p${needP}m${uMed}s${strip}`;
+  }
+  const t0b = performance.now();
+  const plantBatches = batch(plant, plantKey);
+  const STAT0 = { batchMs: Math.round(performance.now() - t0b), batches: plantBatches.length };
   let ctxLoading = null;
   function ensureCtx() {
     if (ctx) return Promise.resolve(ctx);
     if (!ctxLoading) {
       if (!need.includes('konteks')) { need.push('konteks'); loadEl.classList.contains('done') || upd(); }
-      ctxLoading = loadGLB('konteks').then(c => { ctx = c; ctx.traverse(o => { if (o.isMesh) o.receiveShadow = true; }); fixMaterials(ctx); scene.add(ctx); ctx.visible = T.ctx; shadowDirty(); navGlb.hidden = true; labelKey = ''; tour.render(STOPS[tour.cur], tour.cur); req(); return ctx; });
+      ctxLoading = loadGLB('konteks').then(c => { ctx = c; ctx.traverse(o => { if (o.isMesh) o.receiveShadow = true; }); fixMaterials(ctx); batch(ctx, () => 'c'); scene.add(ctx); ctx.visible = T.ctx; shadowDirty(); navGlb.hidden = true; labelKey = ''; tour.render(STOPS[tour.cur], tour.cur); req(); return ctx; });
     }
     return ctxLoading;
   }
@@ -127,24 +199,29 @@ export async function init() {
         if (n.startsWith('pagar_jaring')) m.depthWrite = false;
         if (n.startsWith('nyala')) { m.toneMapped = false; FLAMES.push(m); }
         if (n.startsWith('lampu')) m.emissiveIntensity = 0.6;
-        if (m.map) m.map.anisotropy = 8;
+        if (m.map) m.map.anisotropy = 4;
       }
     });
   }
   fixMaterials(plant);
 
   // ------------------------------------------------ sorotan unit (glow emisif berdenyut)
-  const hlMats = new Map(); let hlList = [];
+  // sorotan = lapisan overlay di atas geometri gabungan (polygonOffset), memakai geometri mesh asli
+  let hlList = []; const hlGroup = new THREE.Group(); hlGroup.name = 'sorotan'; scene.add(hlGroup);
   function setHighlight(tags, sids = []) {
-    for (const [m, orig] of hlMats) m.material = orig; hlMats.clear(); hlList = [];
+    for (const o of hlGroup.children) for (const m of [].concat(o.material)) m.dispose();
+    hlGroup.clear(); hlList = []; const seen = new Set();
     const nodes = tags.map(t => tagNodes.get(t)).filter(Boolean); for (const s of sids) for (const o of stripObjs.get(s) || []) nodes.push(o);
     for (const n of nodes) n.traverse(o => {
-      if (!o.isMesh || hlMats.has(o)) return; hlMats.set(o, o.material); const arr = Array.isArray(o.material) ? o.material : [o.material];
-      const cl = arr.map(m => { const c = m.clone(); c.emissive = new THREE.Color(sids.length ? 0x8cff60 : 0xffc870); c.emissiveIntensity = 0.08; hlList.push(c); return c; });
-      o.material = Array.isArray(o.material) ? cl : cl[0];
+      if (!o.isMesh || seen.has(o)) return; seen.add(o);
+      const mats = [].concat(o.material).map(m => { const c = m.clone(); c.emissive = new THREE.Color(sids.length ? 0x8cff60 : 0xffc870); c.emissiveIntensity = 0.08;
+        c.polygonOffset = true; c.polygonOffsetFactor = -1; c.polygonOffsetUnits = -4; hlList.push(c); return c; });
+      const h = new THREE.Mesh(o.geometry, Array.isArray(o.material) ? mats : mats[0]); h.matrixAutoUpdate = false; h.matrix.copy(o.matrixWorld);
+      h.userData.src = o; hlGroup.add(h);
     });
-    req();
+    syncHl(); req();
   }
+  function syncHl() { for (const h of hlGroup.children) { let v = true; for (let n = h.userData.src; n; n = n.parent) if (!n.visible) { v = false; break; } h.visible = v; } }
 
   // ------------------------------------------------ lapisan
   function setVis() {
@@ -155,7 +232,9 @@ export async function init() {
       else if (ud.stream_id) { o.visible = T.pipe && (T.util || !UTIL_MED.has(ud.medium)); if (!o.name.endsWith('_penyangga')) SID_VIS.set(ud.stream_id, o.visible); }
       else if (UTIL_NAMES.test(o.name)) o.visible = T.util;
     });
-    applyArea(); shadowDirty(); req();
+    for (const b of plantBatches) { const k = b.userData.bkey; const u = k[1] === '1', p = k[3] === '1', m = k[5] === '1';
+      b.visible = (!u || T.util) && (!p || (T.pipe && (T.util || !m))); }
+    syncHl(); applyArea(); shadowDirty(); req();
   }
   const ghostMats = new Map();
   function setGhost(on) {
@@ -164,6 +243,9 @@ export async function init() {
       if (on) { if (!ghostMats.has(o)) { ghostMats.set(o, o.material); const m = (Array.isArray(o.material) ? o.material[0] : o.material).clone(); m.transparent = true; m.opacity = 0.28; m.depthWrite = false; o.material = m; } }
       else if (ghostMats.has(o)) { o.material = ghostMats.get(o); ghostMats.delete(o); }
     }
+    for (const b of plantBatches) { if (!b.userData.bkey.endsWith('s1')) continue;
+      if (on) { if (!ghostMats.has(b)) { ghostMats.set(b, b.material); const m = b.material.clone(); m.transparent = true; m.opacity = 0.28; m.depthWrite = false; b.material = m; } }
+      else if (ghostMats.has(b)) { b.material.dispose(); b.material = ghostMats.get(b); ghostMats.delete(b); } }
     req();
   }
 
@@ -211,7 +293,7 @@ export async function init() {
       const cen = new THREE.Vector3(); P.forEach(p => cen.add(p)); cen.divideScalar(P.length);
       FL.push({ sid, m: f.m, P, cum, Lt, speed, rr, lift, k, i0: n, col: new THREE.Color(FCOL[f.m] ?? 0xffffff), heat: f.j !== 'massa', cen }); n += k;
     }
-    const geo = new THREE.SphereGeometry(1, 10, 8);
+    const geo = new THREE.IcosahedronGeometry(1, 0);          // 20 segitiga per butir (sebelumnya bola 144)
     fmesh = new THREE.InstancedMesh(geo, new THREE.MeshBasicMaterial({ color: 0xffffff, toneMapped: false }), n);
     fmesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage); fmesh.frustumCulled = false; fmesh.renderOrder = 2;
     for (const s of FL) for (let j = 0; j < s.k; j++) fmesh.setColorAt(s.i0 + j, s.col);
@@ -318,13 +400,13 @@ export async function init() {
     else if (desktop) { const pw = panelOpen ? $('#v3dPanel').offsetWidth + 12 : 0; ox = Math.round((pw - 74) / 2); }
     else { oy = 30; }
     camera.setViewOffset(W, H, ox, oy, W, H); camera.updateProjectionMatrix();
-    for (const s of SYS) s.p.material.uniforms.scale.value = H / 2;
+    for (const s of SYS) s.p.material.uniforms.scale.value = H / 2 * Q.dpr;
     labelKey = ''; req();
   }
   { const ro = new ResizeObserver(layout); ro.observe(stage); ro.observe(canvas); }
 
   // ------------------------------------------------ label HTML dengan leader, tanpa saling tumpang (greedy)
-  const labBox = $('#v3dLabels'), svgL = $('#v3dLeaders'); const pool = []; let labelKey = '';
+  const labBox = $('#v3dLabels'), svgL = $('#v3dLeaders'); const pool = []; const labSize = new Map(); let labelKey = '';
   function labelSet() {
     const s = STOPS[tour.cur]; const want = new Set(focusTags.length ? focusTags : (s.tags || [])); const out = [];
     for (const [t, p, k] of DATA.labels) {
@@ -347,8 +429,9 @@ export async function init() {
       .filter(l => l.z < 1 && l.x > -50 && l.x < W + 50 && l.y > -50 && l.y < H + 50).sort((a, b) => a.z - b.z);
     for (const l of items) {
       let el = pool[n]; if (!el) { el = document.createElement('div'); labBox.appendChild(el); pool.push(el); } n++;
-      el.className = 'lab ' + l.k + (l.hl ? ' hl' : ''); el.textContent = l.t; el.style.display = 'block';
-      const w = el.offsetWidth, h = el.offsetHeight; let best = null;
+      const cls = 'lab ' + l.k + (l.hl ? ' hl' : ''); if (el.className !== cls) el.className = cls; if (el.textContent !== l.t) el.textContent = l.t; el.style.display = 'block';
+      const sk = cls + '|' + l.t; let sz = labSize.get(sk); if (!sz) { sz = [el.offsetWidth, el.offsetHeight]; labSize.set(sk, sz); }
+      const [w, h] = sz; let best = null;
       for (const d of [28, 50, 78, 112, 150]) for (const a of [-90, -60, -120, -30, -150, 0, 180, 40, 140]) {
         const r = a * Math.PI / 180, cx = l.x + Math.cos(r) * (d + w / 2 * Math.abs(Math.cos(r))), cy = l.y + Math.sin(r) * (d + h / 2);
         const b = [cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2]; if (b[0] < 6 || b[1] < 6 || b[2] > W - 6 || b[3] > H - 6) continue;
@@ -518,6 +601,7 @@ export async function init() {
     else if (a === 'present') setPresent(!present);
     else if (a === 'full') { if (document.fullscreenElement) document.exitFullscreen(); else stage.requestFullscreen().catch(() => emit('toast', 'Layar penuh tidak didukung browser ini.')); }
     else if (a === 'shot') shot();
+    else if (a === 'quality') setQuality({ auto: 'high', high: 'low', low: 'auto' }[Q.mode]);
     else if (a === 'help') { help.hidden = !help.hidden; b.setAttribute('aria-expanded', !help.hidden); }
   });
   document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && present) { present = false; stage.classList.remove('present'); $('#v3dTools [data-act="present"]').classList.remove('on'); } setTimeout(layout, 60); });
@@ -547,7 +631,7 @@ export async function init() {
   });
 
   // ------------------------------------------------ klik & hover
-  const ray = new THREE.Raycaster(); const mv = new THREE.Vector2(); let downXY = null;
+  const ray = new THREE.Raycaster(); ray.layers.enableAll(); const mv = new THREE.Vector2(); let downXY = null;
   function pick(e) {
     const r = canvas.getBoundingClientRect(); mv.set((e.clientX - r.left) / r.width * 2 - 1, -(e.clientY - r.top) / r.height * 2 + 1); ray.setFromCamera(mv, camera);
     const hit = ray.intersectObjects(pickables, false).find(h => { let o = h.object; while (o) { if (!o.visible) return false; o = o.parent; } return true; });
@@ -568,7 +652,7 @@ export async function init() {
   }
   canvas.addEventListener('pointermove', e => {
     const now = performance.now(); if (now - hovT < 70 || e.pointerType === 'touch') return; hovT = now;
-    if (e.buttons) { tip.style.display = 'none'; return; }
+    if (e.buttons || flying || dragging) { tip.style.display = 'none'; return; }
     const { sid, tag, r } = pick(e);
     canvas.style.cursor = tag ? 'pointer' : sid ? 'help' : '';
     if (!sid) { tip.style.display = 'none'; return; }
@@ -580,13 +664,36 @@ export async function init() {
   controls.addEventListener('start', () => { if (flying) flying = null; });
   controls.addEventListener('change', () => req());
 
-  // ------------------------------------------------ loop render (on-demand saat diam)
-  const STATS = {}; const clock = new THREE.Clock(); let raf = 0, dirty = true, lastCam = '';
+  // ------------------------------------------------ loop render: on-demand, 30 fps saat hanya animasi ambient, resolusi adaptif
+  const STATS = { ...STAT0 }; let raf = 0, dirty = true, lastCam = '', lastT = 0, elapsed = 0, dragging = false;
+  controls.addEventListener('start', () => { dragging = true; }); controls.addEventListener('end', () => { dragging = false; });
   function req() { dirty = true; if (!raf) raf = requestAnimationFrame(frame); }
   document.addEventListener('visibilitychange', () => { if (!document.hidden) req(); });
-  function frame() {
-    raf = 0; if (!visibleAny || document.hidden) return;
-    const dt = Math.min(clock.getDelta(), 0.1), t = clock.elapsedTime;
+  // near/far mengikuti jarak kamera agar presisi depth cukup tanpa logarithmic depth buffer
+  function updClip() {
+    const d = camera.position.distanceTo(controls.target);
+    const near = THREE.MathUtils.clamp(d * 0.01, 0.25, 40), far = THREE.MathUtils.clamp(d * 30, 1600, 12000);
+    if (Math.abs(near - camera.near) / camera.near > 0.15 || Math.abs(far - camera.far) / camera.far > 0.15) { camera.near = near; camera.far = far; camera.updateProjectionMatrix(); }
+    scene.fog.far = Math.min(scene.fog.far, camera.far * 0.97); scene.fog.near = Math.min(scene.fog.near, scene.fog.far * 0.55);
+  }
+  // resolusi adaptif: turunkan pixel ratio bila frame lebih lambat dari target, naikkan perlahan bila longgar
+  let win = [], cool = 0;
+  function adapt(interval, target) {
+    if (Q.mode !== 'auto') return; win.push(interval); if (win.length < 40) return;
+    const avg = win.reduce((a, b) => a + b, 0) / win.length; win = []; Q.fps = Math.round(1000 / avg); if (cool > 0) { cool--; return; }
+    let next = Q.dpr;
+    if (avg > target * 1.35 && Q.dpr > DPR_MIN) next = Math.max(DPR_MIN, Q.dpr - 0.25);
+    else if (avg < target * 1.08 && Q.dpr < DPR_MAX) next = Math.min(DPR_MAX, Q.dpr + 0.125);
+    if (next !== Q.dpr) { Q.dpr = next; renderer.setPixelRatio(next); layout(); cool = 2; updQualityUI(); }
+  }
+  function frame(now) {
+    raf = 0; if (!visibleAny || document.hidden) { lastT = 0; return; }
+    const moved = controls.update();
+    const interacting = !!flying || moved || dragging || T.rotate;
+    const ambient = (T.flow && FL.length) || (T.atmo && SYS.length) || hlList.length || (tour.playing && !free);
+    const target = interacting ? 1000 / 60 : 1000 / 30;
+    if (lastT && !dirty && !interacting && now - lastT < target - 2) { raf = requestAnimationFrame(frame); return; }
+    const interval = lastT ? now - lastT : target; const dt = Math.min(interval / 1000, 0.1); lastT = now; elapsed += dt; const t = elapsed;
     if (flying) {
       flying.t += dt / flying.d; const k = ease(Math.min(1, flying.t));
       camera.position.lerpVectors(flying.p0, flying.p1, k);
@@ -594,29 +701,45 @@ export async function init() {
       controls.target.lerpVectors(flying.t0, flying.t1, k); if (flying.t >= 1) flying = null;
     } else if (!free) tour.tick(dt);
     const pulse = 0.06 + 0.06 * (0.5 + 0.5 * Math.sin(t * 3.2)); for (const m of hlList) m.emissiveIntensity = pulse;
-    const t0 = performance.now(); updFlow(t); updAtmo(dt, t); const moved = controls.update(); updScale(); const t1 = performance.now();
+    const t0 = performance.now(); updFlow(t); updAtmo(dt, t); updScale(); updClip(); const t1 = performance.now();
     renderer.render(scene, camera); const t2 = performance.now();
     const ck = camera.matrixWorld.elements.map(v => v.toFixed(2)).join() + W + 'x' + H + T.label + tour.cur + free;
     if (ck !== lastCam || !labelKey) { lastCam = ck; labelKey = 'ok'; drawLabels(); }
-    STATS.js = t1 - t0; STATS.gl = t2 - t1; STATS.lab = performance.now() - t2; STATS.calls = renderer.info.render.calls; STATS.tris = renderer.info.render.triangles;
-    const animating = flying || (tour.playing && !free) || (T.flow && FL.length) || (T.atmo && SYS.length) || T.rotate || hlList.length || moved;
-    if (animating || dirty) { dirty = false; raf = requestAnimationFrame(frame); }
+    STATS.js = +(t1 - t0).toFixed(2); STATS.gl = +(t2 - t1).toFixed(2); STATS.calls = renderer.info.render.calls; STATS.tris = renderer.info.render.triangles; STATS.dpr = Q.dpr; STATS.fps = Q.fps;
+    if (interval < 250) adapt(interval, target);
+    if (interacting || ambient || dirty) { dirty = false; raf = requestAnimationFrame(frame); } else lastT = 0;
   }
+  // ------------------------------------------------ mode kualitas: Otomatis / Tinggi / Ringan
+  const QL = { auto: 'Otomatis', high: 'Tinggi', low: 'Ringan' };
+  function updQualityUI() {
+    const b = $('#v3dTools [data-act="quality"]'); if (b) { b.querySelector('span').textContent = QL[Q.mode]; b.title = `Kualitas grafis: ${QL[Q.mode]} (resolusi ${fmt(Q.dpr, 2)}×)`; b.setAttribute('aria-label', b.title); }
+    const h = $('#v3dQ'); if (h) h.textContent = `Kualitas ${QL[Q.mode]} · resolusi ${fmt(Q.dpr, 2)}× · ±${Q.fps || '·'} fps · ${STATS.calls || '·'} draw call`;
+  }
+  function setQuality(mode) {
+    Q.mode = mode; win = []; cool = 1;
+    Q.dpr = mode === 'low' ? DPR_MIN + (mobile ? 0.15 : 0.25) : DPR_MAX; renderer.setPixelRatio(Q.dpr);
+    const wantShadow = mode !== 'low'; if (sun.castShadow !== wantShadow) { sun.castShadow = wantShadow; shadowDirty(); }
+    try { localStorage.setItem('methaland-q', mode); } catch (e) { /* abaikan */ }
+    layout(); updQualityUI(); req();
+  }
+  { let saved = null; try { saved = localStorage.getItem('methaland-q'); } catch (e) { /* abaikan */ } if (saved && QL[saved] && saved !== 'auto') setQuality(saved); }
+  setInterval(() => { if (!help.hidden) updQualityUI(); }, 1000);
 
   // ------------------------------------------------ mulai
   buildFlow(); buildAtmo(); buildFlowPane(); setVis(); layout(); shadowDirty();
   if (T.ctx) ensureCtx().catch(e => console.error(e));
   loadEl.classList.add('done'); setTimeout(() => { if (!ctxLoading) navGlb.hidden = true; }, 600);
   if (ctxLoading) ctxLoading.then(() => navGlb.hidden = true);
-  tour.go(0, true); req();
+  tour.go(0, true); updQualityUI(); req();
 
   const api = {
-    go: i => { setFree(false, false); tour.go(i); },
+    go: (i, instant) => { setFree(false, false); tour.go(i, !!instant); },
     goId: id => { const i = STOPS.findIndex(s => s.id === id); if (i >= 0) api.go(i); },
     play: on => { setFree(false, false); tour.play(on); req(); },
     setFree: on => setFree(on),
     focusTag, focusStream,
-    hasTag: t => tagNodes.has(t), stats: STATS,
+    hasTag: t => tagNodes.has(t), stats: STATS, setQuality,
+    debug: () => ({ cam: camera.position.toArray().map(v => +v.toFixed(1)), tgt: controls.target.toArray().map(v => +v.toFixed(1)), flying: !!flying, near: camera.near, far: camera.far }),
   };
   return api;
 }
