@@ -39,6 +39,44 @@ def patch(html, data_url, model_dir, lib_dir, back_link):
     for a, b in rep:
         assert a in h, a[:70]
         h = h.replace(a, b)
+    # tema hijau situs (palet poster): aksen, kartu, tombol, chip, loader, tooltip, label sorotan
+    THEME = """<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,600;0,700;0,800;1,700&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#17322A;--mute:#4F655D;--line:#CFE6DC;--card:rgba(255,255,255,.96);--acc:#127466;--S:#1F6FB5;--C:#1F7A4D;--A:#A86100;
+    --g-chip:linear-gradient(90deg,#127466,#26987C 60%,#4DB585);--g-head:linear-gradient(90deg,#0C5A72 0%,#127E86 50%,#2BA58A 100%)}
+  html,body{background:#B9CFDF;color:var(--ink)}
+  .panel{border-radius:16px;border:1.5px solid var(--line);box-shadow:0 10px 30px rgba(14,59,46,.16)}
+  #brand{background:linear-gradient(135deg,#0B2E23,#14532D);border-color:#1F7A4D;color:#fff;display:flex;flex-direction:column;padding:10px 16px 10px 56px;position:fixed}
+  #brand::before{content:"M";position:absolute;left:12px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:10px;display:grid;place-items:center;
+    background:linear-gradient(135deg,#1F7A4D,#0C5A72);box-shadow:inset 0 0 0 2px rgba(140,198,63,.6);color:#B9E58A;font:800 19px Poppins,system-ui,sans-serif}
+  #brand b{font-family:Poppins,system-ui,sans-serif;letter-spacing:.04em;color:#fff}#brand div{color:#9FD3B9}#brand a{color:#B9E58A!important}
+  #title,#info h3,#flow b{font-family:Poppins,system-ui,sans-serif;color:#0E3B2E}
+  #idx{color:var(--acc)} #dur{color:var(--mute)}
+  button{border-radius:999px;border:1.5px solid var(--line);font-family:Poppins,system-ui,sans-serif;color:var(--ink)}
+  button:hover{border-color:#129B8A;color:#127466}
+  button.pri{background:var(--g-chip);border-color:transparent;color:#fff}button.pri:hover{color:#fff;filter:brightness(1.06)}
+  button:focus-visible{outline:3px solid #8CC63F;outline-offset:2px}
+  #tools input[type=checkbox],#flow input[type=checkbox]{accent-color:#129B8A;width:16px;height:16px}
+  #tools button{border-radius:12px}
+  .chip{border:1.5px solid var(--line);font-family:Poppins,system-ui,sans-serif}.chip.on{background:var(--g-chip);border-color:transparent;color:#fff}.chip.all{border-color:#129B8A}
+  .dot{background:#CFE6DC}.dot.on{background:#129B8A;box-shadow:0 0 0 3px rgba(18,155,138,.25)}.dot.done{background:#8CC6B0}
+  #bar{background:#DFF1E6;height:4px}#bar i{background:linear-gradient(90deg,#8CC63F,#5CC6B5)}
+  .num{border:1.5px solid var(--line);border-radius:12px;background:linear-gradient(180deg,#fff,#EEF7F1)}.num b{color:#0C5A72;font-family:Poppins,system-ui,sans-serif}
+  .lab{border-color:#3c4046}.lab.hl{border-color:#1F7A4D;box-shadow:0 0 0 3px rgba(140,198,63,.45)}
+  #tip{background:#0E3B2E;border-radius:10px;box-shadow:0 10px 24px rgba(0,0,0,.25)}#tip .dn{color:#9FE0FF}#tip .q{color:#D8F2B8}
+  #info .k{color:var(--mute)} #help b{font-family:Poppins,system-ui,sans-serif;color:#0E3B2E}
+  #load{background:radial-gradient(900px 500px at 50% 30%,#14532D,#0B2E23);color:#fff}
+  #load b{font-family:Poppins,system-ui,sans-serif;font-size:20px}
+  #load .b{background:rgba(255,255,255,.18);height:6px;border-radius:6px}#load .b i{background:linear-gradient(90deg,#8CC63F,#5CC6B5)}
+  #load .mk{width:72px;height:72px;border-radius:20px;display:grid;place-items:center;background:linear-gradient(135deg,#1F7A4D,#0C5A72);box-shadow:inset 0 0 0 2px rgba(140,198,63,.6);color:#B9E58A;font:800 40px Poppins,system-ui,sans-serif}
+  #load #ltxt{color:#B7D3C7!important}
+  #scale .bar{border-color:#17322A}
+</style>"""
+    h = h.replace('</style>\n<script>window.METHACYCLE_SRC', '</style>\n' + THEME + '\n<script>window.METHACYCLE_SRC', 1)
+    assert THEME in h
+    h = h.replace('<div id="load"><b>Memuat model 3D METHACYCLE…</b>', '<div id="load"><div class="mk" aria-hidden="true">M</div><b>Memuat model 3D METHACYCLE…</b>')
+    h = h.replace("l.hl ? '#e07b12' : '#3c4046'", "l.hl ? '#1F7A4D' : '#3c4046'")
+    assert "'#e07b12'" not in h
     # total ukuran gzip untuk progres (content-length tetap dipakai bila ada)
     h = h.replace('<title>METHACYCLE · Tur 3D Plant e-Methanol TPST Bantargebang</title>', '<title>METHACYCLE · Tur 3D Plant e-Methanol TPST Bantargebang</title>\n<meta name="description" content="Tur 3D interaktif METHACYCLE: plant e-methanol dari LPP dan landfill gas di TPST Bantargebang. CARBON Essay Competition 2026, Tim UI x ITB.">')
     if back_link:
