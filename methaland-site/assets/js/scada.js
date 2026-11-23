@@ -11,6 +11,7 @@ const CH = {
   ccu: ['K-301', 'E-303', 'A-301', 'E-304', 'V-302', 'E-305', 'K-302'], h2: ['A-501', 'K-501'], syn: ['M-401', 'E-401', 'R-401', 'E-402', 'V-401', 'SP-401', 'K-401'],
   dist: ['V-402', 'T-401', 'E-404', 'V-403', 'P-401', 'E-405'], orc: ['HRN-601', 'E-601', 'EX-601', 'G-601', 'E-602', 'P-601'],
 };
+const HOT_U = new Set(['R-101', 'BR-101', 'HRN-601', 'U-603']);   // unit panas: badan merah seperti HMI klasik
 const ALARM_KEYS = ['7', '17', '18', '26', '28', '30', '47', '53', '57', '65', 'EL-03'];
 
 export async function init() {
@@ -133,7 +134,9 @@ export async function init() {
   $('#scTabs').innerHTML = SCREENS.map((s, i) => `<button role="tab" aria-selected="${i === 0}" data-id="${s.id}"><span class="tdot"></span>${esc(s.t)}</button>`).join('');
   $$('#scTabs button').forEach(b => b.onclick = () => show(b.dataset.id));
   let cur = null, refs = null;
-  const colOf = sid => (MEDIUM[REG.ST[sid]?.medium] || ['#9FB5AC'])[0];
+  // warna medium digelapkan agar kontras di latar putih
+  const dk = (hex, f = 0.74) => '#' + [1, 3, 5].map(i => Math.round(parseInt(hex.slice(i, i + 2), 16) * f).toString(16).padStart(2, '0')).join('');
+  const colOf = sid => dk((MEDIUM[REG.ST[sid]?.medium] || ['#9FB5AC'])[0]);
 
   function paneTransforms(sc) {
     const reg = sc.table ? [16, 24, 1368, 1032] : [16, 16, 1888, 1048];
@@ -151,52 +154,68 @@ export async function init() {
       const paneUnits = sc.units.filter(t => inP(UNITS[t].x, UNITS[t].y, -2));
       const k = 1 / Math.sqrt(p.s), fs = 12 * k;
       g += `<g transform="translate(${p.dx} ${p.dy}) scale(${p.s}) translate(${-p.x} ${-p.y})"><g clip-path="url(#clip${pi})">`;
-      if (P.length > 1 || sc.table) g += `<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}" fill="none" stroke="#1E4136" stroke-width="${1.5 * k}" rx="${8 * k}"/>`;
+      if (P.length > 1 || sc.table) g += `<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}" fill="none" stroke="#B9C3CA" stroke-width="${1.5 * k}" rx="${8 * k}"/>`;
       for (const b of L.boxes) g += `<rect class="boxd" x="${b.r[0]}" y="${b.r[1]}" width="${b.r[2]}" height="${b.r[3]}" stroke-width="${1.2 * k}"/><text class="boxl" x="${b.lp[0]}" y="${b.lp[1]}" font-size="${fs * .95}">${esc(b.l)}</text>`;
-      // aliran
+      // aliran: pipa bergaris ganda (bingkai gelap + isi terang) dengan garis alir berwarna medium di tengah.
+      // Lapisan digambar terpisah (bingkai → isi → alir → aksesori) agar sambungan pipa menyatu rapi.
+      let gO = '', gI = '', gF = '', gT = '', gV = '';
       for (const sid of paneStreams) {
-        const st = STREAMS[sid], col = colOf(sid), dashed = /^EL-|^H-03$/.test(sid);
+        const st = STREAMS[sid], col = colOf(sid), sig = /^EL-|^H-03$/.test(sid);
         for (const seg of st.s) {
           const pts = seg.map(q => q.join(',')).join(' ');
-          g += `<polyline class="sline" data-sid="${sid}" points="${pts}" stroke="${col}" stroke-opacity=".38" stroke-width="${2.6 * k}" ${dashed ? `stroke-dasharray="${6 * k} ${3 * k} ${1.5 * k} ${3 * k}"` : ''}/>`;
-          g += `<polyline class="sflow" data-flow="${sid}" points="${pts}" stroke="${col}" stroke-width="${2.6 * k}" style="stroke-dasharray:${9 * k} ${5 * k}"/>`;
-          g += `<polyline data-hit="${sid}" points="${pts}" stroke="transparent" stroke-width="${12 * k}" fill="none" style="cursor:pointer"/>`;
+          if (sig) {   // listrik / sinyal: garis tunggal putus-putus
+            gF += `<polyline class="sline sig" data-sid="${sid}" points="${pts}" stroke="${col}" stroke-opacity=".55" stroke-width="${1.8 * k}" stroke-dasharray="${6 * k} ${3 * k} ${1.5 * k} ${3 * k}"/>`;
+            gF += `<polyline class="sflow" data-flow="${sid}" points="${pts}" stroke="${col}" stroke-width="${1.8 * k}" style="stroke-dasharray:${9 * k} ${5 * k}"/>`;
+          } else {
+            gO += `<polyline class="sline pipe-o" data-sid="${sid}" points="${pts}" stroke-width="${6.6 * k}"/>`;
+            gI += `<polyline class="sline pipe-i" data-sid="${sid}" points="${pts}" stroke-width="${4 * k}"/>`;
+            gF += `<polyline class="sflow" data-flow="${sid}" points="${pts}" stroke="${col}" stroke-width="${1.9 * k}" style="stroke-dasharray:${9 * k} ${5 * k}"/>`;
+          }
+          gT += `<polyline data-hit="${sid}" points="${pts}" stroke="transparent" stroke-width="${12 * k}" fill="none" style="cursor:pointer"/>`;
           const a = seg[seg.length - 2], b = seg[seg.length - 1], ang = Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI;
-          g += `<polygon points="0,0 ${-8 * k},${-4.5 * k} ${-8 * k},${4.5 * k}" fill="${col}" transform="translate(${b[0]} ${b[1]}) rotate(${ang})"/>`;
+          gT += `<polygon class="parw" points="0,0 ${-9 * k},${-5 * k} ${-9 * k},${5 * k}" transform="translate(${b[0]} ${b[1]}) rotate(${ang})"/>`;
         }
-        if (st.v) g += `<g transform="translate(${st.v[0]} ${st.v[1]}) scale(${k}) translate(${-st.v[0]} ${-st.v[1]})">${valve(st.v[0], st.v[1], st.v[2])}</g>`;
-        for (const h of st.hex || []) g += `<g class="dia" data-sid="${sid}" transform="translate(${h[0]} ${h[1]}) scale(${k})" tabindex="0" role="button" aria-label="Aliran ${sid}">${hexConn(0, 0, h[2], col).replace(/translate\([^)]*\)/, 'translate(0 0)')}</g>`;
-        if (st.d) g += `<g class="dia" data-sid="${sid}" transform="translate(${st.d[0]} ${st.d[1]}) scale(${k})" tabindex="0" role="button" aria-label="Aliran ${sid}">${diamond(0, 0, sid, col)}</g>`;
-        if (sc.table && st.d && D[sid] !== null) g += `<g transform="translate(${st.d[0] + 15 * k} ${st.d[1] - 13 * k}) scale(${k})"><text class="vtag" data-v="${sid}" font-size="10.5">${fmtAuto(D[sid])}</text></g>`;
       }
+      for (const sid of paneStreams) {
+        const st = STREAMS[sid], col = colOf(sid);
+        if (st.v) gT += `<g transform="translate(${st.v[0]} ${st.v[1]}) scale(${k}) translate(${-st.v[0]} ${-st.v[1]})">${valve(st.v[0], st.v[1], st.v[2])}</g>`;
+        for (const h of st.hex || []) gT += `<g class="dia" data-sid="${sid}" transform="translate(${h[0]} ${h[1]}) scale(${k})" tabindex="0" role="button" aria-label="Aliran ${sid}">${hexConn(0, 0, h[2], col).replace(/translate\([^)]*\)/, 'translate(0 0)')}</g>`;
+        if (st.d) gT += `<g class="dia" data-sid="${sid}" transform="translate(${st.d[0]} ${st.d[1]}) scale(${k})" tabindex="0" role="button" aria-label="Aliran ${sid}">${diamond(0, 0, sid, col)}</g>`;
+        if (sc.table && st.d && D[sid] !== null) {   // kotak nilai putih (angka + satuan) seperti indikator HMI
+          const vs = fmtAuto(D[sid]), u = REG.ST[sid]?.u || '', bw = Math.max(5, vs.length + 1) * 6.3 + u.length * 4.9 + 12;
+          const vx = st.d[0] + 12 * k + bw * k > p.x + p.w - 4 ? st.d[0] - 12 * k - bw * k : st.d[0] + 12 * k;   // balik ke kiri bila terpotong tepi panel
+          gV += `<g class="vbox" transform="translate(${vx} ${Math.max(p.y + 2, st.d[1] - 25 * k)}) scale(${k})"><rect width="${bw}" height="16" rx="1.5"/><text class="vtag" data-v="${sid}" x="5" y="11.6" font-size="10.5">${vs}</text><text class="vunit" x="${bw - 4}" y="11.6" text-anchor="end" font-size="8.6">${esc(u)}</text></g>`;
+        }
+      }
+      g += gO + gI + gF + gT;
       // unit
       for (const tag of paneUnits) {
         const u = UNITS[tag]; const e = REG.EQ[tag];
-        if (u.t === 'label') { g += `<text x="${u.x}" y="${u.y}" text-anchor="middle" font-size="${fs}" font-style="italic" fill="#9DC3B4">${esc(u.n)}</text>`; continue; }
+        if (u.t === 'label') { g += `<text x="${u.x}" y="${u.y}" text-anchor="middle" font-size="${fs}" font-style="italic" fill="#4B5862">${esc(u.n)}</text>`; continue; }
         if (u.t === 'term') { g += `<g class="term" transform="translate(${u.x} ${u.y})">${symbol('term', u.w, u.h, u.c)}<text y="${4 * Math.min(1.25, 1 / k * .75)}" text-anchor="middle" font-size="${Math.min(13, fs * 1.05)}" font-weight="700">${esc(u.n)}</text></g>`; continue; }
         if (u.t === 'node') { g += `<g transform="translate(${u.x} ${u.y})">${symbol('node', 6, 6, 'gray')}</g>`; continue; }
         const isEq = !!e && u.t !== 'bus';
         g += `<g class="unit" data-tag="${tag}" transform="translate(${u.x} ${u.y})" ${isEq ? `tabindex="0" role="button" aria-label="${esc(tag)} ${esc(e.name)}"` : ''}>`;
         g += `<rect class="ring" x="${-u.w / 2 - 6}" y="${-u.h / 2 - 6}" width="${u.w + 12}" height="${u.h + 12}" rx="8" stroke-width="${2.4 * k}"/>`;
-        g += `<g class="ubody">${symbol(u.t, u.w, u.h, u.c)}</g>`;
-        if (u.t === 'header') g += `<text y="-4" text-anchor="middle" class="tagt" font-size="${fs * 1.1}">${tag}</text><text y="${14 * k + 4}" text-anchor="middle" font-size="${fs}" fill="#2A1A1D">${esc(u.n || '')}</text>`;
+        g += `<g class="ubody">${symbol(u.t, u.w, u.h, HOT_U.has(tag) ? 'hot' : u.c)}</g>`;
+        if (u.t === 'header') g += `<text y="-4" text-anchor="middle" class="tagt" font-size="${fs * 1.1}" style="fill:#fff">${tag}</text><text y="${14 * k + 4}" text-anchor="middle" font-size="${fs}" style="fill:#FFE9E6">${esc(u.n || '')}</text>`;
         else if (u.lab) { const [dx, dy, an] = u.lab; g += `<text x="${dx}" y="${dy}" text-anchor="${an}" class="tagt" font-size="${fs * 1.08}">${tag}</text><text x="${dx}" y="${dy + 14 * k}" text-anchor="${an}" class="namet" font-size="${fs}">${esc(u.n || e?.name || '')}</text>`; }
-        if (KEY_UNITS.has(tag)) g += `<circle class="lamp run" data-lamp="${tag}" cx="${u.w / 2 - 2}" cy="${-u.h / 2 + 2}" r="${5 * k}"/>`;
+        if (KEY_UNITS.has(tag)) g += `<rect class="lamp run" data-lamp="${tag}" x="${u.w / 2 - 2 - 5 * k}" y="${-u.h / 2 + 2 - 5 * k}" width="${10 * k}" height="${10 * k}" rx="${1.5 * k}"/>`;
         g += `</g>`;
       }
-      g += `</g></g>`;
+      g += gV + `</g></g>`;
     });
     // tabel aliran layar
     if (sc.table) {
       const ids = sc.tableIds, x0 = 1400, y0 = 24, w = 504, rh = Math.min(38, (1032 - 60) / Math.max(1, ids.length));
-      g += `<rect class="panelbg" x="${x0}" y="${y0}" width="${w}" height="1032" rx="12"/><text class="ptitle" x="${x0 + 16}" y="${y0 + 30}">ALIRAN PADA LAYAR INI</text>`;
-      g += `<text x="${x0 + 16}" y="${y0 + 52}" font-size="12" fill="#8FB3A5">No</text><text x="${x0 + 240}" y="${y0 + 52}" font-size="12" fill="#8FB3A5" text-anchor="end">Laju</text><text x="${x0 + 250}" y="${y0 + 52}" font-size="12" fill="#8FB3A5">Satuan</text><text x="${x0 + 390}" y="${y0 + 52}" font-size="12" fill="#8FB3A5" text-anchor="end">T °C</text><text x="${x0 + 480}" y="${y0 + 52}" font-size="12" fill="#8FB3A5" text-anchor="end">P bar a</text>`;
+      g += `<rect class="panelbg" x="${x0}" y="${y0}" width="${w}" height="1032" rx="12"/><rect class="ptbar" x="${x0}" y="${y0}" width="${w}" height="44" rx="12"/><rect class="ptbar" x="${x0}" y="${y0 + 24}" width="${w}" height="20"/><text class="ptitle" x="${x0 + 16}" y="${y0 + 28}">ALIRAN PADA LAYAR INI</text>`;
+      g += `<text x="${x0 + 16}" y="${y0 + 52}" font-size="12" class="thd">No</text><text x="${x0 + 240}" y="${y0 + 52}" font-size="12" class="thd" text-anchor="end">Laju</text><text x="${x0 + 250}" y="${y0 + 52}" font-size="12" class="thd">Satuan</text><text x="${x0 + 390}" y="${y0 + 52}" font-size="12" class="thd" text-anchor="end">T °C</text><text x="${x0 + 480}" y="${y0 + 52}" font-size="12" class="thd" text-anchor="end">P bar a</text>`;
       ids.forEach((sid, i) => {
         const y = y0 + 62 + i * rh, s = REG.ST[sid], p = s.pipe || {}, fz = Math.min(15, rh * 0.46);
         g += `<g class="prow" data-sid="${sid}" style="cursor:pointer"><rect x="${x0 + 6}" y="${y}" width="${w - 12}" height="${rh - 3}" rx="6" fill="transparent"/>
           <rect x="${x0 + 14}" y="${y + rh / 2 - 5}" width="10" height="8" rx="2" fill="${colOf(sid)}"/><text x="${x0 + 32}" y="${y + rh / 2 + 4}" font-size="${fz}" font-weight="700">${sid}</text>
-          <text x="${x0 + 240}" y="${y + rh / 2 + 4}" text-anchor="end" font-size="${fz}" data-t="${sid}" fill="#BFF5CF">${D[sid] === null ? 'n/a' : fmtAuto(D[sid])}</text>
-          <text x="${x0 + 250}" y="${y + rh / 2 + 4}" font-size="${fz * .85}" fill="#8FB3A5">${esc(s.u || '')}</text>
+          <text x="${x0 + 240}" y="${y + rh / 2 + 4}" text-anchor="end" font-size="${fz}" data-t="${sid}" class="tval">${D[sid] === null ? 'n/a' : fmtAuto(D[sid])}</text>
+          <text x="${x0 + 250}" y="${y + rh / 2 + 4}" font-size="${fz * .85}" class="tmut">${esc(s.u || '')}</text>
           <text x="${x0 + 390}" y="${y + rh / 2 + 4}" text-anchor="end" font-size="${fz}">${p.T ?? '·'}</text><text x="${x0 + 480}" y="${y + rh / 2 + 4}" text-anchor="end" font-size="${fz}">${p.P !== null && p.P !== undefined ? fmt(p.P, 1) : '·'}</text></g>`;
       });
     }
@@ -267,7 +286,7 @@ export async function init() {
     const running = R(tag), alarm = [...AL.values()].some(a => a.active && a.tag === tag && a.pr === 'hi');
     let trend = ''; if (tsid) { const h = HIST[tsid].length ? HIST[tsid] : [val(tsid)]; const d = D[tsid] || 1, mx = Math.max(d * 1.1, ...h), mn = Math.min(0, ...h);
       const pts = h.map((v, i) => `${(i / 59) * 300},${64 - (v - mn) / (mx - mn || 1) * 56}`).join(' ');
-      trend = `<div class="fp-trend"><span>Trend 60 s · aliran ${tsid}</span><svg viewBox="0 0 300 70" preserveAspectRatio="none"><line x1="0" x2="300" y1="${64 - (d - mn) / (mx - mn || 1) * 56}" y2="${64 - (d - mn) / (mx - mn || 1) * 56}" stroke="#5D7F72" stroke-dasharray="4 4"/><polyline points="${pts}" fill="none" stroke="#8CC63F" stroke-width="2" vector-effect="non-scaling-stroke"/></svg></div>`; }
+      trend = `<div class="fp-trend"><span>Trend 60 s · aliran ${tsid}</span><svg viewBox="0 0 300 70" preserveAspectRatio="none"><line x1="0" x2="300" y1="${64 - (d - mn) / (mx - mn || 1) * 56}" y2="${64 - (d - mn) / (mx - mn || 1) * 56}" stroke="#9AA3AA" stroke-dasharray="4 4"/><polyline points="${pts}" fill="none" stroke="#1F7A4D" stroke-width="2" vector-effect="non-scaling-stroke"/></svg></div>`; }
     face.innerHTML = `<div class="fp-h"><b>${esc(tag)}</b><small>${esc(e.name)}</small><button aria-label="Tutup faceplate" data-x><svg><use href="#i-close"/></svg></button></div>
       <div class="fp-b"><div class="fp-st"><span class="fp-pill ${alarm ? 'alarm' : running ? 'run' : 'stop'}">${alarm ? 'ALARM' : running ? 'RUNNING' : 'STOPPED'}</span>
       <button class="fp-pill mode" data-mode title="Ubah mode kendali">${S.man[tag] ? 'MAN' : 'AUTO'}</button><span class="fp-pill">${esc(e.status)}</span></div>
@@ -339,8 +358,8 @@ export async function init() {
     <div class="sl-field sl-tog"><label class="switch"><input type="checkbox" id="sgCcu" checked><span></span>CCU</label></div>
     <button class="sc-btn" id="scReset"><svg width="14" height="14" style="vertical-align:-2px"><use href="#i-reset"/></svg> Reset ke desain</button>
     <p class="sc-hint" id="scHint">Mode DESIGN menampilkan neraca paper (steady state). Pilih <b>SIMULASI</b> untuk menggerakkan nilai, menghentikan unit lewat faceplate, dan memberi gangguan.</p>
-    <div><h4>Legenda medium</h4><div class="sc-legend">${['Padatan', 'Gas', 'CO₂', 'O₂', 'H₂', 'Metanol / campuran sintesis', 'Air / kondensat', 'Fluida kerja ORC', 'Panas', 'Listrik'].map(k => `<span><i style="background:${MEDIUM[k][0]}"></i>${MEDIUM[k][1]}</span>`).join('')}</div></div>
-    <div><h4>Status unit</h4><div class="sc-legend"><span><i style="background:#22C55E;height:8px;width:8px;border-radius:50%"></i>Jalan</span><span><i style="background:#6B7F77;height:8px;width:8px;border-radius:50%"></i>Berhenti</span><span><i style="background:#E8862A;height:8px;width:8px;border-radius:50%"></i>Peringatan</span><span><i style="background:#E5484D;height:8px;width:8px;border-radius:50%"></i>Alarm</span></div></div>`;
+    <div><h4>Legenda medium</h4><div class="sc-legend">${['Padatan', 'Gas', 'CO₂', 'O₂', 'H₂', 'Metanol / campuran sintesis', 'Air / kondensat', 'Fluida kerja ORC', 'Panas', 'Listrik'].map(k => `<span><i style="background:${dk(MEDIUM[k][0])}"></i>${MEDIUM[k][1]}</span>`).join('')}</div></div>
+    <div><h4>Status unit</h4><div class="sc-legend"><span><i class="lg-lamp" style="background:#22B14C"></i>Jalan</span><span><i class="lg-lamp" style="background:#9AA3AA"></i>Berhenti</span><span><i class="lg-lamp" style="background:#F08C1A"></i>Peringatan</span><span><i class="lg-lamp" style="background:#E0251B"></i>Alarm</span></div></div>`;
   const bindSl = (id, key) => { const el = $('#' + id), o = $('#' + id + 'O'); el.oninput = () => { S[key] = el.value / 100; o.textContent = el.value + '%'; if (S.mode !== 'sim') setMode('sim'); }; };
   bindSl('sgPeme', 'load'); bindSl('sgLpp', 'lpp'); bindSl('sgLfg', 'lfg');
   $('#sgWhr').onchange = e => { S.whr = e.target.checked; if (S.mode !== 'sim') setMode('sim'); };
