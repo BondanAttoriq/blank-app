@@ -97,8 +97,8 @@ function render(s) {
     ['IRR', m.irr < 0 ? `&lt;0<small>%</small>` : `${fmt(m.irr, 1)}<small>%</small>`, delta(m.irr, b.irr, 1, true, ' poin'), est],
     ['Simple PBP', `${tH(m.pbp)}<small> tahun</small>`, delta(m.pbp, b.pbp, 2, false), est],
     ['PI', `2,65`, `<div class="kd flat">${m.base || (s.meoh === 750 && s.el === 40) ? 'nilai basis' : 'nilai basis (tidak dihitung ulang)'}</div>`, (s.meoh !== 750 || s.el !== 40) ? '<span class="badge base">basis</span>' : ''],
-    ['Harga impas metanol', typeof m.beM === 'string' ? `<small>US$</small>${m.beM}` : `<small>≈US$</small>${fmt(m.beM, 0)}<small>/ton</small>`, delta(m.beM, b.beM, 0, false, ' US$/t'), '<span class="badge base" title="NPV = 0 pada tarif listrik saat ini">NPV = 0</span>'],
-    ['Tarif listrik impas', typeof m.beE === 'string' ? `<small>US$</small>${m.beE}` : `<small>≈US$</small>${fmt(m.beE, 1)}<small>/MWh</small>`, delta(m.beE, b.beE, 1, true, ' US$/MWh'), '<span class="badge base" title="NPV = 0 pada harga metanol saat ini">NPV = 0</span>'],
+    ['Harga impas metanol (NPV = 0)', typeof m.beM === 'string' ? `<small>US$</small>${m.beM}` : `<small>≈US$</small>${fmt(m.beM, 0)}<small>/ton</small>`, delta(m.beM, b.beM, 0, false, ' US$/t'), ''],
+    ['Tarif listrik impas (NPV = 0)', typeof m.beE === 'string' ? `<small>US$</small>${m.beE}` : `<small>≈US$</small>${fmt(m.beE, 1)}<small>/MWh</small>`, delta(m.beE, b.beE, 1, true, ' US$/MWh'), ''],
     ['Intensitas emisi operasional', `${fmt(m.inten, 3)}<small> kg CO₂-eq/kg</small>`, delta(m.inten, b.inten, 3, false), s.peme && s.ef > 0 ? '<span class="badge est">estimasi</span>' : ''],
     ['Emisi tahunan', `${fmt(m.annual, 0)}<small> t CO₂-eq/th</small>`, delta(m.annual, b.annual, 0, false, ' t'), ''],
   ];
@@ -157,10 +157,10 @@ function render(s) {
   });
   // GWP
   cartesian($('#chGwp'), {
-    title: 'GWP per ton LPP: 3 jalur', sub: 'LCA Cerqueira et al. (2025)', unit: 'kg CO₂-eq/ton LPP',
+    title: 'GWP per ton LPP: 3 jalur', sub: 'Metanol −80,95% vs landfill dan −62,57% vs WtE · LCA Cerqueira et al. (2025)', unit: 'kg CO₂-eq/ton LPP',
     x: { type: 'cat', cats: ['Landfill', 'WtE', 'Metanol'] }, y: { min: 0, max: 800, label: 'kg CO₂-eq/ton LPP', fmt: v => fmt(v, 0) },
     bars: [{ name: 'GWP', color: (v, i) => [C.blue, C.teal, C.lime][i], values: [672, 342, 128] }],
-    texts: [{ x: 0, y: 672, dy: -8, t: '672' }, { x: 1, y: 342, dy: -8, t: '342' }, { x: 2, y: 128, dy: -8, t: '128 (−80,95% vs landfill; −62,57% vs WtE)', cls: 'strong' }],
+    texts: [{ x: 0, y: 672, dy: -8, t: '672' }, { x: 1, y: 342, dy: -8, t: '342' }, { x: 2, y: 128, dy: -8, t: '128', cls: 'strong' }],
     table: { head: ['Jalur', 'kg CO₂-eq/ton LPP'], rows: [['Landfill', '672'], ['WtE', '342'], ['Metanol', '128']] },
     note: 'Emisi langsung plant: 9,97 t CO₂/hari (4,57 tidak tertangkap + 5,40 tertangkap tetapi tidak dimanfaatkan) → 0,134 kg CO₂/kg metanol.',
   });
