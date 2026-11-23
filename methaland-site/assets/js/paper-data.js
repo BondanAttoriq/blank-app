@@ -1,4 +1,4 @@
-// Konstanta dari full paper LKTIN Eco-Generation 2026 (tidak diubah). Sumber per blok di komentar.
+// Konstanta dari full paper CARBON Essay Competition 2026 (tidak diubah). Sumber per blok di komentar.
 export const P = {
   // 9.1 Basis & neraca (Tabel 3, Tabel 4, Subbab 3.5–3.6)
   base: {
@@ -62,7 +62,7 @@ export const P = {
   lit: [['Zhou et al. (2026)', 'LPP', 'OEC, CCU, elektrolisis, WHR', '24 ton/hari', '701,49', 'n/a'],
     ['Sun et al. (2022)', 'LPP', 'Gasifikasi dan SOEC', '600 ton/hari', '355,89', '9 tahun'],
     ['Hai et al. (2023)', 'LFG', 'Upgrading LFG dan PEM', 'Skala besar', '124', 'n/a'],
-    ['METHALAND (sistem terintegrasi)', 'LPP–LFG', 'OEC, PEME, CCU, WHR', '100 ton LPP/hari', '≈624', '3,71 tahun']],
+    ['METHACYCLE (sistem terintegrasi)', 'LPP–LFG', 'OEC, PEME, CCU, WHR', '100 ton LPP/hari', '≈624', '3,71 tahun']],
   // 9.9 Kerangka ML
   ml: { factors: ['Rasio suplai O₂', 'Rasio H₂/CO₂', 'Temperatur sintesis'], responses: ['Produksi metanol', 'Konsumsi listrik PEME', 'Efisiensi energi', 'Intensitas emisi'],
     runs: 20, bench: 'R² 99,79–99,99%, galat prediksi < 2%' },

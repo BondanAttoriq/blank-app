@@ -175,7 +175,7 @@ function render(s) {
       <span>Intensitas listrik PEME</span><b>10,63 → 10,10 MWh/ton</b><span>Konsumsi listrik untuk emisi</span><b>${s.peme ? '10,49 kWh/kg <span class="badge est">estimasi</span>' : '11,02 kWh/kg'}</b></div>`;
 }
 function summary(s, m) {
-  return [`METHALAND · Ringkasan skenario dashboard`, `Harga metanol: US$${s.meoh}/ton · Tarif listrik: US$${s.el}/MWh · EF listrik: ${fmt(s.ef, 2)} kg CO₂-eq/kWh · PEME −5%: ${s.peme ? 'aktif' : 'nonaktif'}`,
+  return [`METHACYCLE · Ringkasan skenario dashboard`, `Harga metanol: US$${s.meoh}/ton · Tarif listrik: US$${s.el}/MWh · EF listrik: ${fmt(s.ef, 2)} kg CO₂-eq/kWh · PEME −5%: ${s.peme ? 'aktif' : 'nonaktif'}`,
     `NPV (10%): US$${fmt(m.npv, 2)} juta${m.combo ? ' (estimasi kombinasi)' : ''}`, `IRR: ${m.irr < 0 ? '<0' : fmt(m.irr, 1)}%`, `Simple PBP: ${tH(m.pbp)} tahun`, `PI: 2,65 (basis)`,
     `Harga impas metanol: ${typeof m.beM === 'string' ? m.beM : '≈US$' + fmt(m.beM, 0)}/ton`, `Tarif listrik impas: ${typeof m.beE === 'string' ? m.beE : '≈US$' + fmt(m.beE, 1)}/MWh`,
     `Intensitas emisi operasional: ${fmt(m.inten, 3)} kg CO₂-eq/kg metanol`, `Emisi tahunan: ${fmt(m.annual, 0)} t CO₂-eq/tahun (24.880 t metanol/tahun)`].join('\n');

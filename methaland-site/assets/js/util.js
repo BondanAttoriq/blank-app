@@ -15,7 +15,7 @@ export const signed = (v, d = 2) => (v > 0 ? '+' : v < 0 ? '−' : '±') + fmt(M
 export const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 // Hapus rujukan bagian dokumen (mis. "(Tabel 3)", ", Lampiran 7") dari teks data yang ditampilkan
-export const noRef = t => String(t ?? '').replace(/\s*\((?:LKTIN\s+)?(?:Tabel|Lampiran|Gambar|Subbab)\s*[\d.,–-]+\)/g, '').replace(/,\s*(?:Tabel|Lampiran|Gambar|Subbab)\s*[\d.–-]+/g, '').trim();
+export const noRef = t => String(t ?? '').replace(/\s*\((?:LKTIN\s+)?(?:Tabel|Lampiran|Gambar|Subbab)\s*[\d.,–-]+\)/g, '').replace(/,\s*(?:Tabel|Lampiran|Gambar|Subbab)\s*[\d.–-]+/g, '').replace(/\bLKTIN\b/g, 'studi').trim();
 export const bus = new EventTarget();
 export const emit = (type, detail) => bus.dispatchEvent(new CustomEvent(type, { detail }));
 export const on = (type, fn) => bus.addEventListener(type, e => fn(e.detail));

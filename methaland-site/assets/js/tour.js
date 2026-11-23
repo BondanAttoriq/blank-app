@@ -4,7 +4,7 @@ import { $, esc, statusBadge, emit } from './util.js';
 
 const SAY = {
   tpst: ['TPST Bantargebang (±110 ha) menerima lebih dari 7.300 t sampah/hari dengan timbunan ±35–50 m di Zona I C, I dan V, II, III, IV A–E, serta VI A–B.',
-    'LPP dan landfill gas (LFG) tersedia di lokasi, sehingga bahan baku METHALAND tidak perlu diangkut jauh.',
+    'LPP dan landfill gas (LFG) tersedia di lokasi, sehingga bahan baku METHACYCLE tidak perlu diangkut jauh.',
     'Plant konseptual ditempatkan di sisi barat pagar TPST, dekat gerbang utama dan jembatan timbang.'],
   lokasi: ['Longsor Zona IV A (8 Maret 2026) menimpa truk antre dan menutup Sungai Ciketing ±40 m: risiko geoteknik nyata.',
     'Kriteria tapak: plant berjarak ≥100 m (2 × tinggi timbunan) dari kaki timbunan; jarak aktual minimum ±118 m ke Zona I C.',
@@ -15,7 +15,7 @@ const SAY = {
   pra: ['Pemilahan U-101 memisahkan reject, kemudian shredder U-102 menyeragamkan ukuran umpan.',
     'Rotary dryer D-101 menurunkan kadar air dari 50,45% menjadi 10% dengan panas H-04 dari HRN-601.'],
   lfg_header: ['Sumur gas HDPE di bench Zona I, II, dan III (70 + 62 + 37 sumur) terhubung ke rumah daya landfill gas PLTSa.',
-    'METHALAND mengambil 1.000 Nm³/jam LFG melalui header DN150 ±0,9 km di koridor selatan, bertumpu pada sleeper beton.',
+    'METHACYCLE mengambil 1.000 Nm³/jam LFG melalui header DN150 ±0,9 km di koridor selatan, bertumpu pada sleeper beton.',
     'Header masuk plant dari sisi barat melalui pipe bridge menuju titik batas LFG-110 (Area 200).'],
   lfg: ['LFG masuk di LFG-110; kondensat dipisahkan di knock-out drum V-201 (aliran 12 ke konektor W-1).',
     'A-201 menyerap H₂S dan A-202 menyerap siloksana; adsorben bekas diganti secara batch ke bin 14 dan 16.',

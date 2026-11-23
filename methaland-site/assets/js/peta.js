@@ -1,5 +1,5 @@
-// Peta lokasi interaktif: tapak METHALAND di TPST Bantargebang.
-// Peta dasar = render ortografis tampak atas dari model 3D METHALAND sendiri (assets/img/peta_tpst.jpg, 1,25 m/px).
+// Peta lokasi interaktif: tapak METHACYCLE di TPST Bantargebang.
+// Peta dasar = render ortografis tampak atas dari model 3D METHACYCLE sendiri (assets/img/peta_tpst.jpg, 1,25 m/px).
 // Lapisan dari data.json (konteks, checks, flow LFG-H, labels) dan equipment register; tidak ada angka baru.
 import { $, $$, fmt, esc, emit, getJSON, reducedMotion } from './util.js';
 
@@ -9,7 +9,7 @@ const sx = x => (x - MAP.X0) / MAP.PX, sy = y => (MAP.Y1 - y) / MAP.PX;
 const RIVER_PX = [[200, 18], [250, 16], [300, 22], [345, 46], [392, 76], [420, 112], [442, 160], [466, 212], [505, 252], [560, 272], [640, 286]];
 const RIVER = RIVER_PX.map(([px, py]) => [(px - 62) * 3.37, (343.54 - py) * 3.37]);
 const ZLAB = { 'Z-IC': [-20, 7, 'end'], 'Z-IV': [0, 42, 'middle'], 'Z-IVA': [0, 40, 'middle'], 'Z-IVB': [20, 7, 'start'], 'Z-IVC': [-20, 7, 'end'] };   // posisi label agar tidak bertumpuk
-const LAYERS = [['zona', 'Zona timbunan', true], ['fas', 'Fasilitas TPST', true], ['plant', 'Plant METHALAND', true], ['jarak', 'Jarak aman', true], ['lfg', 'Header LFG', true], ['sungai', 'Sungai Ciketing', true]];
+const LAYERS = [['zona', 'Zona timbunan', true], ['fas', 'Fasilitas TPST', true], ['plant', 'Plant METHACYCLE', true], ['jarak', 'Jarak aman', true], ['lfg', 'Header LFG', true], ['sungai', 'Sungai Ciketing', true]];
 
 export async function init() {
   const host = $('#peta'); if (!host) return;
@@ -54,22 +54,22 @@ export async function init() {
     return `<g class="pm-pin fac" data-info="f:${k.id}" tabindex="0" role="button" aria-label="${esc(k.nama)}"><rect x="${x - 10}" y="${y - 10}" width="20" height="20" rx="4" fill="${out ? '#6B7F77' : '#0C5A72'}" stroke="#fff" stroke-width="2.5"/><text x="${x + 16}" y="${y + 5}" class="pm-t sm">${esc(k.nama)}</text></g>`; }).join('')}</g>`;
   // plant
   g += `<g data-layer="plant"><rect x="${sx(px0)}" y="${sy(py1)}" width="${(px1 - px0) / MAP.PX}" height="${(py1 - py0) / MAP.PX}" class="pm-plant"/>
-    <g class="pm-pin" data-info="plant" tabindex="0" role="button" aria-label="Plot METHALAND"><rect x="${sx(px0) - 4}" y="${sy(py1) - 54}" width="236" height="40" rx="20" fill="#8CC63F" stroke="#fff" stroke-width="3"/><text x="${sx(px0) + 114}" y="${sy(py1) - 28}" text-anchor="middle" class="pm-bt dark">METHALAND ±2,53 ha</text></g></g>`;
+    <g class="pm-pin" data-info="plant" tabindex="0" role="button" aria-label="Plot METHACYCLE"><rect x="${sx(px0) - 4}" y="${sy(py1) - 54}" width="236" height="40" rx="20" fill="#8CC63F" stroke="#fff" stroke-width="3"/><text x="${sx(px0) + 114}" y="${sy(py1) - 28}" text-anchor="middle" class="pm-bt dark">METHACYCLE ±2,53 ha</text></g></g>`;
   // skala & utara (dalam koordinat peta)
   g += `<g transform="translate(40 ${MAP.H - 70})"><rect x="-12" y="-34" width="${400 / MAP.PX + 70}" height="64" rx="10" fill="rgba(255,255,255,.9)"/>${[0, 1, 2, 3].map(i => `<rect x="${i * 100 / MAP.PX}" y="0" width="${100 / MAP.PX}" height="10" fill="${i % 2 ? '#fff' : '#17322A'}" stroke="#17322A" stroke-width="1.5"/>`).join('')}
     <text x="0" y="-8" class="pm-t sm">0</text><text x="${200 / MAP.PX}" y="-8" text-anchor="middle" class="pm-t sm">200</text><text x="${400 / MAP.PX}" y="-8" text-anchor="middle" class="pm-t sm">400 m</text>
     <g transform="translate(${400 / MAP.PX + 36} 2)"><polygon points="0,-24 9,8 0,3 -9,8" fill="#17322A"/><polygon points="0,-24 0,3 -9,8" fill="#E8862A"/><text y="24" text-anchor="middle" class="pm-t sm">U</text></g></g>`;
 
-  host.innerHTML = `<div class="pm-head"><div><h3 class="h-sm" style="margin:0">Peta lokasi &amp; zona penyangga</h3><div class="ch-sub">Peta dasar: render tampak atas model 3D METHALAND (1,25 m/piksel). Klik penanda untuk detail.</div></div>
+  host.innerHTML = `<div class="pm-head"><div><h3 class="h-sm" style="margin:0">Peta lokasi &amp; zona penyangga</h3><div class="ch-sub">Peta dasar: render tampak atas model 3D METHACYCLE (1,25 m/piksel). Klik penanda untuk detail.</div></div>
       <div class="pm-layers" role="group" aria-label="Lapisan peta">${LAYERS.map(([k, t, on]) => `<label class="pm-chip"><input type="checkbox" data-lay="${k}" ${on ? 'checked' : ''}><span>${t}</span></label>`).join('')}</div></div>
-    <div class="pm-grid"><div class="pm-stage" id="pmStage"><svg id="pmSvg" viewBox="0 0 ${MAP.W} ${MAP.H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Peta TPST Bantargebang dan tapak METHALAND">${g}</svg>
+    <div class="pm-grid"><div class="pm-stage" id="pmStage"><svg id="pmSvg" viewBox="0 0 ${MAP.W} ${MAP.H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Peta TPST Bantargebang dan tapak METHACYCLE">${g}</svg>
       <div class="pm-zoom"><button class="btn-round" data-z="in" aria-label="Perbesar peta"><svg><use href="#i-plus"/></svg></button><button class="btn-round" data-z="out" aria-label="Perkecil peta"><svg><use href="#i-minus"/></svg></button><button class="btn-round" data-z="fit" aria-label="Tampilkan seluruh peta"><svg><use href="#i-reset"/></svg></button></div></div>
       <aside class="pm-side card" id="pmInfo" aria-live="polite"></aside></div>`;
 
   // ------------------------------------------------ panel info
   const ok = '<span class="badge st-C">lolos</span>';
   const defaultInfo = () => `<h4 class="pm-h">Ringkasan tapak</h4>
-    <div class="pm-kv"><span>Luas TPST</span><b>±${fmt(C.tpst_area_ha, 1)} ha</b><span>Luas zona timbunan</span><b>±${fmt(C.landfill_ha, 1)} ha</b><span>Plot METHALAND</span><b>±2,53 ha</b></div>
+    <div class="pm-kv"><span>Luas TPST</span><b>±${fmt(C.tpst_area_ha, 1)} ha</b><span>Luas zona timbunan</span><b>±${fmt(C.landfill_ha, 1)} ha</b><span>Plot METHACYCLE</span><b>±2,53 ha</b></div>
     <h4 class="pm-h">Uji jarak aman</h4>
     <ul class="pm-checks"><li><span>Plant ke kaki timbunan terdekat (Zona I C)</span><b>${fmt(BUF['Z-IC'][3], 1)} m</b><small>kriteria ≥${fmt(C.buffer_min, 0)} m (2 × tinggi timbunan) ${ok}</small></li>
       <li><span>Flare ke kaki timbunan terdekat</span><b>${fmt(C.flare_buffer_min, 1)} m</b><small>sterile area R 60 m di selatan plot ${ok}</small></li>
@@ -83,10 +83,10 @@ export async function init() {
     if (!key) h = defaultInfo();
     else if (key.startsWith('z:')) { const k = K.find(x => x.id === key.slice(2)), b = BUF[k.id];
       h = `<span class="pm-tag" style="background:${hCol(+k.tinggi_m)}">Zona timbunan</span><h4 class="pm-h">${esc(k.nama)}</h4><div class="pm-kv"><span>Luas</span><b>${fmt(+k.luas_ha, 2)} ha</b><span>Tinggi (asumsi dalam rentang sumber)</span><b>±${fmt(+k.tinggi_m, 0)} m</b>
-        ${b ? `<span>Jarak ke plant METHALAND</span><b>${fmt(b[3], 1)} m</b><span>Jarak ke flare</span><b>${fmt(b[4], 1)} m</b>` : ''}</div><p class="note-sm">${esc(k.status)}</p>`; }
+        ${b ? `<span>Jarak ke plant METHACYCLE</span><b>${fmt(b[3], 1)} m</b><span>Jarak ke flare</span><b>${fmt(b[4], 1)} m</b>` : ''}</div><p class="note-sm">${esc(k.status)}</p>`; }
     else if (key.startsWith('f:')) { const k = K.find(x => x.id === key.slice(2));
       h = `<span class="pm-tag" style="background:${k.jenis === 'luar pagar' ? '#6B7F77' : '#0C5A72'}">${esc(k.jenis)}</span><h4 class="pm-h">${esc(k.nama)}</h4>${k.luas_ha ? `<div class="pm-kv"><span>Luas (asumsi)</span><b>${fmt(+k.luas_ha, 2)} ha</b></div>` : ''}<p class="note-sm">${esc(k.status)}</p>`; }
-    else if (key === 'plant') h = `<span class="pm-tag" style="background:#1F7A4D">Tapak usulan</span><h4 class="pm-h">Plot METHALAND</h4><div class="pm-kv"><span>Luas plot</span><b>±2,53 ha</b><span>Inti proses</span><b>±1,75 ha</b><span>Pita utilitas</span><b>±0,78 ha</b></div><p class="note-sm">Sisi barat pagar TPST, dekat gerbang utama dan jembatan timbang. Kotak pada peta = batas unit register + 10 m.</p><button class="btn btn-teal sm" data-stop="2"><svg><use href="#i-play"/></svg>Lihat di tur 3D</button>`;
+    else if (key === 'plant') h = `<span class="pm-tag" style="background:#1F7A4D">Tapak usulan</span><h4 class="pm-h">Plot METHACYCLE</h4><div class="pm-kv"><span>Luas plot</span><b>±2,53 ha</b><span>Inti proses</span><b>±1,75 ha</b><span>Pita utilitas</span><b>±0,78 ha</b></div><p class="note-sm">Sisi barat pagar TPST, dekat gerbang utama dan jembatan timbang. Kotak pada peta = batas unit register + 10 m.</p><button class="btn btn-teal sm" data-stop="2"><svg><use href="#i-play"/></svg>Lihat di tur 3D</button>`;
     else if (key === 'buffer') h = `<h4 class="pm-h">Jarak ke kaki timbunan</h4><div class="pm-kv"><span>Zona I C (terdekat)</span><b>${fmt(BUF['Z-IC'][3], 1)} m</b><span>Zona I dan V</span><b>${fmt(BUF['Z-IV'][3], 1)} m</b><span>Kriteria desain</span><b>≥${fmt(C.buffer_min, 0)} m</b></div><p class="note-sm">Kriteria = 2 × tinggi timbunan, merespons longsor Zona IV A (8 Maret 2026).</p>`;
     else if (key === 'flare') h = `<h4 class="pm-h">Flare FL-901</h4><div class="pm-kv"><span>Tinggi</span><b>30 m</b><span>Sterile area</span><b>R 60 m</b><span>Jarak ke timbunan terdekat</span><b>${fmt(C.flare_buffer_min, 1)} m</b></div><button class="btn btn-teal sm" data-stop="15"><svg><use href="#i-play"/></svg>Lihat di tur 3D</button>`;
     else if (key === 'river') h = `<h4 class="pm-h">Sungai Ciketing</h4><div class="pm-kv"><span>Jarak plant ke sungai</span><b>±${fmt(C.river_m, 0)} m</b><span>Kriteria minimum</span><b>${fmt(C.river_min, 0)} m</b></div><p class="note-sm">Jalur sungai didigitasi dari poster zona TPST; garis biru menunjukkan arah titik terdekat.</p>`;

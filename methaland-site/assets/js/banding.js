@@ -1,4 +1,4 @@
-// Penggeser sebelum–sesudah: Landfill atau WtE (sebelum) vs METHALAND (sesudah).
+// Penggeser sebelum–sesudah: Landfill atau WtE (sebelum) vs METHACYCLE (sesudah).
 // Sumber: LCIA Tabel 5 (Cerqueira et al., 2025, per ton LPP); produk Tabel 3; pendapatan Lampiran 15.
 // Basis tahunan (turunan): × 33.333 t LPP/tahun = 100 t/hari × 8.000 jam/tahun (basis yang sama dengan 24.880 t metanol/tahun).
 import { $, $$, fmt, esc } from './util.js';
@@ -22,11 +22,11 @@ export function init() {
   const tiles = who => ROWS.map((r, i) => `<div class="bd-tile"><span>${r[1]}</span><b data-k="${who}-${r[0]}">0</b><small>${st.basis === 'ton' ? r[2] : r[3]}</small></div>`).join('')
     + `<div class="bd-tile"><span>Produk e-methanol</span><b data-k="${who}-meoh">0</b><small>${st.basis === 'ton' ? 't/hari (99,76%)' : 't/tahun'}</small></div>`
     + `<div class="bd-tile"><span>Pendapatan produk</span><b data-k="${who}-rev">0</b><small>${who === 'after' ? 'US$ juta/tahun' : 'tidak ada produk kimia'}</small></div>`;
-  el.innerHTML = `<div class="bd-head"><div><h3 class="h-sm" style="margin:0">Sebelum vs sesudah METHALAND</h3><div class="ch-sub">Geser pembatas untuk membandingkan kondisi tanpa dan dengan METHALAND.</div></div>
+  el.innerHTML = `<div class="bd-head"><div><h3 class="h-sm" style="margin:0">Sebelum vs sesudah METHACYCLE</h3><div class="ch-sub">Geser pembatas untuk membandingkan kondisi tanpa dan dengan METHACYCLE.</div></div>
       <div class="bd-ctrl"><div class="seg" role="radiogroup" aria-label="Kondisi pembanding"><label><input type="radio" name="bdCmp" value="landfill" checked><span>Landfill</span></label><label><input type="radio" name="bdCmp" value="wte"><span>WtE</span></label></div>
       <div class="seg" role="radiogroup" aria-label="Basis perbandingan"><label><input type="radio" name="bdBasis" value="ton" checked><span>Per ton LPP</span></label><label><input type="radio" name="bdBasis" value="year"><span>Per tahun</span></label></div></div></div>
     <div class="bd-stage" id="bdStage" style="--pos:50%">
-      <div class="bd-layer after"><div class="bd-bg" style="background-image:url(assets/img/render/07_oec.jpg)"></div><div class="bd-in"><span class="bd-lab after">SESUDAH · METHALAND</span><div class="bd-grid" id="bdAfter"></div></div></div>
+      <div class="bd-layer after"><div class="bd-bg" style="background-image:url(assets/img/render/07_oec.jpg)"></div><div class="bd-in"><span class="bd-lab after">SESUDAH · METHACYCLE</span><div class="bd-grid" id="bdAfter"></div></div></div>
       <div class="bd-layer before"><div class="bd-bg" style="background-image:url(assets/img/render/02_lokasi.jpg)"></div><div class="bd-in"><span class="bd-lab before" id="bdBeforeLab">SEBELUM · Landfill</span><div class="bd-grid" id="bdBefore"></div></div></div>
       <div class="bd-handle" aria-hidden="true"><span><svg viewBox="0 0 24 24" width="22" height="22"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
       <input type="range" class="bd-range" id="bdRange" min="0" max="100" value="50" step="1" aria-label="Geser pembatas sebelum dan sesudah">

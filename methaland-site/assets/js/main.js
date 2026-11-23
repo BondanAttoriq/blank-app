@@ -2,7 +2,7 @@
 import { $, $$, on, emit, scrollToId, reducedMotion } from './util.js';
 
 const state = { v3d: null, v3dP: null, scada: null, scadaP: null };
-window.METHALAND = state;
+window.METHACYCLE = state;
 
 // ---------------------------------------------------------------- loader halaman
 const pl = $('#pageLoader');
@@ -31,6 +31,13 @@ if ('IntersectionObserver' in window && !reducedMotion()) {
   // elemen yang ditambahkan dinamis
   window.__reveal = el => io.observe(el);
 } else { $$('.reveal').forEach(el => el.classList.add('in')); window.__reveal = el => el.classList.add('in'); }
+
+// ---------------------------------------------------------------- jeda animasi CSS tak-terbatas di bagian yang tidak terlihat
+// (dash SCADA, peta, siklus sirkular, penanda grafik): main thread lebih lapang untuk render 3D
+if ('IntersectionObserver' in window) {
+  const ioA = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('anim-off', !e.isIntersecting)), { rootMargin: '100px' });
+  $$('main > section').forEach(s => { s.classList.add('anim-off'); ioA.observe(s); });
+}
 
 // ---------------------------------------------------------------- toast
 let toastT = 0;

@@ -1,6 +1,6 @@
-# METHALAND Digital Twin
+# METHACYCLE Digital Twin
 
-Website statis satu halaman untuk LKTIN Eco-Generation 2026 (tim dari BARAT TIMUR dan ITB: Bondan Attoriq dan Azkia Nayla, Institut Teknologi Bandung).
+Website statis satu halaman untuk CARBON Essay Competition 2026 (Tim UI x ITB: Bondan Attoriq, Azkia Nayla, dan Jason Lee Wijaya).
 Isi: tur 3D 17 perhentian, SCADA/HMI 7 layar dengan mode simulasi, Engineering Dashboard, neraca massa-energi, analisis 4E, kerangka optimasi ML, ekonomi sirkular, dan unduhan.
 
 ## Deploy ke Netlify Drop
@@ -42,15 +42,16 @@ methaland-site/
 ```
 
 ## Sumber data
-- **Angka paper**: full paper LKTIN (Tabel 1–6, Lampiran 9–20, Gambar 6) di `assets/js/paper-data.js`.
-- **3D**: `data.json` dan GLB dari METHALAND v4 (`04_Web/situs`), tidak diubah.
+- **Angka paper**: full paper (Tabel 1–6, Lampiran 9–20, Gambar 6) di `assets/js/paper-data.js`.
+- **3D**: `data.json` dan GLB dari METHACYCLE v4 (`04_Web/situs`), tidak diubah.
 - **Register**: `05_Data_Register/*.csv` dikonversi sekali ke JSON oleh `tools/build_assets.py` (di luar folder deploy).
 - **SCADA**: koordinat pada grid PFD berwarna 1920 × 1080 di `assets/data/scada-layout.json` (dibuat `tools/scada_layout.py`). Tiap layar = satu atau lebih *pane* dari grid itu yang dipetakan ke kanvas 1920 × 1080; unit/aliran per layar dipilih otomatis dari pane. Topologi dan nilai dari `stream_register`, `neraca_aliran`, `ukuran_pipa`.
-- **Render**: diambil dari Kartu Tur METHALAND (render Blender per perhentian).
+- **Render**: diambil dari Kartu Tur METHACYCLE (render Blender per perhentian).
 
 ## Fitur tambahan
-- **Peta lokasi interaktif** (bagian Latar, `peta.js`): peta dasar = render ortografis tampak atas dari model 3D sendiri (`assets/img/peta_tpst.jpg`, 1,25 m/px; dibuat ulang dengan `tools/render_map.html`). Lapisan zona timbunan, fasilitas TPST, plot METHALAND, jarak aman (`checks` di data.json), header LFG (rute `LFG-H`), dan Sungai Ciketing; zoom, geser, klik penanda untuk detail.
-- **Sebelum vs sesudah** (bagian Sirkular, `banding.js`): penggeser Landfill/WtE vs METHALAND berbasis LCIA Tabel 5, per ton LPP atau per tahun (× 33.333 t LPP/tahun), plus produk dan pendapatan.
+- **Tur 3D layar penuh** (`tur3d/`, tombol di bagian 3D Plant): viewer asli v4 yang lebih ringan, memakai model dan data situs. Versi mandirinya ada di ZIP terpisah (`methacycle-3d/`, dibuat `tools/build_tur3d.py`).
+- **Peta lokasi interaktif** (bagian Latar, `peta.js`): peta dasar = render ortografis tampak atas dari model 3D sendiri (`assets/img/peta_tpst.jpg`, 1,25 m/px; dibuat ulang dengan `tools/render_map.html`). Lapisan zona timbunan, fasilitas TPST, plot METHACYCLE, jarak aman (`checks` di data.json), header LFG (rute `LFG-H`), dan Sungai Ciketing; zoom, geser, klik penanda untuk detail.
+- **Sebelum vs sesudah** (bagian Sirkular, `banding.js`): penggeser Landfill/WtE vs METHACYCLE berbasis LCIA Tabel 5, per ton LPP atau per tahun (× 33.333 t LPP/tahun), plus produk dan pendapatan.
 - **Animasi masuk** (`anim.js`): angka naik saat terlihat, Sankey mengalir, batang tumbuh, garis tergambar, cincin efisiensi; otomatis nonaktif bila `prefers-reduced-motion`.
 
 ## Performa 3D

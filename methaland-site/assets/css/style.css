@@ -1,4 +1,4 @@
-/* METHALAND Digital Twin · tema mengikuti poster LKTIN Eco-Generation 2026 */
+/* METHACYCLE Digital Twin · tema mengikuti poster LKTIN Eco-Generation 2026 */
 :root{
   --green-950:#0B2E23; --green-900:#0E3B2E; --green-800:#14532D; --green-700:#1F7A4D; --green-500:#3AA76D; --lime-400:#8CC63F;
   --teal-700:#0C5A72; --teal-600:#127466; --teal-500:#129B8A; --teal-300:#5CC6B5;
@@ -14,6 +14,7 @@
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
+.anim-off,.anim-off *{animation-play-state:paused!important}
 html{scroll-behavior:smooth;scroll-padding-top:calc(var(--nav-h) + 8px);-webkit-text-size-adjust:100%}
 body{margin:0;font-family:var(--f-body);color:var(--ink);background:#fff;line-height:1.55;font-size:16px;overflow-x:hidden}
 img{max-width:100%;display:block}
@@ -85,9 +86,9 @@ sub,sup{line-height:0}
 .hero-bg{position:absolute;inset:0;background:linear-gradient(90deg,rgba(14,59,46,.88),rgba(31,122,77,.55)),url(../img/render/07_oec.jpg) center/cover no-repeat;transform:scale(1.04)}
 .hero-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,46,35,0) 50%,rgba(11,46,35,.75))}
 .hero-in{position:relative;padding-top:56px;padding-bottom:48px;display:grid;grid-template-columns:1.15fr .85fr;gap:36px 48px;align-items:end;width:100%}
-.hero-copy{grid-column:1/-1;max-width:980px}
+.hero-copy{grid-column:1/-1;max-width:1120px}
 .pill-badge{display:inline-block;background:rgba(140,198,63,.18);color:#D8F2B8;border:1.5px solid rgba(140,198,63,.55);padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;letter-spacing:.03em}
-.hero-title{font-weight:800;font-size:clamp(56px,11vw,150px);letter-spacing:.01em;line-height:.95;margin:16px 0 14px;background:linear-gradient(180deg,#C9EE9C 0%,#E9F8DA 45%,#FFFFFF 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 6px 18px rgba(0,0,0,.25))}
+.hero-title{display:inline-block;max-width:100%;padding-right:.04em;font-weight:800;font-size:clamp(40px,10vw,140px);letter-spacing:.01em;line-height:.95;margin:16px 0 14px;background:linear-gradient(180deg,#C9EE9C 0%,#E9F8DA 45%,#FFFFFF 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 6px 18px rgba(0,0,0,.25))}
 .hero-sub{font-family:var(--f-head);font-weight:600;font-size:clamp(17px,2vw,24px);line-height:1.35;max-width:900px;margin:0;color:#F1FAF5}
 .hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
 .hero-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}

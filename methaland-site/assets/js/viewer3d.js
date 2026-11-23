@@ -1,4 +1,4 @@
-// Viewer 3D METHALAND: port + upgrade dari 04_Web/situs/index.html (v4).
+// Viewer 3D METHACYCLE: port + upgrade dari 04_Web/situs/index.html (v4).
 // Dipertahankan: tur, chip area, aliran massa & energi, tooltip DN, scale bar & arah utara, atmosfer
 // (plume CT, flare & pilot, plume stack, langit HDR prosedural), label ber-leader, mode presentasi, pintasan keyboard.
 import * as THREE from 'three';
@@ -439,7 +439,20 @@ export async function init() {
   { const ro = new ResizeObserver(layout); ro.observe(stage); ro.observe(canvas); }
 
   // ------------------------------------------------ label HTML dengan leader, tanpa saling tumpang (greedy)
-  const labBox = $('#v3dLabels'), svgL = $('#v3dLeaders'); const pool = []; const labSize = new Map(); let uiRects = null; let labelKey = '';
+  const labBox = $('#v3dLabels'), svgL = $('#v3dLeaders'); const pool = []; const labSize = new Map(); let uiRects = null;
+  const lpool = [];   // garis leader dipakai ulang (tanpa innerHTML tiap frame)
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  function leader(i, x1, y1, x2, y2, col) {
+    let e = lpool[i];
+    if (!e) {
+      const g = document.createElementNS(SVGNS, 'g'), ln = document.createElementNS(SVGNS, 'line'), c = document.createElementNS(SVGNS, 'circle');
+      ln.setAttribute('stroke-width', '1.6'); c.setAttribute('r', '3'); c.setAttribute('stroke', '#fff'); c.setAttribute('stroke-width', '1');
+      g.append(ln, c); svgL.appendChild(g); e = lpool[i] = [g, ln, c];
+    }
+    const [g, ln, c] = e; g.style.display = '';
+    ln.setAttribute('x1', x1.toFixed(1)); ln.setAttribute('y1', y1.toFixed(1)); ln.setAttribute('x2', x2.toFixed(1)); ln.setAttribute('y2', y2.toFixed(1)); ln.setAttribute('stroke', col);
+    c.setAttribute('cx', x1.toFixed(1)); c.setAttribute('cy', y1.toFixed(1)); c.setAttribute('fill', col);
+  } let labelKey = '';
   function labelSet() {
     const s = STOPS[tour.cur]; const want = new Set(focusTags.length ? focusTags : (s.tags || [])); const out = [];
     for (const [t, p, k] of DATA.labels) {
@@ -450,7 +463,7 @@ export async function init() {
     return out;
   }
   function drawLabels() {
-    const L = T.label ? labelSet() : []; let svgs = '';
+    const L = T.label ? labelSet() : []; let nL = 0;
     if (!uiRects) {   // area UI dihitung ulang hanya saat tata letak berubah (bukan tiap frame: hindari forced layout)
       uiRects = []; const sr = stage.getBoundingClientRect();
       for (const sel of ['#v3dTools', '#v3dPanel', '#v3dAreas', '#v3dScale', '#v3dPanelToggle']) {
@@ -478,10 +491,10 @@ export async function init() {
       used.push(best.b); el.style.transform = `translate3d(${best.b[0].toFixed(1)}px,${best.b[1].toFixed(1)}px,0)`;
       const lx = Math.min(Math.max(l.x, best.b[0]), best.b[2]), ly = Math.min(Math.max(l.y, best.b[1]), best.b[3]);
       const col = l.k === 'util' ? '#c87828' : l.k === 'ctx' ? '#22282e' : l.hl ? '#1F7A4D' : '#3c4046';
-      svgs += `<line x1="${l.x}" y1="${l.y}" x2="${lx}" y2="${ly}" stroke="${col}" stroke-width="1.6"/><circle cx="${l.x}" cy="${l.y}" r="3" fill="${col}" stroke="#fff" stroke-width="1"/>`;
+      leader(nL++, l.x, l.y, lx, ly, col);
     }
     for (let i = n; i < pool.length; i++) pool[i].style.display = 'none';
-    svgL.innerHTML = svgs;
+    for (let i = nL; i < lpool.length; i++) lpool[i][0].style.display = 'none';
   }
 
   // ------------------------------------------------ scale bar & arah utara
@@ -643,7 +656,7 @@ export async function init() {
   document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement && present) { present = false; stage.classList.remove('present'); $('#v3dTools [data-act="present"]').classList.remove('on'); } setTimeout(layout, 60); });
   function shot() {
     renderer.render(scene, camera);
-    canvas.toBlob(b => { if (!b) return; const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `METHALAND_3D_${STOPS[tour.cur].id}.png`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); emit('toast', 'Tangkapan layar PNG diunduh.'); }, 'image/png');
+    canvas.toBlob(b => { if (!b) return; const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `METHACYCLE_3D_${STOPS[tour.cur].id}.png`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); emit('toast', 'Tangkapan layar PNG diunduh.'); }, 'image/png');
   }
 
   // ------------------------------------------------ keyboard (aktif saat area 3D terlihat)
@@ -772,9 +785,9 @@ export async function init() {
   function setQuality(mode) {
     Q.mode = mode; win = []; slow = fast = 0; cool = 1;
     applyTier(mode === 'high' ? 0 : mode === 'low' ? 3 : START_TIER);
-    try { localStorage.setItem('methaland-q', mode); } catch (e) { /* abaikan */ }
+    try { localStorage.setItem('methacycle-q', mode); } catch (e) { /* abaikan */ }
   }
-  { let saved = null; try { saved = localStorage.getItem('methaland-q'); } catch (e) { /* abaikan */ } if (saved && QL[saved] && saved !== 'auto') setQuality(saved); }
+  { let saved = null; try { saved = localStorage.getItem('methacycle-q'); } catch (e) { /* abaikan */ } if (saved && QL[saved] && saved !== 'auto') setQuality(saved); }
   setInterval(() => { if (!help.hidden) updQualityUI(); }, 1000);
 
   // ------------------------------------------------ mulai

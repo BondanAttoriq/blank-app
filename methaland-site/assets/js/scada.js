@@ -1,4 +1,4 @@
-// SCADA/HMI METHALAND: 7 layar dari PFD berwarna, mode DESIGN (neraca paper) dan SIMULASI (skematik).
+// SCADA/HMI METHACYCLE: 7 layar dari PFD berwarna, mode DESIGN (neraca paper) dan SIMULASI (skematik).
 // Topologi & nilai: stream_register (from/to), neraca_aliran (laju), ukuran_pipa (T, P, DN). Tata letak: scada-layout.json.
 import { $, $$, fmt, fmtAuto, esc, emit, getJSON, loadRegister, MEDIUM, isMobile } from './util.js';
 import { defs, symbol, meshPattern, hexConn, diamond, valve } from './scada-symbols.js';

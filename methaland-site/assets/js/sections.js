@@ -199,14 +199,14 @@ function circ() {
   const loop = (i, j, c, lbl) => { const [x0, y0] = pos[i], [x1, y1] = pos[j]; const mx = (x0 + x1) / 2 * 0.55 + cx * 0.45, my = (y0 + y1) / 2 * 0.55 + cy * 0.45;
     return `<path class="cflow loop" d="M${x0 + (cx - x0) * .28},${y0 + (cy - y0) * .28} Q${mx},${my} ${x1 + (cx - x1) * .28},${y1 + (cy - y1) * .28}" stroke="${c}" marker-end="url(#cArr)"/><text x="${mx}" y="${my}" text-anchor="middle" class="ax" style="font-weight:700;fill:${c};font-size:12px">${lbl}</text>`; };
   g += loop(2, 1, '#1F6FB5', 'loop O₂') + loop(5, 2, '#0C8EA6', 'loop air → PEME');
-  g += `<circle cx="${cx}" cy="${cy}" r="70" fill="#EEF7F1" stroke="#CFE6DC" stroke-width="2"/><text x="${cx}" y="${cy - 8}" text-anchor="middle" style="font:italic 800 18px Poppins,sans-serif;fill:#127466">Ekonomi</text><text x="${cx}" y="${cy + 14}" text-anchor="middle" style="font:italic 800 18px Poppins,sans-serif;fill:#127466">Sirkular</text><text x="${cx}" y="${cy + 34}" text-anchor="middle" style="font:700 12px Poppins,sans-serif;fill:#4F655D">METHALAND</text>`;
+  g += `<circle cx="${cx}" cy="${cy}" r="70" fill="#EEF7F1" stroke="#CFE6DC" stroke-width="2"/><text x="${cx}" y="${cy - 8}" text-anchor="middle" style="font:italic 800 18px Poppins,sans-serif;fill:#127466">Ekonomi</text><text x="${cx}" y="${cy + 14}" text-anchor="middle" style="font:italic 800 18px Poppins,sans-serif;fill:#127466">Sirkular</text><text x="${cx}" y="${cy + 34}" text-anchor="middle" style="font:700 12px Poppins,sans-serif;fill:#4F655D">METHACYCLE</text>`;
   S.forEach((s, i) => { const [x, y] = pos[i];
     g += `<g class="stage" data-i="${i}" tabindex="0" role="button" aria-label="Tahap ${s[0]}: ${esc(s[1].replace('|', ' '))}"><g class="sbg"><circle cx="${x}" cy="${y}" r="54" fill="#fff" stroke="${s[5]}" stroke-width="3"/>
       <circle cx="${x - 40}" cy="${y - 40}" r="17" fill="${s[5]}"/><text x="${x - 40}" y="${y - 35}" text-anchor="middle" style="font:800 13px Poppins,sans-serif;fill:#fff">${s[0]}</text>
       <svg x="${x - 16}" y="${y - 30}" width="32" height="32" viewBox="0 0 24 24" style="color:${s[5]}"><use href="#${s[6]}"/></svg>
       <text x="${x}" y="${y + 14}" text-anchor="middle" style="font:700 11px Poppins,sans-serif;fill:#17322A">${esc(s[1].split('|')[0])}</text>
       <text x="${x}" y="${y + 28}" text-anchor="middle" style="font:700 11px Poppins,sans-serif;fill:#17322A">${esc(s[1].split('|')[1])}</text></g></g>`; });
-  $('#circ').innerHTML = `<div class="card"><svg viewBox="40 0 520 520" role="img" aria-label="Siklus enam tahap ekonomi sirkular METHALAND">${g}</svg></div><div class="card circ-detail" id="circD" aria-live="polite"></div>`;
+  $('#circ').innerHTML = `<div class="card"><svg viewBox="40 0 520 520" role="img" aria-label="Siklus enam tahap ekonomi sirkular METHACYCLE">${g}</svg></div><div class="card circ-detail" id="circD" aria-live="polite"></div>`;
   const det = i => { const s = S[i]; $('#circD').style.borderLeftColor = s[5];
     $('#circD').innerHTML = `<span class="cd-num" style="background:${s[5]}">${s[0]}</span><h3>${esc(s[1].replace('|', ' ').trim())}</h3><div class="big">${esc(s[2])}</div><p>${esc(s[3])}</p><button class="btn btn-teal sm" data-stop="${s[4]}"><svg><use href="#i-play"/></svg>Lihat di tur 3D (perhentian ${s[4] + 1})</button>`;
     $('#circD [data-stop]').onclick = () => emit('goto-stop', { i: s[4] }); $$('#circ .stage').forEach(n => n.classList.toggle('on', +n.dataset.i === i)); };
@@ -218,15 +218,15 @@ function circ() {
 async function downloads() {
   const d = 'assets/downloads/';
   const card = (ico, c, t, s, href, extra = '') => `<a class="dl" href="${href}" download><span class="ico-c" style="--c:${c}"><svg><use href="#${ico}"/></svg></span><b>${t}</b><small>${s}</small>${extra}<span class="dlb"><svg><use href="#i-down"/></svg>Unduh</span></a>`;
-  $('#dlGrid').innerHTML = card('i-flask', '#0C5A72', 'Full paper (PDF)', 'LKTIN Eco-Generation 2026 · 25 halaman', d + 'METHALAND_Full_Paper_LKTIN_EcoGeneration_2026.pdf')
-    + card('i-present', '#127466', 'Poster', 'PNG 2829 × 4000 px', d + 'POSTER_LKTIN_ECOGENERATION.png')
-    + card('i-camera', '#1F7A4D', 'Render HD', '17 render perhentian tur (ZIP)', d + 'METHALAND_render_HD.zip')
-    + `<div class="dl"><span class="ico-c" style="--c:#3AA76D"><svg><use href="#i-chart"/></svg></span><b>Register (CSV)</b><small>Data register METHALAND v4</small><div class="dl-sub">
+  $('#dlGrid').innerHTML = card('i-flask', '#0C5A72', 'Full paper (PDF)', 'CARBON Essay Competition 2026 · 25 halaman', d + 'METHACYCLE_Full_Paper.pdf')
+    + card('i-present', '#127466', 'Poster', 'PNG 2829 × 4000 px', d + 'POSTER_METHACYCLE.png')
+    + card('i-camera', '#1F7A4D', 'Render HD', '17 render perhentian tur (ZIP)', d + 'METHACYCLE_render_HD.zip')
+    + `<div class="dl"><span class="ico-c" style="--c:#3AA76D"><svg><use href="#i-chart"/></svg></span><b>Register (CSV)</b><small>Data register METHACYCLE v4</small><div class="dl-sub">
       ${[['equipment_register.csv', 'Peralatan (100 unit)'], ['stream_register.csv', 'Aliran'], ['neraca_aliran.csv', 'Neraca aliran'], ['ukuran_pipa.csv', 'Ukuran pipa']].map(([f, n]) => `<a href="${d + f}" download><svg><use href="#i-down"/></svg>${n}</a>`).join('')}</div></div>`
     + card('i-link', '#0C8EA6', 'PFD berwarna', 'JPG 1920 × 1080 px', d + 'PFD_eMethanol_Berwarna_FullHD.jpg');
   const data = await getJSON('assets/data/data.json');
   const items = data.tour.stops.map((s, i) => [`assets/img/render/${String(i + 1).padStart(2, '0')}_${s.id}.jpg`, `assets/img/thumb/${String(i + 1).padStart(2, '0')}_${s.id}.jpg`, `${i + 1}. ${s.title}`])
-    .concat([['assets/img/gambar4_aksonometri.jpg', 'assets/img/gambar4_aksonometri.jpg', 'Ilustrasi aksonometri sistem'], ['assets/img/pfd.jpg', 'assets/img/pfd.jpg', 'PFD berwarna METHALAND'], ['assets/img/poster.jpg', 'assets/img/poster.jpg', 'Poster LKTIN Eco-Generation 2026']]);
+    .concat([['assets/img/gambar4_aksonometri.jpg', 'assets/img/gambar4_aksonometri.jpg', 'Ilustrasi aksonometri sistem'], ['assets/img/pfd.jpg', 'assets/img/pfd.jpg', 'PFD berwarna METHACYCLE'], ['assets/img/poster.jpg', 'assets/img/poster.jpg', 'Poster CARBON Essay Competition 2026']]);
   $('#gallery').innerHTML = items.map((it, i) => `<button data-i="${i}" aria-label="Buka ${esc(it[2])}"><img src="${it[1]}" alt="${esc(it[2])}" loading="lazy" width="400" height="225"><span>${esc(it[2])}</span></button>`).join('');
   const lb = $('#lightbox'), img = lb.querySelector('img'), cap = lb.querySelector('figcaption'); let cur = 0, last = null;
   const open = i => { cur = (i + items.length) % items.length; img.src = items[cur][0]; img.alt = items[cur][2]; cap.textContent = items[cur][2]; lb.hidden = false; lb.querySelector('.lb-x').focus(); };
