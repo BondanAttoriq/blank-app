@@ -1,0 +1,461 @@
+[
+ {
+  "tag": "T-MAT",
+  "area": "100",
+  "name": "Tikar eceng gondok (430 ha)",
+  "equipment_type": "mat",
+  "status": "DESAIN D200",
+  "size": null,
+  "sizing_basis": "tutupan 430 ha (6,94% waduk), r 0,03/hari, waktu ganda 23 hari"
+ },
+ {
+  "tag": "TB-102",
+  "area": "100",
+  "name": "Trash boom 1,4 km",
+  "equipment_type": "boom",
+  "status": "DESAIN D200",
+  "size": null,
+  "sizing_basis": "penahan pasif 1,4 km; jebol pada debit 243 m³/s"
+ },
+ {
+  "tag": "INTAKE",
+  "area": "100",
+  "name": "Intake PLTA Cirata",
+  "equipment_type": "intake",
+  "status": "DESAIN D200",
+  "size": null,
+  "sizing_basis": "8 × 126 MW (PLTA 1.008 MW); kerugian Rp17,07 juta/jam-unit"
+ },
+ {
+  "tag": "EFB-101",
+  "area": "100",
+  "name": "Ecological Floating Bed 2 ha (40 modul × 500 m²)",
+  "equipment_type": "efb",
+  "status": "DESAIN D200",
+  "size": null,
+  "sizing_basis": "kangkung 9.600 m² + selada air 6.400 m²; panen 28/40 hari"
+ },
+ {
+  "tag": "H-103",
+  "area": "100",
+  "name": "Kapal panen (harvester boat)",
+  "equipment_type": "boat",
+  "status": "DESAIN D200",
+  "size": null,
+  "sizing_basis": "±160 t/trip"
+ },
+ {
+  "tag": "CV-104",
+  "area": "100",
+  "name": "Belt conveyor darat",
+  "equipment_type": "conveyor",
+  "status": "DESAIN D200",
+  "size": null,
+  "sizing_basis": null
+ },
+ {
+  "tag": "HP-105",
+  "area": "100",
+  "name": "Hopper umpan",
+  "equipment_type": "hopper",
+  "status": "DESAIN D200",
+  "size": "6,0 × 6,0 m, puncak 8,5 m",
+  "sizing_basis": "200 t/hari basah, 2 jam, ρ curah 0,35 t/m³"
+ },
+ {
+  "tag": "S-201",
+  "area": "200",
+  "name": "Screw press (dewatering)",
+  "equipment_type": "screw",
+  "status": "DESAIN D200",
+  "size": null,
+  "sizing_basis": "200 t/hari basah → cake TS 20%"
+ },
+ {
+  "tag": "TK-208",
+  "area": "200",
+  "name": "Tangki pressate",
+  "equipment_type": "tank",
+  "status": "DESAIN D200",
+  "size": "3,5 × 3,5 m, puncak 4,6 m",
+  "sizing_basis": "104,6 t/hari, 8 jam, isi 85 %"
+ },
+ {
+  "tag": "M-202",
+  "area": "200",
+  "name": "Hammer mill < 2 mm",
+  "equipment_type": "mill",
+  "status": "DESAIN D200",
+  "size": null,
+  "sizing_basis": null
+ },
+ {
+  "tag": "E-203",
+  "area": "200",
+  "name": "HX slurry–slurry (HR 80%, 17,17 GJ/hari)",
+  "equipment_type": "hxs",
+  "status": "DESAIN D200",
+  "size": "2,2 × 1,8 m, puncak 2,1 m",
+  "sizing_basis": null
+ },
+ {
+  "tag": "R-204",
+  "area": "200",
+  "name": "Reaktor pretreatment",
+  "equipment_type": "agit",
+  "status": "DESAIN D200",
+  "size": "1,3 × 1,3 m, puncak 12,6 m",
+  "sizing_basis": "H₂SO₄ 1% b/v, 100 °C, 30 menit"
+ },
+ {
+  "tag": "TK-206",
+  "area": "200",
+  "name": "Tangki H₂SO₄ 98 %",
+  "equipment_type": "tank",
+  "status": "DESAIN D200",
+  "size": "2,5 × 2,5 m, puncak 3,3 m",
+  "sizing_basis": "0,763 t/hari, 30 hari, ρ 1,84, isi 90 %"
+ },
+ {
+  "tag": "P-206",
+  "area": "200",
+  "name": "Pompa dosis H₂SO₄",
+  "equipment_type": "pump",
+  "status": "DESAIN D200",
+  "size": null,
+  "sizing_basis": null
+ },
+ {
+  "tag": "TK-207",
+  "area": "200",
+  "name": "Tangki NaOH 50 %",
+  "equipment_type": "tank",
+  "status": "DESAIN D200",
+  "size": "3,1 × 3,1 m, puncak 4,0 m",
+  "sizing_basis": "0,622 t/hari NaOH, 30 hari, ρ 1,52, isi 90 %"
+ },
+ {
+  "tag": "P-207",
+  "area": "200",
+  "name": "Pompa dosis NaOH",
+  "equipment_type": "pump",
+  "status": "DESAIN D200",
+  "size": null,
+  "sizing_basis": null
+ },
+ {
+  "tag": "T-205",
+  "area": "200",
+  "name": "Tangki netralisasi",
+  "equipment_type": "cone",
+  "status": "DESAIN D200",
+  "size": "1,8 × 1,8 m, puncak 8,4 m",
+  "sizing_basis": "3.8 m³/jam, τ 1 jam, isi 75 %"
+ },
+ {
+  "tag": "P-209",
+  "area": "200",
+  "name": "Pompa slurry",
+  "equipment_type": "pump",
+  "status": "DESAIN D200",
+  "size": null,
+  "sizing_basis": null
+ },
+ {
+  "tag": "E-302",
+  "area": "300",
+  "name": "Plate cooler ke 35 °C",
+  "equipment_type": "hx",
+  "status": "DESAIN D200",
+  "size": "1,6 × 3,0 m, puncak 2,3 m",
+  "sizing_basis": null
+ },
+ {
+  "tag": "TK-303",
+  "area": "300",
+  "name": "Tangki enzim + ragi",
+  "equipment_type": "hdrum",
+  "status": "DESAIN D200",
+  "size": "3,0 × 1,8 m, puncak 2,4 m",
+  "sizing_basis": "horizontal, 7,6 m³"
+ },
+ {
+  "tag": "R-301A",
+  "area": "300",
+  "name": "Fermentor SSF A (171 m³)",
+  "equipment_type": "agit",
+  "status": "DESAIN D200",
+  "size": "5,4 × 5,4 m, puncak 10,3 m",
+  "sizing_basis": "SSF 35 °C, 48–72 jam, pH 4,8–5,0"
+ },
+ {
+  "tag": "R-301B",
+  "area": "300",
+  "name": "Fermentor SSF B (171 m³)",
+  "equipment_type": "agit",
+  "status": "DESAIN D200",
+  "size": "5,4 × 5,4 m, puncak 10,3 m",
+  "sizing_basis": "SSF 35 °C, 48–72 jam, pH 4,8–5,0"
+ },
+ {
+  "tag": "P-304",
+  "area": "300",
+  "name": "Pompa beer",
+  "equipment_type": "pump",
+  "status": "DESAIN D200",
+  "size": null,
+  "sizing_basis": null
+ },
+ {
+  "tag": "E-401",
+  "area": "300",
+  "name": "Feed/bottoms HX beer–stillage",
+  "equipment_type": "hx",
+  "status": "DESAIN D200",
+  "size": "4,0 × 0,6 m, puncak 1,3 m",
+  "sizing_basis": null
+ },
+ {
+  "tag": "C-401",
+  "area": "400",
+  "name": "Beer column + rectifier",
+  "equipment_type": "column",
+  "status": "DESAIN D200",
+  "size": "0,6 × 0,6 m, puncak 16,9 m",
+  "sizing_basis": "beer 3,8% b/b → ±45% → 92–94% b/b"
+ },
+ {
+  "tag": "E-402",
+  "area": "400",
+  "name": "Kondensor overhead",
+  "equipment_type": "hx",
+  "status": "DESAIN D200",
+  "size": "2,8 × 0,5 m, puncak 16,7 m",
+  "sizing_basis": "total duty ≈ 257 kW"
+ },
+ {
+  "tag": "V-403",
+  "area": "400",
+  "name": "Reflux drum",
+  "equipment_type": "hdrum",
+  "status": "DESAIN D200",
+  "size": "2,0 × 0,8 m, puncak 13,0 m",
+  "sizing_basis": null
+ },
+ {
+  "tag": "Z-406",
+  "area": "400",
+  "name": "Molecular sieve 3Å (2 bed)",
+  "equipment_type": "adsorber",
+  "status": "DESAIN D200",
+  "size": null,
+  "sizing_basis": "95 → 99,5% v/v"
+ },
+ {
+  "tag": "TK-408",
+  "area": "400",
+  "name": "Tangki bioetanol 99,5% v/v",
+  "equipment_type": "tank",
+  "status": "DESAIN D200",
+  "size": null,
+  "sizing_basis": "4.274,78 L/hari × 14 hari, 2 tangki, isi 90 %"
+ },
+ {
+  "tag": "E-405",
+  "area": "400",
+  "name": "Reboiler C-401",
+  "equipment_type": "heater",
+  "status": "DESAIN D200",
+  "size": "0,5 × 0,5 m, puncak 3,1 m",
+  "sizing_basis": null
+ },
+ {
+  "tag": "E-501",
+  "area": "500",
+  "name": "Stillage cooler / pemanas umpan AD",
+  "equipment_type": "hx",
+  "status": "DESAIN D200",
+  "size": "0,6 × 3,5 m, puncak 1,2 m",
+  "sizing_basis": null
+ },
+ {
+  "tag": "TK-502",
+  "area": "500",
+  "name": "Tangki ekualisasi",
+  "equipment_type": "cone",
+  "status": "DESAIN D200",
+  "size": "5,0 × 5,0 m, puncak 5,9 m",
+  "sizing_basis": "92,8 t/hari, τ 1 hari, isi 85 %"
+ },
+ {
+  "tag": "P-503",
+  "area": "500",
+  "name": "Pompa umpan digester",
+  "equipment_type": "pump",
+  "status": "DESAIN D200",
+  "size": null,
+  "sizing_basis": null
+ },
+ {
+  "tag": "R-504",
+  "area": "500",
+  "name": "Digester mesofilik CSTR 35 °C",
+  "equipment_type": "agit",
+  "status": "DESAIN D200",
+  "size": "15,8 × 15,8 m, puncak 14,6 m",
+  "sizing_basis": "HRT ±25 hari, C/N 20–30, ±2.785 m³"
+ },
+ {
+  "tag": "V-505",
+  "area": "500",
+  "name": "Gas holder membran ganda (¾ bola)",
+  "equipment_type": "gasholder",
+  "status": "DESAIN D200",
+  "size": "12,4 × 12,4 m, puncak 9,3 m",
+  "sizing_basis": "8 jam × 2.508 Nm³/hari = 836 m³"
+ },
+ {
+  "tag": "D-506",
+  "area": "500",
+  "name": "Desulfurizer Fe-oxide (lead-lag)",
+  "equipment_type": "adsorber",
+  "status": "DESAIN D200",
+  "size": null,
+  "sizing_basis": "104,5 Nm³/jam biogas"
+ },
+ {
+  "tag": "K-507",
+  "area": "500",
+  "name": "Blower biogas",
+  "equipment_type": "compressor",
+  "status": "DESAIN D200",
+  "size": null,
+  "sizing_basis": null
+ },
+ {
+  "tag": "FL-508",
+  "area": "500",
+  "name": "Flare darurat (elevated)",
+  "equipment_type": "flare",
+  "status": "DESAIN D200",
+  "size": "11,0 × 10,0 m, puncak 11,7 m",
+  "sizing_basis": "desain 150 % aliran = 857 kW"
+ },
+ {
+  "tag": "X-509",
+  "area": "500",
+  "name": "Decanter digestat",
+  "equipment_type": "decanter",
+  "status": "DESAIN D200",
+  "size": null,
+  "sizing_basis": null
+ },
+ {
+  "tag": "BN-511",
+  "area": "500",
+  "name": "Bunker digestat padat",
+  "equipment_type": "hopper",
+  "status": "DESAIN D200",
+  "size": null,
+  "sizing_basis": "±12 t/hari, 7 hari, ρ 0,8"
+ },
+ {
+  "tag": "TK-510",
+  "area": "500",
+  "name": "Tangki digestat cair",
+  "equipment_type": "tank",
+  "status": "DESAIN D200",
+  "size": "11,0 × 11,0 m, puncak 6,9 m",
+  "sizing_basis": "±80 m³/hari, 7 hari, isi 90 %"
+ },
+ {
+  "tag": "B-601",
+  "area": "600",
+  "name": "Fired steam boiler biogas (η 76,2%)",
+  "equipment_type": "boiler",
+  "status": "DESAIN D200",
+  "size": null,
+  "sizing_basis": "15,67 t/hari uap 10 bar abs; 100% dari biogas (rasio 1,29)"
+ },
+ {
+  "tag": "ST-603",
+  "area": "600",
+  "name": "Stack boiler",
+  "equipment_type": "stack",
+  "status": "DESAIN D200",
+  "size": "0,6 × 0,6 m, puncak 16,4 m",
+  "sizing_basis": "≥3 m di atas atap boiler house"
+ },
+ {
+  "tag": "K-602",
+  "area": "600",
+  "name": "FD fan boiler",
+  "equipment_type": "compressor",
+  "status": "DESAIN D200",
+  "size": null,
+  "sizing_basis": null
+ },
+ {
+  "tag": "P-605",
+  "area": "600",
+  "name": "Pompa BFW",
+  "equipment_type": "pump",
+  "status": "DESAIN D200",
+  "size": null,
+  "sizing_basis": null
+ },
+ {
+  "tag": "D-604",
+  "area": "600",
+  "name": "Deaerator & penerimaan kondensat",
+  "equipment_type": "hdrum",
+  "status": "DESAIN D200",
+  "size": "2,6 × 1,0 m, puncak 4,5 m",
+  "sizing_basis": null
+ },
+ {
+  "tag": "X-701",
+  "area": "700",
+  "name": "Ekstraktor polifenol (EtOH 70%)",
+  "equipment_type": "agit",
+  "status": "DESAIN D200",
+  "size": null,
+  "sizing_basis": "1 t/hari biomassa EFB, 10 L/kg DM, recovery 95%"
+ },
+ {
+  "tag": "F-702",
+  "area": "700",
+  "name": "Filter press ekstrak",
+  "equipment_type": "filterpress",
+  "status": "DESAIN D200",
+  "size": null,
+  "sizing_basis": null
+ },
+ {
+  "tag": "EV-703",
+  "area": "700",
+  "name": "Thin-film evaporator pelarut",
+  "equipment_type": "evap",
+  "status": "DESAIN D200",
+  "size": null,
+  "sizing_basis": null
+ },
+ {
+  "tag": "TK-704",
+  "area": "700",
+  "name": "Tangki ekstrak polifenol",
+  "equipment_type": "tank",
+  "status": "DESAIN D200",
+  "size": "1,5 × 1,5 m, puncak 2,3 m",
+  "sizing_basis": null
+ },
+ {
+  "tag": "U-705",
+  "area": "700",
+  "name": "Pengolahan pressate (sedimentasi + stabilisasi)",
+  "equipment_type": "hopper",
+  "status": "DESAIN D200",
+  "size": null,
+  "sizing_basis": "104,6 m³/hari, τ 12 jam + zona lumpur"
+ }
+]

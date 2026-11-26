@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<script>if(new URLSearchParams(location.search).has("embed"))document.documentElement.classList.add("embed")</script>
+<title>CIRATA-RESILIENT | Penelusuran 3D</title>
+<meta name="description" content="Model 3D eksploratif EFB dan biorefinery CIRATA-RESILIENT, basis D200.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Poppins:wght@700;800&display=swap">
+<link rel="stylesheet" href="style.css">
+<script type="importmap">{"imports":{"three":"./lib/three.module.min.js","three/addons/":"./lib/addons/","cirata/software":"./software.js"}}</script>
+</head>
+<body>
+<script>if(document.documentElement.classList.contains("embed"))document.body.classList.add("embed")</script>
+<header class="top">
+  <div class="identity"><span class="brand" aria-hidden="true"><svg viewBox="0 0 32 32" width="25" height="25"><path d="M4 10c4-4 8-4 12 0s8 4 12 0M4 16c4-4 8-4 12 0s8 4 12 0M4 22c4-4 8-4 12 0s8 4 12 0" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span><div><span class="project">CIRATA-RESILIENT</span><span class="sub">Penelusuran 3D</span></div></div>
+  <div class="nav-controls"><a class="back" href="../#plant3d">← Situs utama</a><button id="tour" class="btn accent">Mulai tur</button><button id="sources" class="btn">Rujukan</button><button id="full" class="btn icon" aria-label="Layar penuh" title="Layar penuh">⛶</button></div>
+</header>
+<main id="shell">
+  <nav class="rail" aria-label="Pilih area">
+    <div class="nav-section"><h2>Area model</h2><div id="places"></div></div>
+    <div class="nav-section routes"><h2>Kelompok aliran</h2><div id="groups"></div><button id="clearflows" class="small-btn">Bersihkan aliran</button></div>
+  </nav>
+  <section class="stage" aria-label="Jendela model tiga dimensi">
+    <div id="viewport"><img id="fallbackImage" alt="Pratinjau statis CIRATA-RESILIENT"><div id="labels"></div><div id="tooltip" role="status" hidden></div></div>
+    <div class="stage-top"><div class="view-heading"><span class="eyebrow" id="basis">D200 · 200 ton/hari</span><h1 id="viewTitle">Ikhtisar tapak</h1></div><div class="view-switch" aria-label="Sudut kamera"><button id="iso" class="glass" aria-pressed="true">Isometrik</button><button id="top" class="glass" aria-pressed="false">Tampak Atas</button></div></div>
+    <div class="stage-bottom"><div id="legend" class="legend"></div><button id="reset" class="glass mini">Atur ulang sudut</button></div>
+    <div id="load" class="status"><strong>Memuat model 3D</strong><span id="loadText">Menyiapkan tata letak dan data proses</span><progress id="progress" max="100"></progress></div>
+  </section>
+  <aside id="inspector" aria-label="Informasi area, alat, dan aliran" aria-live="polite">
+    <div id="panel"></div>
+  </aside>
+</main>
+<footer class="bottom"><div id="tourProgress"><span id="stepName">Eksplorasi bebas</span><div id="segments"></div></div><div class="paging"><button id="prev" class="btn">Sebelumnya</button><button id="next" class="btn">Berikutnya</button></div></footer>
+<dialog id="refDialog" aria-labelledby="refTitle"><div class="dialog-head"><div><h2 id="refTitle">Rujukan proses</h2><p id="refNote"></p></div><button class="btn icon" id="closeRef" aria-label="Tutup rujukan">✕</button></div><div id="refList"></div><div id="refFigure"><img id="refImage" alt=""></div></dialog>
+<script type="module" src="app.js"></script>
+</body>
+</html>

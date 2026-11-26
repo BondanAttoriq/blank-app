@@ -1,0 +1,562 @@
+[
+ {
+  "id": "S-00",
+  "q": 200.0,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-00b",
+  "q": 200.0,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-00c",
+  "q": 200.0,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-01",
+  "q": 200.0,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "B-1",
+  "q": 3.0,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "B-2",
+  "q": 1.0,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-02",
+  "q": 109.393,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "P-1",
+  "q": 109.393,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-03",
+  "q": 90.607,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-04",
+  "q": 90.607,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-05",
+  "q": 91.347,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-06",
+  "q": 0.74,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-07",
+  "q": 91.347,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-08",
+  "q": 91.347,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-09",
+  "q": 1.183,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-10",
+  "q": 92.53,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-10b",
+  "q": 92.53,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-10c",
+  "q": 92.53,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "ENZ",
+  "q": null,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "ASSUMED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-12A",
+  "q": 90.836,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "ASSUMED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-11",
+  "q": 3.388,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-12",
+  "q": 89.142,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-12b",
+  "q": 89.142,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-12c",
+  "q": 89.142,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-14",
+  "q": 85.932,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "ST-1",
+  "q": 85.932,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "V-401",
+  "q": 12.841,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "ASSUMED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "L-402",
+  "q": 12.841,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "ASSUMED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "L-403",
+  "q": 9.631,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "ASSUMED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-13",
+  "q": 3.21,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-13E",
+  "q": 3.183,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "E-1",
+  "q": 0.0278,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "L-405",
+  "q": 17.166,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "ASSUMED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "V-405",
+  "q": 17.166,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "ASSUMED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-14C",
+  "q": 85.932,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "B-3",
+  "q": 1.041,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "W-AD",
+  "q": 45.829,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-16",
+  "q": 135.802,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-16b",
+  "q": 135.802,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-17",
+  "q": 4.838,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-17b",
+  "q": 4.838,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-17c",
+  "q": 4.748,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-17C",
+  "q": 3.685,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "G-EX",
+  "q": 1.063,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-18",
+  "q": 130.964,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-18A",
+  "q": 32.663,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-18B",
+  "q": 98.301,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-19",
+  "q": 20.093,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-20",
+  "q": 23.778,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-21",
+  "q": 15.657,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "H-01",
+  "q": 4.63,
+  "u": "GJ/hari",
+  "jenis": "energi",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "H-02",
+  "q": 27.47,
+  "u": "GJ/hari",
+  "jenis": "energi",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "H-03",
+  "q": null,
+  "u": "GJ/hari",
+  "jenis": "energi",
+  "status": "SIAGA",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "H-04",
+  "q": 0.04,
+  "u": "GJ/hari",
+  "jenis": "energi",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "H-05",
+  "q": 4.02,
+  "u": "GJ/hari",
+  "jenis": "energi",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "W-BFW",
+  "q": 16.141,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "W-BFW+RET",
+  "q": 16.141,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "W-1",
+  "q": 16.141,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "FUEL",
+  "q": null,
+  "u": "GJ/hari",
+  "jenis": "energi",
+  "status": "SIAGA",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "EL-00",
+  "q": 1259.01,
+  "u": "kWh/hari",
+  "jenis": "energi",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "EL-01",
+  "q": null,
+  "u": "kWh/hari",
+  "jenis": "energi",
+  "status": "ASSUMED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "EL-02",
+  "q": null,
+  "u": "kWh/hari",
+  "jenis": "energi",
+  "status": "ASSUMED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "EL-03",
+  "q": null,
+  "u": "kWh/hari",
+  "jenis": "energi",
+  "status": "ASSUMED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "EL-04",
+  "q": null,
+  "u": "kWh/hari",
+  "jenis": "energi",
+  "status": "ASSUMED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-23P",
+  "q": 1.808,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-23F",
+  "q": 0.808,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-23",
+  "q": 0.0015,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SOURCE",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-24",
+  "q": 0.808,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "S-02P",
+  "q": 109.393,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "CALCULATED",
+  "basis": "Neraca massa & panas D200"
+ },
+ {
+  "id": "W-2",
+  "q": null,
+  "u": "t/hari",
+  "jenis": "massa",
+  "status": "SIAGA",
+  "basis": "Neraca massa & panas D200"
+ }
+]

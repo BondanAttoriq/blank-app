@@ -1,0 +1,562 @@
+[
+ {
+  "stream_id": "S-00",
+  "medium": "Biomassa / slurry",
+  "from_tag": "T-MAT",
+  "to_tag": "H-103",
+  "pfd_name": "Eceng gondok liar dipanen",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "S-00b",
+  "medium": "Biomassa / slurry",
+  "from_tag": "H-103",
+  "to_tag": "CV-104",
+  "pfd_name": "Bongkar kapal panen ke conveyor",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "S-00c",
+  "medium": "Biomassa / slurry",
+  "from_tag": "CV-104",
+  "to_tag": "HP-105",
+  "pfd_name": "Conveyor ke hopper umpan",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "S-01",
+  "medium": "Biomassa / slurry",
+  "from_tag": "HP-105",
+  "to_tag": "S-201",
+  "pfd_name": "Eceng gondok basah (TS 9,54%)",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "B-1",
+  "medium": "Biomassa EFB / udara",
+  "from_tag": "EFB-101",
+  "to_tag": "TK-502",
+  "pfd_name": "Biomassa EFB ke co-digestion (S-15)",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "B-2",
+  "medium": "Biomassa EFB / udara",
+  "from_tag": "EFB-101",
+  "to_tag": "X-701",
+  "pfd_name": "Biomassa EFB ke ekstraksi (S-22)",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "S-02",
+  "medium": "Air / pressate",
+  "from_tag": "S-201",
+  "to_tag": "TK-208",
+  "pfd_name": "Pressate dari screw press",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "P-1",
+  "medium": "Air / pressate",
+  "from_tag": "TK-208",
+  "to_tag": "U-705",
+  "pfd_name": "Pressate ke pengolahan",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "S-03",
+  "medium": "Biomassa / slurry",
+  "from_tag": "S-201",
+  "to_tag": "M-202",
+  "pfd_name": "Cake TS 20%",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "S-04",
+  "medium": "Biomassa / slurry",
+  "from_tag": "M-202",
+  "to_tag": "E-203",
+  "pfd_name": "Biomassa giling < 2 mm",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "S-05",
+  "medium": "Biomassa / slurry",
+  "from_tag": "E-203",
+  "to_tag": "R-204",
+  "pfd_name": "Umpan pretreatment terpanaskan",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "S-06",
+  "medium": "Reagen",
+  "from_tag": "TK-206",
+  "to_tag": "R-204",
+  "pfd_name": "H₂SO₄ 98%",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "S-07",
+  "medium": "Biomassa / slurry",
+  "from_tag": "R-204",
+  "to_tag": "E-203",
+  "pfd_name": "Slurry pretreatment 100 °C",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "S-08",
+  "medium": "Biomassa / slurry",
+  "from_tag": "E-203",
+  "to_tag": "T-205",
+  "pfd_name": "Slurry terdinginkan",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "S-09",
+  "medium": "Reagen",
+  "from_tag": "TK-207",
+  "to_tag": "T-205",
+  "pfd_name": "NaOH 50%",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "S-10",
+  "medium": "Biomassa / slurry",
+  "from_tag": "T-205",
+  "to_tag": "P-209",
+  "pfd_name": "Slurry ternetralisasi (pH 4,8–5,5)",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "S-10b",
+  "medium": "Biomassa / slurry",
+  "from_tag": "P-209",
+  "to_tag": "E-302",
+  "pfd_name": "Slurry ke cooler",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "S-10c",
+  "medium": "Biomassa / slurry",
+  "from_tag": "E-302",
+  "to_tag": "R-301A",
+  "pfd_name": "Slurry 35 °C ke SSF",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "ENZ",
+  "medium": "Reagen",
+  "from_tag": "TK-303",
+  "to_tag": "R-301A",
+  "pfd_name": "Enzim + ragi + nutrien",
+  "status": "ASSUMED"
+ },
+ {
+  "stream_id": "S-12A",
+  "medium": "Cairan proses",
+  "from_tag": "R-301A",
+  "to_tag": "R-301B",
+  "pfd_name": "Broth fermentasi antar-fermentor",
+  "status": "ASSUMED"
+ },
+ {
+  "stream_id": "S-11",
+  "medium": "CO₂ / gas buang",
+  "from_tag": "R-301B",
+  "to_tag": "T-VENT",
+  "pfd_name": "CO₂ biogenik fermentasi",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "S-12",
+  "medium": "Cairan proses",
+  "from_tag": "R-301B",
+  "to_tag": "P-304",
+  "pfd_name": "Beer 3,8% b/b",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "S-12b",
+  "medium": "Cairan proses",
+  "from_tag": "P-304",
+  "to_tag": "E-401",
+  "pfd_name": "Beer ke F/B HX",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "S-12c",
+  "medium": "Cairan proses",
+  "from_tag": "E-401",
+  "to_tag": "C-401",
+  "pfd_name": "Beer terpanaskan ke beer column",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "S-14",
+  "medium": "Cairan proses",
+  "from_tag": "C-401",
+  "to_tag": "E-401",
+  "pfd_name": "Stillage",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "ST-1",
+  "medium": "Cairan proses",
+  "from_tag": "E-401",
+  "to_tag": "E-501",
+  "pfd_name": "Stillage ke Area 500",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "V-401",
+  "medium": "Etanol / pelarut",
+  "from_tag": "C-401",
+  "to_tag": "E-402",
+  "pfd_name": "Uap etanol–air overhead",
+  "status": "ASSUMED"
+ },
+ {
+  "stream_id": "L-402",
+  "medium": "Etanol / pelarut",
+  "from_tag": "E-402",
+  "to_tag": "V-403",
+  "pfd_name": "Kondensat etanol–air",
+  "status": "ASSUMED"
+ },
+ {
+  "stream_id": "L-403",
+  "medium": "Etanol / pelarut",
+  "from_tag": "V-403",
+  "to_tag": "C-401",
+  "pfd_name": "Reflux",
+  "status": "ASSUMED"
+ },
+ {
+  "stream_id": "S-13",
+  "medium": "Etanol / pelarut",
+  "from_tag": "V-403",
+  "to_tag": "Z-406",
+  "pfd_name": "Etanol 92–94% ke molecular sieve",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "S-13E",
+  "medium": "Etanol / pelarut",
+  "from_tag": "Z-406",
+  "to_tag": "TK-408",
+  "pfd_name": "Bioetanol 2G 99,5% v/v",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "E-1",
+  "medium": "Etanol / pelarut",
+  "from_tag": "TK-408",
+  "to_tag": "X-701",
+  "pfd_name": "Make-up pelarut etanol (35,18 L/hari)",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "L-405",
+  "medium": "Cairan proses",
+  "from_tag": "C-401",
+  "to_tag": "E-405",
+  "pfd_name": "Bottoms ke reboiler",
+  "status": "ASSUMED"
+ },
+ {
+  "stream_id": "V-405",
+  "medium": "Cairan proses",
+  "from_tag": "E-405",
+  "to_tag": "C-401",
+  "pfd_name": "Uap reboiler (dua fase)",
+  "status": "ASSUMED"
+ },
+ {
+  "stream_id": "S-14C",
+  "medium": "Cairan proses",
+  "from_tag": "E-501",
+  "to_tag": "TK-502",
+  "pfd_name": "Stillage terdinginkan 35 °C",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "B-3",
+  "medium": "Biomassa EFB / udara",
+  "from_tag": "F-702",
+  "to_tag": "TK-502",
+  "pfd_name": "Residu ekstraksi ke co-feed AD",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "W-AD",
+  "medium": "Air / pressate",
+  "from_tag": "T-WAD",
+  "to_tag": "TK-502",
+  "pfd_name": "Air pengencer AD (opsi pressate P-1)",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "S-16",
+  "medium": "Biomassa / slurry",
+  "from_tag": "TK-502",
+  "to_tag": "P-503",
+  "pfd_name": "Umpan AD (TS 10%, C/N 20–30)",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "S-16b",
+  "medium": "Biomassa / slurry",
+  "from_tag": "P-503",
+  "to_tag": "R-504",
+  "pfd_name": "Umpan digester",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "S-17",
+  "medium": "Biogas",
+  "from_tag": "R-504",
+  "to_tag": "V-505",
+  "pfd_name": "Biogas mentah 3.647 Nm³/hari",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "S-17b",
+  "medium": "Biogas",
+  "from_tag": "V-505",
+  "to_tag": "D-506",
+  "pfd_name": "Biogas ke desulfurizer",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "S-17c",
+  "medium": "Biogas",
+  "from_tag": "D-506",
+  "to_tag": "K-507",
+  "pfd_name": "Biogas bebas H₂S",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "S-17C",
+  "medium": "Biogas",
+  "from_tag": "K-507",
+  "to_tag": "B-601",
+  "pfd_name": "Biogas bersih ke boiler",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "G-EX",
+  "medium": "Biogas",
+  "from_tag": "V-505",
+  "to_tag": "FL-508",
+  "pfd_name": "Gas surplus (CHP / flare darurat)",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "S-18",
+  "medium": "Biomassa / slurry",
+  "from_tag": "R-504",
+  "to_tag": "X-509",
+  "pfd_name": "Digestat",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "S-18A",
+  "medium": "Biomassa / slurry",
+  "from_tag": "X-509",
+  "to_tag": "BN-511",
+  "pfd_name": "Cake digestat (pupuk organik padat)",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "S-18B",
+  "medium": "Air / pressate",
+  "from_tag": "X-509",
+  "to_tag": "TK-510",
+  "pfd_name": "Digestat cair (POC)",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "S-19",
+  "medium": "Biomassa EFB / udara",
+  "from_tag": "K-602",
+  "to_tag": "B-601",
+  "pfd_name": "Udara pembakaran",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "S-20",
+  "medium": "CO₂ / gas buang",
+  "from_tag": "B-601",
+  "to_tag": "ST-603",
+  "pfd_name": "Gas buang 180 °C",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "S-21",
+  "medium": "Steam / panas",
+  "from_tag": "B-601",
+  "to_tag": "HDR-S21",
+  "pfd_name": "Steam jenuh 10 bar a (36,15 GJ/hari)",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "H-01",
+  "medium": "Steam / panas",
+  "from_tag": "HDR-S21",
+  "to_tag": "R-204",
+  "pfd_name": "Steam ke pretreatment R-204/T-205",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "H-02",
+  "medium": "Steam / panas",
+  "from_tag": "HDR-S21",
+  "to_tag": "E-405",
+  "pfd_name": "Steam ke reboiler distilasi C-401/C-402",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "H-03",
+  "medium": "Steam / panas",
+  "from_tag": "HDR-S21",
+  "to_tag": "R-504",
+  "pfd_name": "Pemanas digester (via HEN E-501)",
+  "status": "SIAGA"
+ },
+ {
+  "stream_id": "H-04",
+  "medium": "Steam / panas",
+  "from_tag": "HDR-S21",
+  "to_tag": "EV-703",
+  "pfd_name": "Steam ke evaporator pelarut",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "H-05",
+  "medium": "Steam / panas",
+  "from_tag": "HDR-S21",
+  "to_tag": "Z-406",
+  "pfd_name": "Steam ke dehidrasi (vaporizer E-407)",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "W-BFW",
+  "medium": "Air / pressate",
+  "from_tag": "D-604",
+  "to_tag": "P-605",
+  "pfd_name": "Air umpan boiler",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "W-BFW+RET",
+  "medium": "Air / pressate",
+  "from_tag": "P-605",
+  "to_tag": "B-601",
+  "pfd_name": "BFW ke boiler",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "W-1",
+  "medium": "Air / pressate",
+  "from_tag": "T-W1",
+  "to_tag": "D-604",
+  "pfd_name": "Kondensat balik + make-up BFW",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "FUEL",
+  "medium": "CO₂ / gas buang",
+  "from_tag": "T-FUEL",
+  "to_tag": "B-601",
+  "pfd_name": "Bahan bakar cadangan (siaga)",
+  "status": "SIAGA"
+ },
+ {
+  "stream_id": "EL-00",
+  "medium": "Listrik",
+  "from_tag": "T-CHP",
+  "to_tag": "BUS",
+  "pfd_name": "Listrik CHP 1.195,6 + jaringan 63,4 kWh/hari",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "EL-01",
+  "medium": "Listrik",
+  "from_tag": "BUS",
+  "to_tag": "S-201",
+  "pfd_name": "Listrik screw press & hammer mill",
+  "status": "ASSUMED"
+ },
+ {
+  "stream_id": "EL-02",
+  "medium": "Listrik",
+  "from_tag": "BUS",
+  "to_tag": "R-504",
+  "pfd_name": "Listrik pompa & agitator",
+  "status": "ASSUMED"
+ },
+ {
+  "stream_id": "EL-03",
+  "medium": "Listrik",
+  "from_tag": "BUS",
+  "to_tag": "K-507",
+  "pfd_name": "Listrik blower K-507/K-602",
+  "status": "ASSUMED"
+ },
+ {
+  "stream_id": "EL-04",
+  "medium": "Listrik",
+  "from_tag": "BUS",
+  "to_tag": "CONTROL",
+  "pfd_name": "Listrik kontrol & penerangan",
+  "status": "ASSUMED"
+ },
+ {
+  "stream_id": "S-23P",
+  "medium": "Etanol / pelarut",
+  "from_tag": "X-701",
+  "to_tag": "F-702",
+  "pfd_name": "Slurry ekstraksi (etanol 70% + biomassa)",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "S-23F",
+  "medium": "Etanol / pelarut",
+  "from_tag": "F-702",
+  "to_tag": "EV-703",
+  "pfd_name": "Filtrat ekstrak",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "S-23",
+  "medium": "Etanol / pelarut",
+  "from_tag": "EV-703",
+  "to_tag": "TK-704",
+  "pfd_name": "Ekstrak kaya polifenol (1,5 kg/hari)",
+  "status": "SOURCE"
+ },
+ {
+  "stream_id": "S-24",
+  "medium": "Etanol / pelarut",
+  "from_tag": "EV-703",
+  "to_tag": "X-701",
+  "pfd_name": "Pelarut pulih (recovery 95%)",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "S-02P",
+  "medium": "Air / pressate",
+  "from_tag": "U-705",
+  "to_tag": "T-POC",
+  "pfd_name": "Pressate terolah → POC / pupuk cair",
+  "status": "CALCULATED"
+ },
+ {
+  "stream_id": "W-2",
+  "medium": "Air / pressate",
+  "from_tag": "U-705",
+  "to_tag": "T-W2",
+  "pfd_name": "Air proses daur ulang ke S-201 / X-701",
+  "status": "SIAGA"
+ }
+]

@@ -1,0 +1,10 @@
+/viewer3d/data/*.glb
+  Content-Type: model/gltf-binary
+  Cache-Control: public, max-age=604800
+/viewer3d/data/*.gz
+  Content-Type: application/octet-stream
+  Cache-Control: public, max-age=604800
+/viewer3d/lib/*
+  Cache-Control: public, max-age=31536000, immutable
+/assets/*
+  Cache-Control: public, max-age=604800

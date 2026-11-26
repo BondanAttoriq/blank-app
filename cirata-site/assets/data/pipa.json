@@ -1,0 +1,562 @@
+[
+ {
+  "id": "S-00",
+  "T": 28,
+  "P": null,
+  "DN": null,
+  "v": null,
+  "servis": null
+ },
+ {
+  "id": "S-00b",
+  "T": 28,
+  "P": null,
+  "DN": null,
+  "v": null,
+  "servis": null
+ },
+ {
+  "id": "S-00c",
+  "T": 28,
+  "P": null,
+  "DN": null,
+  "v": null,
+  "servis": null
+ },
+ {
+  "id": "S-01",
+  "T": 28,
+  "P": null,
+  "DN": null,
+  "v": null,
+  "servis": null
+ },
+ {
+  "id": "B-1",
+  "T": 28,
+  "P": null,
+  "DN": null,
+  "v": null,
+  "servis": null
+ },
+ {
+  "id": "B-2",
+  "T": 28,
+  "P": null,
+  "DN": null,
+  "v": null,
+  "servis": null
+ },
+ {
+  "id": "S-02",
+  "T": 28,
+  "P": 1.0,
+  "DN": 50,
+  "v": 0.69,
+  "servis": "Pressate (cair + padatan halus)"
+ },
+ {
+  "id": "P-1",
+  "T": 28,
+  "P": 1.5,
+  "DN": 50,
+  "v": 0.69,
+  "servis": "Pressate (cair + padatan halus)"
+ },
+ {
+  "id": "S-03",
+  "T": 28,
+  "P": null,
+  "DN": null,
+  "v": null,
+  "servis": null
+ },
+ {
+  "id": "S-04",
+  "T": 28,
+  "P": null,
+  "DN": null,
+  "v": null,
+  "servis": null
+ },
+ {
+  "id": "S-05",
+  "T": 74,
+  "P": 1.0,
+  "DN": null,
+  "v": null,
+  "servis": null
+ },
+ {
+  "id": "S-06",
+  "T": 30,
+  "P": 2.0,
+  "DN": 25,
+  "v": 0.01,
+  "servis": "H₂SO₄ 98 %"
+ },
+ {
+  "id": "S-07",
+  "T": 100,
+  "P": 1.0,
+  "DN": 65,
+  "v": 0.99,
+  "servis": "Slurry biomassa berserat"
+ },
+ {
+  "id": "S-08",
+  "T": 55,
+  "P": 1.0,
+  "DN": 65,
+  "v": 0.99,
+  "servis": "Slurry biomassa berserat"
+ },
+ {
+  "id": "S-09",
+  "T": 30,
+  "P": 2.0,
+  "DN": 25,
+  "v": 0.02,
+  "servis": "NaOH 50 %"
+ },
+ {
+  "id": "S-10",
+  "T": 50,
+  "P": 1.0,
+  "DN": 65,
+  "v": 1.0,
+  "servis": "Slurry biomassa berserat"
+ },
+ {
+  "id": "S-10b",
+  "T": 50,
+  "P": 3.0,
+  "DN": 65,
+  "v": 1.0,
+  "servis": "Slurry biomassa berserat"
+ },
+ {
+  "id": "S-10c",
+  "T": 35,
+  "P": 2.5,
+  "DN": 65,
+  "v": 1.0,
+  "servis": "Slurry biomassa berserat"
+ },
+ {
+  "id": "ENZ",
+  "T": 30,
+  "P": 1.5,
+  "DN": 25,
+  "v": 0.0,
+  "servis": "Enzim + ragi + nutrien"
+ },
+ {
+  "id": "S-12A",
+  "T": 35,
+  "P": 1.2,
+  "DN": 50,
+  "v": 0.57,
+  "servis": "Broth fermentasi"
+ },
+ {
+  "id": "S-11",
+  "T": 35,
+  "P": 1.0,
+  "DN": 50,
+  "v": 12.49,
+  "servis": "CO₂ fermentasi (1 atm)"
+ },
+ {
+  "id": "S-12",
+  "T": 35,
+  "P": 1.2,
+  "DN": 50,
+  "v": 0.56,
+  "servis": "Broth fermentasi"
+ },
+ {
+  "id": "S-12b",
+  "T": 35,
+  "P": 3.0,
+  "DN": 50,
+  "v": 0.56,
+  "servis": "Broth fermentasi"
+ },
+ {
+  "id": "S-12c",
+  "T": 85,
+  "P": 2.0,
+  "DN": 50,
+  "v": 0.56,
+  "servis": "Broth fermentasi"
+ },
+ {
+  "id": "S-14",
+  "T": 100,
+  "P": 1.5,
+  "DN": 65,
+  "v": 0.93,
+  "servis": "Slurry biomassa berserat"
+ },
+ {
+  "id": "ST-1",
+  "T": 60,
+  "P": 2.0,
+  "DN": 65,
+  "v": 0.93,
+  "servis": "Slurry biomassa berserat"
+ },
+ {
+  "id": "V-401",
+  "T": 92,
+  "P": 1.0,
+  "DN": 125,
+  "v": 13.82,
+  "servis": "Uap etanol–air (±1 atm)"
+ },
+ {
+  "id": "L-402",
+  "T": 78,
+  "P": 1.0,
+  "DN": 25,
+  "v": 0.38,
+  "servis": "Etanol–air cair"
+ },
+ {
+  "id": "L-403",
+  "T": 78,
+  "P": 1.2,
+  "DN": 25,
+  "v": 0.28,
+  "servis": "Etanol–air cair"
+ },
+ {
+  "id": "S-13",
+  "T": 78,
+  "P": 1.5,
+  "DN": 25,
+  "v": 0.09,
+  "servis": "Etanol–air cair"
+ },
+ {
+  "id": "S-13E",
+  "T": 40,
+  "P": 1.2,
+  "DN": 25,
+  "v": 0.1,
+  "servis": "Bioetanol 99,5 %"
+ },
+ {
+  "id": "E-1",
+  "T": 30,
+  "P": 1.5,
+  "DN": 25,
+  "v": 0.0,
+  "servis": "Bioetanol 99,5 %"
+ },
+ {
+  "id": "L-405",
+  "T": 100,
+  "P": 1.2,
+  "DN": 40,
+  "v": 0.19,
+  "servis": "Bottoms kolom (cair panas)"
+ },
+ {
+  "id": "V-405",
+  "T": 101,
+  "P": 1.2,
+  "DN": 125,
+  "v": 10.26,
+  "servis": "Dua fase reboiler"
+ },
+ {
+  "id": "S-14C",
+  "T": 35,
+  "P": 1.5,
+  "DN": 65,
+  "v": 0.93,
+  "servis": "Slurry biomassa berserat"
+ },
+ {
+  "id": "B-3",
+  "T": 30,
+  "P": null,
+  "DN": 50,
+  "v": 0.02,
+  "servis": "Residu filtrasi basah"
+ },
+ {
+  "id": "W-AD",
+  "T": 28,
+  "P": 1.5,
+  "DN": null,
+  "v": null,
+  "servis": null
+ },
+ {
+  "id": "S-16",
+  "T": 35,
+  "P": 1.2,
+  "DN": 65,
+  "v": 1.47,
+  "servis": "Slurry biomassa berserat"
+ },
+ {
+  "id": "S-16b",
+  "T": 35,
+  "P": 2.5,
+  "DN": 65,
+  "v": 1.47,
+  "servis": "Slurry biomassa berserat"
+ },
+ {
+  "id": "S-17",
+  "T": 35,
+  "P": 1.05,
+  "DN": 100,
+  "v": 6.99,
+  "servis": "Biogas mentah 1,05 bar a"
+ },
+ {
+  "id": "S-17b",
+  "T": 35,
+  "P": 1.05,
+  "DN": 100,
+  "v": 6.99,
+  "servis": "Biogas mentah 1,05 bar a"
+ },
+ {
+  "id": "S-17c",
+  "T": 35,
+  "P": 1.05,
+  "DN": 100,
+  "v": 6.86,
+  "servis": "Biogas mentah 1,05 bar a"
+ },
+ {
+  "id": "S-17C",
+  "T": 40,
+  "P": 1.3,
+  "DN": 65,
+  "v": 11.43,
+  "servis": "Biogas bersih 1,3 bar a"
+ },
+ {
+  "id": "G-EX",
+  "T": 35,
+  "P": 1.05,
+  "DN": 100,
+  "v": 5.82,
+  "servis": "Biogas mentah 1,05 bar a"
+ },
+ {
+  "id": "S-18",
+  "T": 35,
+  "P": 1.5,
+  "DN": 50,
+  "v": 0.82,
+  "servis": "Digestat"
+ },
+ {
+  "id": "S-18A",
+  "T": 35,
+  "P": null,
+  "DN": null,
+  "v": null,
+  "servis": null
+ },
+ {
+  "id": "S-18B",
+  "T": 35,
+  "P": 1.5,
+  "DN": 50,
+  "v": 0.62,
+  "servis": "Digestat"
+ },
+ {
+  "id": "S-19",
+  "T": 30,
+  "P": 1.05,
+  "DN": null,
+  "v": null,
+  "servis": null
+ },
+ {
+  "id": "S-20",
+  "T": 180,
+  "P": 1.0,
+  "DN": null,
+  "v": null,
+  "servis": "Gas buang 180 °C"
+ },
+ {
+  "id": "S-21",
+  "T": 180,
+  "P": 10.0,
+  "DN": 50,
+  "v": 19.51,
+  "servis": "Steam jenuh 10 bar a"
+ },
+ {
+  "id": "H-01",
+  "T": 180,
+  "P": 10.0,
+  "DN": 25,
+  "v": 9.73,
+  "servis": "Steam jenuh 10 bar a"
+ },
+ {
+  "id": "H-02",
+  "T": 180,
+  "P": 10.0,
+  "DN": 32,
+  "v": 15.59,
+  "servis": "Steam jenuh 10 bar a"
+ },
+ {
+  "id": "H-03",
+  "T": 180,
+  "P": 10.0,
+  "DN": 80,
+  "v": 17.79,
+  "servis": "Steam jenuh 10 bar a"
+ },
+ {
+  "id": "H-04",
+  "T": 180,
+  "P": 10.0,
+  "DN": 25,
+  "v": 0.08,
+  "servis": "Steam jenuh 10 bar a"
+ },
+ {
+  "id": "H-05",
+  "T": 180,
+  "P": 10.0,
+  "DN": 25,
+  "v": 14.51,
+  "servis": "Steam jenuh 10 bar a"
+ },
+ {
+  "id": "W-BFW",
+  "T": 105,
+  "P": 1.2,
+  "DN": null,
+  "v": null,
+  "servis": null
+ },
+ {
+  "id": "W-BFW+RET",
+  "T": 105,
+  "P": 11.0,
+  "DN": 25,
+  "v": 0.42,
+  "servis": "Air umpan boiler"
+ },
+ {
+  "id": "W-1",
+  "T": 80,
+  "P": 1.2,
+  "DN": 25,
+  "v": 0.36,
+  "servis": "Kondensat 80 °C"
+ },
+ {
+  "id": "FUEL",
+  "T": null,
+  "P": null,
+  "DN": null,
+  "v": null,
+  "servis": null
+ },
+ {
+  "id": "EL-00",
+  "T": null,
+  "P": null,
+  "DN": null,
+  "v": null,
+  "servis": null
+ },
+ {
+  "id": "EL-01",
+  "T": null,
+  "P": null,
+  "DN": null,
+  "v": null,
+  "servis": null
+ },
+ {
+  "id": "EL-02",
+  "T": null,
+  "P": null,
+  "DN": null,
+  "v": null,
+  "servis": null
+ },
+ {
+  "id": "EL-03",
+  "T": null,
+  "P": null,
+  "DN": null,
+  "v": null,
+  "servis": null
+ },
+ {
+  "id": "EL-04",
+  "T": null,
+  "P": null,
+  "DN": null,
+  "v": null,
+  "servis": null
+ },
+ {
+  "id": "S-23P",
+  "T": 40,
+  "P": 1.2,
+  "DN": 40,
+  "v": 0.05,
+  "servis": "Slurry ekstraksi (etanol–air + biomassa)"
+ },
+ {
+  "id": "S-23F",
+  "T": 40,
+  "P": 1.2,
+  "DN": 25,
+  "v": 0.02,
+  "servis": "Etanol–air cair"
+ },
+ {
+  "id": "S-23",
+  "T": 40,
+  "P": 1.0,
+  "DN": 25,
+  "v": 0.0,
+  "servis": "Etanol–air cair"
+ },
+ {
+  "id": "S-24",
+  "T": 40,
+  "P": 1.2,
+  "DN": 25,
+  "v": 0.02,
+  "servis": "Etanol–air cair"
+ },
+ {
+  "id": "S-02P",
+  "T": 28,
+  "P": null,
+  "DN": null,
+  "v": null,
+  "servis": null
+ },
+ {
+  "id": "W-2",
+  "T": 28,
+  "P": null,
+  "DN": null,
+  "v": null,
+  "servis": null
+ }
+]
