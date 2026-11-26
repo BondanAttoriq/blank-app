@@ -155,7 +155,7 @@ export async function init() {
       const k = 1 / Math.sqrt(p.s), fs = 12 * k;
       g += `<g transform="translate(${p.dx} ${p.dy}) scale(${p.s}) translate(${-p.x} ${-p.y})"><g clip-path="url(#clip${pi})">`;
       if (P.length > 1 || sc.table) g += `<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}" fill="none" stroke="#B9C3CA" stroke-width="${1.5 * k}" rx="${8 * k}"/>`;
-      for (const a of L.areas || []) g += `<rect class="areab" x="${a[0]}" y="${a[1]}" width="${a[2]}" height="${a[3]}" rx="${6 * k}" stroke-width="${1.2 * k}"/><text class="areal" x="${a[0] + 10 * k}" y="${a[1] + a[3] - 10 * k}" font-size="${fs * 1.05}">${esc(a[4])}</text>`;
+      for (const a of L.areas || []) g += `<rect class="areab" x="${a[0]}" y="${a[1]}" width="${a[2]}" height="${a[3]}" rx="${6 * k}" stroke-width="${1.2 * k}"/><text class="areal" x="${a[0] + a[2] - 10 * k}" y="${a[1] + a[3] - 10 * k}" text-anchor="end" font-size="${fs * 1.05}">${esc(a[4])}</text>`;
       for (const b of L.boxes) g += `<rect class="boxd" x="${b.r[0]}" y="${b.r[1]}" width="${b.r[2]}" height="${b.r[3]}" stroke-width="${1.2 * k}"/><text class="boxl" x="${b.lp[0]}" y="${b.lp[1]}" font-size="${fs * .95}">${esc(b.l)}</text>`;
       // aliran: pipa bergaris ganda (bingkai gelap + isi terang) dengan garis alir berwarna medium di tengah.
       // Lapisan digambar terpisah (bingkai → isi → alir → aksesori) agar sambungan pipa menyatu rapi.

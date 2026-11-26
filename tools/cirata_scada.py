@@ -19,20 +19,20 @@ U = {
   'L-MAT':   ['label', 92, 128, 0, 0, 'gray', None, '430 ha · r = 0,03/hari'],
   'TB-102':  ['boom', 182, 128, 8, 176, 'gold', [10, 92, 'start'], 'Trash boom 1,4 km'],
   'INTAKE':  ['intake', 247, 128, 78, 58, 'gray', None, 'Intake PLTA|8 × 126 MW'],
-  'EFB-101': ['efb', 95, 205, 158, 96, 'green', [-79, 66, 'start'], 'Ecological Floating Bed 2 ha'],
+  'EFB-101': ['efb', 95, 215, 158, 96, 'green', [-79, -66, 'start'], 'Ecological Floating Bed 2 ha'],
   'H-103':   ['boat', 372, 158, 88, 46, 'gray', [0, 44, 'middle'], 'Harvester boat'],
   'CV-104':  ['conveyor', 477, 150, 70, 24, 'gray', [0, -24, 'middle'], 'Belt conveyor'],
-  'HP-105':  ['hopper', 472, 258, 60, 62, 'gray', [0, 48, 'middle'], 'Hopper umpan'],
+  'HP-105':  ['hopper', 472, 258, 60, 62, 'gray', [-36, 18, 'end'], 'Hopper umpan'],
   # ---------------- Area 200: penyiapan biomassa & pretreatment asam
   'S-201':   ['screw', 622, 260, 100, 30, 'gray', [0, -28, 'middle'], 'Screw press'],
-  'TK-208':  ['tank', 622, 318, 40, 32, 'gray', [-30, 4, 'end'], 'Tangki pressate'],
+  'TK-208':  ['tank', 622, 318, 40, 32, 'gray', [0, 30, 'middle'], 'Tangki pressate'],
   'M-202':   ['mill', 740, 247, 72, 46, 'gray', [0, 42, 'middle'], 'Hammer mill'],
   'E-203':   ['hxs', 867, 290, 50, 50, 'gray', [-38, 46, 'middle'], 'HX slurry–slurry'],
   'R-204':   ['agit', 985, 210, 76, 110, 'gray', [52, -18, 'start'], 'Reaktor pretreatment'],
   'TK-206':  ['tank', 875, 64, 50, 42, 'gray', [-32, -4, 'end'], 'Tangki H₂SO₄'],
-  'P-206':   ['pump', 912, 118, 30, 30, 'gray', [0, 32, 'middle']],
+  'P-206':   ['pump', 912, 118, 30, 30, 'gray', [0, 32, 'middle'], 'Dosis H₂SO₄'],
   'TK-207':  ['tank', 1112, 64, 50, 42, 'gray', [-32, -4, 'end'], 'Tangki NaOH'],
-  'P-207':   ['pump', 1154, 122, 30, 30, 'gray', [0, 32, 'middle']],
+  'P-207':   ['pump', 1154, 122, 30, 30, 'gray', [-18, 32, 'end'], 'Dosis NaOH'],
   'T-205':   ['cone', 1220, 222, 60, 96, 'gray', [-36, 64, 'end'], 'Tangki netralisasi'],
   'P-209':   ['pump', 1292, 280, 30, 30, 'gray', [-4, 32, 'end'], 'Pompa slurry'],
   # ---------------- Area 300–400: SSF, distilasi & dehidrasi
@@ -48,7 +48,7 @@ U = {
   'V-403':   ['hdrum', 1849, 118, 76, 24, 'gray', [0, 30, 'middle'], 'Reflux drum'],
   'Z-406':   ['adsorber', 1937, 129, 38, 80, 'gray', [-24, 54, 'end'], 'Mol. sieve'],
   'TK-408':  ['tank', 1965, 262, 62, 60, 'gray', [0, 46, 'middle'], 'Bioetanol 99,5%'],
-  'E-405':   ['heater', 1844, 255, 62, 22, 'hot', [0, 28, 'middle'], 'Reboiler'],
+  'E-405':   ['heater', 1844, 255, 62, 22, 'hot', [34, -10, 'start'], 'Reboiler'],
   # ---------------- Area 500: anaerobic co-digestion & biogas
   'E-501':   ['hx', 57, 492, 44, 44, 'gray', [0, 40, 'middle'], 'Stillage cooler'],
   'TK-502':  ['cone', 182, 507, 60, 90, 'gray', [-8, 66, 'end'], 'Tangki ekualisasi'],
@@ -68,12 +68,12 @@ U = {
   'HDR-S21': ['steamhdr', 1167, 536, 220, 8, 'gray', [0, -12, 'middle'], 'Steam header 10 bar', 'nt'],
   'P-605':   ['pump', 1068, 656, 30, 30, 'gray', [0, 32, 'middle'], 'BFW pump'],
   'D-604':   ['hdrum', 1198, 653, 84, 28, 'gray', [0, 32, 'middle'], 'Deaerator / BFW'],
-  'BUS':     ['bus', 1160, 696, 290, 6, 'gray', [-60, -10, 'middle'], 'Bus listrik internal', 'nt'],
+  'BUS':     ['bus', 1160, 696, 290, 6, 'gray', [96, -10, 'middle'], 'Bus listrik internal', 'nt'],
   'T-FUEL':  ['term', 840, 662, 132, 24, 'gray', None, 'BBM cadangan'],
   'T-CHP':   ['term', 900, 696, 118, 24, 'gray', None, 'CHP + jaringan'],
   # ---------------- Area 700: polifenol & pressate
   'X-701':   ['agit', 1572, 495, 62, 84, 'gray', [0, 58, 'middle'], 'Ekstraktor polifenol'],
-  'F-702':   ['filterpress', 1700, 495, 78, 40, 'gray', [0, -30, 'middle'], 'Filter press'],
+  'F-702':   ['filterpress', 1700, 495, 78, 40, 'gray', [0, -40, 'middle'], 'Filter press'],
   'EV-703':  ['evap', 1820, 495, 56, 76, 'hot', [0, 54, 'middle'], 'Thin-film evaporator'],
   'TK-704':  ['tank', 1959, 495, 56, 44, 'gray', [0, 38, 'middle'], 'Ekstrak polifenol'],
   'U-705':   ['hopper', 1602, 647, 62, 62, 'gray', [0, 48, 'middle'], 'Pengolahan pressate'],
@@ -104,9 +104,9 @@ def mid(seg):
     return best
 
 # hex konektor (posisi di kanvas)
-HX = {'B-1@100': [199, 443], 'B-2@100': [248, 443], 'P-1@200': [690, 443], 'H-01@200': [848, 323], 'ST-1@300': [1606, 495], 'E-1@400': [1889, 495],
-      'H-02@400': [1800, 432], 'H-05@400': [1866, 236], 'ST-1@500': [39, 604], 'B-3@500': [98, 604], 'B-1@500': [145, 604], 'W-AD@500': [194, 604], 'H-03@500': [428, 770],
-      'B-2@700': [1380, 700], 'E-1@700': [1380, 728], 'B-3@700': [1594, 784], 'P-1@700': [1380, 908], 'H-04@700': [1752, 770], 'W-1@600': [1214, 916]}
+HX = {'B-1@100': [199, 443], 'B-2@100': [248, 443], 'P-1@200': [690, 443], 'H-01@200': [992, 323], 'ST-1@300': [1606, 495], 'E-1@400': [1889, 495],
+      'H-02@400': [1792, 454], 'H-05@400': [1866, 236], 'ST-1@500': [39, 604], 'B-3@500': [98, 604], 'B-1@500': [145, 604], 'W-AD@500': [194, 604], 'H-03@500': [428, 770],
+      'B-2@700': [1380, 700], 'E-1@700': [1380, 728], 'B-3@700': [1594, 784], 'P-1@700': [1380, 908], 'H-04@700': [1772, 770], 'W-1@600': [1214, 916]}
 HDR_X = [1022, 1073, 1125, 1177]   # turunan H-01..H-04 dari steam header
 HDR_Y = 756
 EL_X = [1080, 1136, 1192, 1248]
@@ -124,7 +124,8 @@ st('S-00b', [path(A('H-103', 'r'), A('CV-104', 'l', 0))], d=None)
 cx, cy = POS['CV-104']; hx, hy = POS['HP-105']
 st('S-00c', [path(A('CV-104', 'r'), [cx + 52, cy], [cx + 52, hy - 54], [hx, hy - 54], A('HP-105', 't'))], d=None)
 sx_, sy_ = POS['S-201']
-st('S-01', [path(A('HP-105', 'r', -10), [506, POS['HP-105'][1] - 10], [506, sy_], A('S-201', 'l'))], d=[506, round((sy_ + POS['HP-105'][1]) / 2)])
+hpx, hpy = POS['HP-105']
+st('S-01', [path(A('HP-105', 'b'), [hpx, 412], [520, 412], [520, sy_], A('S-201', 'l'))], d=[482, 412])
 ex, ey = POS['EFB-101']
 st('B-1', [path([ex - 30, ey + 48], [ex - 30, 443], [HX['B-1@100'][0] - 22, 443]),
            path([HX['B-1@500'][0], 616], [HX['B-1@500'][0], 632], [POS['TK-502'][0], 632], A('TK-502', 't'))],
@@ -212,8 +213,8 @@ st('EL-00', [path(A('T-CHP', 'r'), [EL_X[0] - 125, BUS_Y])], d=None)
 for i, (h, cons) in enumerate(zip(['H-01', 'H-02', 'H-03', 'H-04'], ['H-01@200', 'H-02@400', 'H-03@500', 'H-04@700'])):
     segs = [path([HDR_X[i], HDR_Y + 4], [HDR_X[i], 800])]
     c = HX[cons]
-    if h == 'H-01': segs.append(path([c[0] + 22, c[1]], A('R-204', 'l', c[1] - r4[1])))
-    if h == 'H-02': segs.append(path([c[0], c[1] - 12], [c[0], e5[1]], A('E-405', 'r')))
+    if h == 'H-01': segs.append(path([c[0] - 22, c[1]], A('R-204', 'r', c[1] - r4[1])))
+    if h == 'H-02': segs.append(path([c[0], c[1] - 12], [c[0], 384], [e5[0] + 22, 384], [e5[0] + 22, A('E-405', 'b')[1]]))
     if h == 'H-03': segs.append(path([c[0] - 22, c[1]], A('R-504', 'r', c[1] - r54[1])))
     if h == 'H-04': segs.append(path([c[0], c[1] - 12], [c[0], POS['EV-703'][1] + 20], A('EV-703', 'r', 20)))
     st(h, segs, d=None, hexes=[[HDR_X[i], 812, h], c + [h]])
@@ -234,7 +235,7 @@ st('W-2', [path(A('U-705', 'r', 10), [1580, u75[1] + 10], [1580, POS['T-W2'][1]]
 BOXES = [
   {'r': [10, 46, 340, 330], 'l': 'Waduk Cirata · 6.200 ha · TP 0,24 mg/L · DO 2 mg/L', 'lp': [16, 64]},
   {'r': [1238, 560, 0, 0], 'l': '', 'lp': [0, 0]},
-  {'r': [1220, 584, 188, 88], 'l': 'HRN-606 · integrasi panas', 'lp': [1226, 602]},
+  {'r': [1100, 588, 200, 62], 'l': 'HRN-606 · jaringan integrasi panas', 'lp': [1108, 606]},
   {'r': [1332, 572, 576, 228], 'l': '7A · Ekstraksi polifenol', 'lp': [1338, 590]},
   {'r': [1332, 808, 576, 238], 'l': '7B · Pengolahan pressate & air proses', 'lp': [1338, 826]},
 ]
