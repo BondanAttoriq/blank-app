@@ -4,7 +4,7 @@ import { P } from './paper-data.js';
 import { cartesian, hbar, donut, tableHTML, showTip, hideTip, C, SEQ } from './charts.js';
 
 export async function init() {
-  neracaSankeys(); t4(); e4(); efb(); circ(); downloads();
+  neracaSankeys(); t4(); e4(); efb(); analisis(); circ(); downloads();
   const reg = await loadRegister(); streamTable(reg);
 }
 // ================================================================ Sankey mini
@@ -212,21 +212,101 @@ async function downloads() {
   const R = [['site', 'Ikhtisar tapak'], ['top', 'Tampak atas'], ['efb', 'Waduk & EFB'], ['section', 'Potongan EFB'], ['harvest', 'Dermaga & penerimaan'], ['prep', 'Prapengolahan'], ['ssf', 'SSF & bioetanol'], ['tank', 'Tangki & pengiriman'], ['poly', 'Ekstraksi polifenol'], ['ad', 'Digester & biogas'], ['rack', 'Boiler & pipe rack']];
   const sets = {
     render: R.map(([f, n]) => [`assets/img/render/${f}.jpg`, `assets/img/render/t_${f}.jpg`, n]),
-    grafik: figs.map(f => { const b = f.replace('.png', ''); return [`assets/img/fig/${b}.jpg`, `assets/img/fig/t_${b}.jpg`, b.replace(/^R(\d)_(\d+)_/, 'R$1.$2 ').replace(/_/g, ' ')]; }),
+    grafik: figs.map(f => { const b = f.replace('.png', ''); return [`assets/img/fig/${b}.jpg`, `assets/img/fig/t_${b}.jpg`, figCap(b)]; }),
     rujukan: [['PFD', 'PFD biorefinery'], ['MASS', 'Neraca massa & panas'], ['EFB', 'Skema EFB'], ...[100, 200, 300, 400, 500, 600, 700].map(a => ['PID' + a, 'P&ID Area ' + a])].map(([f, n]) => [`assets/img/ref/${f}.jpg`, `assets/img/ref/${f}.jpg`, n]),
   };
   const names = { render: 'Render 3D', grafik: 'Grafik analisis', rujukan: 'PFD & P&ID' };
   $('#galTabs').innerHTML = Object.keys(sets).map((k, i) => `<button role="tab" aria-selected="${!i}" data-g="${k}">${names[k]} <small>${sets[k].length}</small></button>`).join('');
   let items = sets.render;
-  const lb = $('#lightbox'), img = lb.querySelector('img'), cap = lb.querySelector('figcaption'); let cur = 0, last = null;
-  const open = i => { cur = (i + items.length) % items.length; img.src = items[cur][0]; img.alt = items[cur][2]; cap.textContent = items[cur][2]; lb.hidden = false; lb.querySelector('.lb-x').focus(); };
   const show = k => { items = sets[k];
     $('#gallery').innerHTML = items.map((it, i) => `<button data-i="${i}" aria-label="Buka ${esc(it[2])}"><img src="${it[1]}" alt="${esc(it[2])}" loading="lazy" width="400" height="240"><span>${esc(it[2])}</span></button>`).join('');
-    $$('#gallery button').forEach(b => b.onclick = () => { last = b; open(+b.dataset.i); });
+    $$('#gallery button').forEach(b => b.onclick = () => lightbox(items, +b.dataset.i));
     $$('#galTabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.g === k)); };
   $$('#galTabs button').forEach(b => b.onclick = () => show(b.dataset.g)); show('render');
-  const close = () => { lb.hidden = true; if (last) last.focus(); };
-  lb.querySelector('.lb-x').onclick = close; lb.querySelector('.lb-p').onclick = () => open(cur - 1); lb.querySelector('.lb-n').onclick = () => open(cur + 1);
-  lb.addEventListener('click', e => { if (e.target === lb) close(); });
-  addEventListener('keydown', e => { if (lb.hidden) return; if (e.key === 'Escape') close(); if (e.key === 'ArrowRight') open(cur + 1); if (e.key === 'ArrowLeft') open(cur - 1); e.stopPropagation(); }, true);
+}
+
+// ================================================================ Analisis mendalam (R1–R7)
+const AN = [
+  { id: 'efb', t: 'EFB & serapan nutrien', ico: 'i-leaf', figs: ['R1_1_EFB_kinetika_siklus_panen', 'R1_2_EFB_kanopi_jarak_tanam', 'R1_3_EFB_serapan_nutrien', 'R1_4_EFB_kontra_pertumbuhan', 'R1_5_EFB_seleksi_tanaman_MCDA', 'R1_6_EFB_panen_bergilir', 'R1_7_Simulasi_pengurangan_nutrien', 'R1_8_Zona_intake_efek_lokal'],
+    lead: 'Model logistik terkalibrasi menempatkan siklus panen 28 hari (kangkung) dan 40 hari (selada air) tepat di puncak laju panen rata-rata, sehingga serapan nutrien maksimum tanpa self-shading.',
+    kpi: [['28 / 40', 'hari', 'siklus panen optimum'], ['20×20 / 25×25', 'cm', 'jarak tanam = diameter kanopi'], ['0,25', 'g N/m²/hari', '0,023 g P/m²/hari'], ['530', 't/tahun', 'biomassa EFB (1,66 t/hari)']],
+    pts: ['MCDA tujuh kandidat: kangkung (4,50) dan selada air (4,05) teratas; eceng gondok (3,90) dan M. aquaticum (3,30) gugur karena invasif.',
+      'Panen pada 2×T* menurunkan ekspor N bersih 67–75% karena senesens; SOP panen paling lambat T* + 3 hari.',
+      'Modul 20 × 25 m: rangka HDPE PE100 Ø200 SDR26, 151 blok apung 100 L, faktor keamanan apung 2,0, freeboard ±20 cm.',
+      'Tambat: gaya desain 9,0 kN/modul (FS 2,5) terhadap angin 15 m/s, arus 0,3 m/s, gelombang 0,3 m; biaya Rp401 ribu/m².'],
+    table: () => ({ head: ['Parameter', 'Kangkung', 'Selada air', 'Total'], rows: [['Luas efektif (m²)', '9.600', '6.400', '16.000'], ['Jarak tanam', '20×20 cm (25/m²)', '25×25 cm (16/m²)', '342.400 posisi'], ['Siklus panen', '28 hari', '40 hari', 'bergilir 40 blok'], ['Biomassa (t basah/tahun)', '346', '184', '530'], ['N terangkut (t/tahun)', '0,774', '0,369', '1,14'], ['P terangkut (t/tahun)', '0,061', '0,044', '0,105']] }) },
+  { id: 'tree', t: 'Issue tree', ico: 'i-link', figs: ['R2_1_Dinamika_eceng_gondok_vs_panen', 'R2_2_Issue_tree_terintegrasi', 'R2_3_Matriks_keselarasan_kasus'],
+    lead: 'Akar masalah dirumuskan kuantitatif: regrowth eceng gondok (MSY ±774 t basah/hari pada r = 0,03/hari dan tikar 430 ha × 24 kg/m²) melebihi kapasitas kendali, sementara biomassa terpanen diperlakukan sebagai limbah.',
+    kpi: [['±774', 't/hari', 'regrowth maksimum (MSY)'], ['83', 'TSI-P', 'hipereutrofik'], ['23', 'hari', 'waktu ganda tikar'], ['±90%', 'kadar air', 'beban pengolahan awal']],
+    cards: [['A · Sumber', 'Mengapa terus tumbuh: beban N/P KJA 100.000 petak, TSI-P 83, waktu ganda 23 hari.', 'EFB di zona intake', 't N/P terangkut, TN & TSI zona, DO'],
+      ['B · Pengendalian', 'Mengapa penanganan tidak efektif: ekskavator reaktif, trash boom 1,4 km jebol pada 243 m³/s, downtime Rp17,07 juta/jam-unit.', 'Panen terarah 200 → 300 t/hari', 'jam-unit downtime dihindari, Rp/ton'],
+      ['C · Hilir', 'Mengapa biomassa menjadi beban: kadar air ±90%, belum ada rantai nilai, risiko pelepasan ulang nutrien.', 'Multi-feedstock biorefinery', 'L etanol, % energi mandiri, % massa tervalorisasi']] },
+  { id: 'bio', t: 'Biorefinery & plant', ico: 'i-factory', figs: ['R3_1_Sankey_neraca_massa_biorefinery', 'R3_2_Energi_mandiri_biorefinery', 'R3_3_Dari_biaya_ke_nilai_PLN', 'R3_4_Area_plant_design', 'R3_5_Kandungan_pressate_digestat', 'R3_6_Parameter_proses_kemurnian_produk'],
+    lead: 'Alih-alih ekskavasi terus-menerus lalu dibuang, eceng gondok diolah menjadi bioetanol 2G, sementara panas dan listrik pabrik dibangkitkan mandiri dari residu prosesnya.',
+    kpi: [['21,4', 'L/t', 'bioetanol 99,5% v/v per ton basah'], ['12,5', 'Nm³/t', 'biogas per ton basah'], ['1,50 / 0,20', 'kg/t', 'N / P keluar dari waduk'], ['95%', 'listrik', 'dari CHP; 100% uap dari biogas']],
+    pts: ['HEN memulihkan 39,47 dari 75,62 GJ/hari; biogas 65,75 GJ/hari menutup bahan bakar boiler 51,03 GJ/hari; surplus 14,72 GJ/hari ke CHP.',
+      'Energi berasal dari biogas stillage SSF (98,5%) dan residu biomassa EFB (1,5%) melalui rantai biogas, boiler, dan CHP.',
+      'Bagi PLN (300 t/hari): kontrak jasa Rp57,6 M/tahun menggantikan biaya lama; manfaat bersih positif bila biaya lama ≥ ±Rp580.000/t, ditambah Rp0,68–4,10 M/tahun downtime terhindarkan.',
+      'Pressate dan digestat perlu dipekatkan ±5× dan ±3× untuk memenuhi POC (N+P₂O₅+K₂O 2–6%); mengganti NaOH dengan NH₄OH/Ca(OH)₂ menambah N pupuk dan mengendapkan sulfat.'],
+    table: () => ({ head: ['Produk', 'Kemurnian / spesifikasi', 'Laju'], rows: P.specs }) },
+  { id: 'sota', t: 'State-of-the-art', ico: 'i-chart', figs: ['R4_1_SOTA_EFB_benchmark', 'R4_2_SOTA_biorefinery_benchmark', 'R4_3_SOTA_vs_konvensional'],
+    lead: 'MCDA delapan kriteria atas sepuluh pendekatan menempatkan CIRATA-RESILIENT (4,53) jauh di atas EFB/FTW saja (3,30), pembatasan KJA (3,15), biokontrol (2,65), dan cara eksisting ekskavator (2,55) maupun trash boom (2,38).',
+    kpi: [['4,53', 'skor MCDA', 'tertinggi dari 10 pendekatan'], ['226', 'L/t DM', 'rendemen etanol (56% teoretis)'], ['±US$22', '/m²', 'modul EFB vs FTW US$38–377/m²'], ['−72%', 'TN', 'zona intake dengan EFB 10 ha']],
+    pts: ['Trash boom dan ekskavator hanya menahan atau memindahkan gulma: tidak mengurangi nutrien dan biomassa menjadi limbah.',
+      'Herbisida membuat tikar membusuk, menurunkan DO, dan mengembalikan nutrien; biokontrol Neochetina efektif setelah 3–5 tahun dan dapat resurgen.',
+      'Aerasi, alum, dan pengerukan mahal per hektare, efeknya sementara, dan tidak menghasilkan pendapatan.'],
+    table: () => ({ head: ['Aspek', 'Teknologi eksisting', 'CIRATA-RESILIENT'], rows: [['Penanganan gulma', 'Trash boom & ekskavator; herbisida; biokontrol 3–5 tahun', 'Panen terarah 200 → 540 t/hari + EFB di zona intake'], ['Kinerja EFB', 'EFB zeolit: TN 63,5%, TP 59,3%; Dianchi 555 ha: TN −45%', 'TN zona intake −28%/tahun (2 ha), −72% (10 ha)'], ['Biaya modul', 'Beemat US$38/m²; Biohaven US$377/m²', 'Rp400.000/m² ≈ US$22/m²'], ['Rendemen etanol', 'NREL ±330 L/t DM; eceng gondok 210–254 L/t', '226 L/t DM'], ['Skala 2G', 'Raízen 82 juta L/tahun; IOCL Panipat 100 kL/hari', '1,37 → 3,69 juta L/tahun'], ['Energi proses', 'Lignin dibakar di boiler', 'Biogas: 100% uap, 95% listrik'], ['Bahan baku', 'Dibeli, musiman', 'Dibayar sebagai jasa (Rp600.000/t)']] }) },
+  { id: 'fin', t: 'Proyeksi finansial', ico: 'i-chart', figs: ['R5_1_Asumsi_dan_utilitas', 'R5_2_Diagram_arus_kas', 'R5_3_Struktur_pendapatan_OPEX', 'R5_4_MonteCarlo_NPV_IRR_PBP', 'R5_5_Tornado_Spearman', 'R5_6_Fan_chart_kumulatif'],
+    lead: 'Model keuangan direkonstruksi (PPh badan 22%, depresiasi garis lurus 20 tahun, ekspansi 12 tahun) dan diuji Monte Carlo 20.000 iterasi dengan distribusi PERT pada rendemen, pasokan, OPEX, dan CAPEX.',
+    kpi: [['91%', 'P(NPV > 0)', 'skenario kontrak'], ['Rp18,7 M', 'NPV P50', 'P5 −4,0 · P95 40,4'], ['12,3%', 'IRR P50', 'P5 9,5 · P95 14,9'], ['81%', 'iterasi', 'balik modal ≤ 10 tahun']],
+    pts: ['Skenario kontrak: tarif jasa Rp600.000/t terkunci dan offtake bioetanol dengan harga dasar Rp10.500/L.',
+      'Tanpa kontrak, variabel paling menentukan adalah tarif jasa (ρ = +0,76), OPEX (ρ = −0,44), dan harga etanol (ρ = +0,34).',
+      'P(NPV > 0) naik dari 76% (tanpa kontrak) ke 87% (tarif terkunci) dan 91% (tarif + offtake); nilai sistem termasuk downtime PLN 99,5%.',
+      'Struktur: jasa pengangkatan 72% pendapatan; panen dan logistik 41% OPEX tahap I.'],
+    table: () => ({ head: ['Indikator', 'Full report', 'Rekonstruksi', 'P50 (P5–P95)'], rows: P.mc.map(r => [r[0], fmt(r[1], 2), fmt(r[2], 2), `${fmt(r[3], 1)} (${fmt(r[4], 1)} s.d. ${fmt(r[5], 1)})`]) }) },
+  { id: 'impact', t: 'Dampak', ico: 'i-recycle', figs: ['R6_1_Tiga_pilar_dampak', 'R6_2_Nol_limbah_sebelum_sesudah'],
+    lead: 'Dampak dikerucutkan menjadi tiga pilar: bioremediasi ramah lingkungan, upcycling biomassa, serta nilai dan keandalan bagi PLTA, dengan ≥98% massa keluaran masuk jalur produk, energi, atau pupuk.',
+    kpi: [['97,0', 't N/tahun', '12,9 t P/tahun keluar permanen'], ['64.000', 't/tahun', 'eceng gondok menjadi produk'], ['Rp0,68–4,10 M', '/tahun', 'downtime PLTA terhindarkan'], ['1,2–1,6', 'kt CO₂e/tahun', 'emisi terhindarkan']],
+    pts: ['Bioremediasi: TN zona intake turun 28% rata-rata tahunan dengan EFB 2 ha, tanpa bahan kimia dan dengan spesies native.',
+      'Upcycling: 1,37 juta L bioetanol 99,5% v/v (2,05 juta L tahap II; 3,4 juta L Fase III), 480 kg polifenol/tahun, pupuk organik padat dan cair.',
+      'Nilai: EBITDA Rp14,4 → 25,2 M/tahun dan intensitas karbon −44% s.d. −60% dibanding bahan bakar fosil.'] },
+  { id: 'road', t: 'Roadmap & dinamika', ico: 'i-rotate', figs: ['R7_1_Kapasitas_maksimum_roadmap', 'R7_2_Penurunan_laju_tumbuh_eceng_gondok', 'R7_3_Titik_selesai_dan_feed_alternatif'],
+    lead: 'Kapasitas berkelanjutan dibatasi regrowth: batas panen aman 70% MSY ≈ 540 t/hari, sehingga plant dapat tumbuh hingga ±2,7× kapasitas tahap I tanpa menghabiskan stok.',
+    kpi: [['540', 't/hari', 'batas panen aman (70% MSY)'], ['±333', 'ha', 'tutupan setimbang pada 540 t/hari'], ['−45%', 'laju tumbuh', 'skenario pemulihan penuh'], ['Tahun ke-13', '', 'TP < 100 µg/L (S4)']],
+    pts: ['Eutrofikasi teratasi bila: TP < 100 µg/L dan TN ≤ 1.900 µg/L; tutupan < 62 ha selama dua musim hujan; nol downtime akibat gulma 12 bulan; pasokan < 50% kapasitas.',
+      'Di skala waduk, EFB dan panen saja menurunkan r < 1% karena beban eksternal ±5.380 t N dan ±1.290 t P/tahun; kontrol sumber KJA tetap diperlukan.',
+      'Feed alternatif saat gulma berkurang: kebun biomassa EFB 50 ha (±0,24 juta L/tahun), gulma kaskade Saguling–Jatiluhur, jerami padi Cianjur–Purwakarta–Bandung Barat, dan rumput gajah.'],
+    table: () => ({ head: ['Skenario 25 tahun', 'TN akhir (mg/L)', 'TP akhir (µg/L)', 'Penurunan r', 'Tutupan akhir (ha)'], rows: P.dyn.map(r => [r[0], fmt(r[1], 2), r[2], r[3], r[4] ? r[4] : '±0']) }) },
+];
+let LB = null;
+export function lightbox(items, i) {
+  const lb = $('#lightbox'), img = lb.querySelector('img'), cap = lb.querySelector('figcaption');
+  if (!LB) {
+    LB = { items: [], cur: 0, last: document.activeElement };
+    const open = k => { LB.cur = (k + LB.items.length) % LB.items.length; img.src = LB.items[LB.cur][0]; img.alt = LB.items[LB.cur][2]; cap.textContent = LB.items[LB.cur][2]; lb.hidden = false; lb.querySelector('.lb-x').focus(); };
+    LB.open = open;
+    const close = () => { lb.hidden = true; if (LB.last) LB.last.focus(); };
+    lb.querySelector('.lb-x').onclick = close; lb.querySelector('.lb-p').onclick = () => open(LB.cur - 1); lb.querySelector('.lb-n').onclick = () => open(LB.cur + 1);
+    lb.addEventListener('click', e => { if (e.target === lb) close(); });
+    addEventListener('keydown', e => { if (lb.hidden) return; if (e.key === 'Escape') close(); if (e.key === 'ArrowRight') open(LB.cur + 1); if (e.key === 'ArrowLeft') open(LB.cur - 1); e.stopPropagation(); }, true);
+  }
+  LB.items = items; LB.last = document.activeElement; LB.open(i);
+}
+const figCap = b => b.replace(/^R(\d)_(\d+)_/, '').replace(/_/g, ' ').replace(/^./, c => c.toUpperCase());
+function analisis() {
+  const host = $('#analisisTabs'); if (!host) return;
+  host.innerHTML = AN.map((a, i) => `<button role="tab" aria-selected="${!i}" data-an="${a.id}"><svg><use href="#${a.ico}"/></svg>${a.t}</button>`).join('');
+  const show = id => {
+    const a = AN.find(x => x.id === id);
+    $$('#analisisTabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.an === id));
+    const items = a.figs.map(f => [`assets/img/fig/${f}.jpg`, `assets/img/fig/t_${f}.jpg`, figCap(f)]);
+    $('#analisisBody').innerHTML = `<p class="an-lead">${a.lead}</p>
+      <div class="tiles an-kpi">${a.kpi.map(k => `<div class="kt"><div class="kl">${k[2]}</div><div class="kv2">${k[0]}<small> ${k[1]}</small></div></div>`).join('')}</div>
+      ${a.cards ? `<div class="an-cards">${a.cards.map(c => `<article class="card"><h4>${c[0]}</h4><p>${c[1]}</p><div class="an-mod"><span>Modul</span><b>${c[2]}</b></div><div class="an-mod"><span>KPI</span><b>${c[3]}</b></div></article>`).join('')}</div>` : ''}
+      <div class="an-grid"><div>${a.pts ? `<ul class="ticks">${a.pts.map(p => `<li>${p}</li>`).join('')}</ul>` : ''}${a.table ? `<div class="an-tbl">${tableHTML(a.table())}</div>` : ''}</div>
+      <div class="an-figs">${items.map((it, i) => `<button data-i="${i}" aria-label="Perbesar ${esc(it[2])}"><img src="${it[1]}" alt="${esc(it[2])}" loading="lazy" width="420" height="230"><span>${esc(it[2])}</span></button>`).join('')}</div></div>`;
+    $$('#analisisBody .an-figs button').forEach(b => b.onclick = () => lightbox(items, +b.dataset.i));
+  };
+  $$('#analisisTabs button').forEach(b => b.onclick = () => show(b.dataset.an));
+  show(AN[0].id);
 }
